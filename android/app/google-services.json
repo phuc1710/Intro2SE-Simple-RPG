@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1031580322623",
+    "project_id": "intro2se-19clc2-simple-rpg",
+    "storage_bucket": "intro2se-19clc2-simple-rpg.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031580322623:android:0e77efb4654023a00a218a",
+        "android_client_info": {
+          "package_name": "com.intro2SE.simple_rpg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031580322623-pur7us98paf6kgi45dkdt3f680kg1n6r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.intro2SE.simple_rpg",
+            "certificate_hash": "de398bef0f6745854282656e264ea5d20d93b016"
+          }
+        },
+        {
+          "client_id": "1031580322623-a37ggidvki7ttmvp1r3ek54s5u7lg9q2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi2h9W4LhyDWuF8vEK-4SBz5RVvvvi96I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031580322623-a37ggidvki7ttmvp1r3ek54s5u7lg9q2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
