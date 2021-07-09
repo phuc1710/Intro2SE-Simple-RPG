@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+// ignore: unused_import
+import '../Inventory/INVENTORY/INVENTORY.dart';
 import '../../app.dart';
 import '../../style.dart';
 import '../../models/user.dart';
@@ -108,8 +110,11 @@ class _LoginState extends State<Login> {
                           if (snapshot.value[snapshot.value.keys.elementAt(0)]
                                   ['password'] ==
                               _user.password) {
-                            _showLoggedinDialog(
-                                context); // TODO: Navigate to main screen
+                            _showLoggedinDialog(context);
+                            // Widget screen;
+                            // screen = INVENTORY();
+                            // return MaterialPageRoute(
+                            //     builder: (BuildContext context) => screen);
                           } else {
                             setState(() => passwordValidator =
                                 'Tài khoản hoặc mật khẩu không chính xác!');
