@@ -20,108 +20,131 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Builder(
-        builder: (context) => Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-                child: Text(
-                  'Đăng kí',
-                  textAlign: TextAlign.center,
-                  style: TitleTextStyle,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 50.0, vertical: 10.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Tên người chơi',
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(
+            builder: (context) => Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      'Đăng kí',
+                      textAlign: TextAlign.center,
+                      style: TitleTextStyle,
+                    ),
                   ),
-                  maxLines: 1,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return ('Vui lòng nhập tên người chơi!');
-                    } else {
-                      return usernameValidator;
-                    }
-                  },
-                  onSaved: (val) => setState(() => _user.username = val!),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 50.0, vertical: 10.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Mật khẩu',
-                    suffixIcon: IconButton(
-                        icon: Icon(_showPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: () {
-                          setState(() => _showPassword = !_showPassword);
-                        }),
-                  ),
-                  maxLines: 1,
-                  obscureText: !_showPassword,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return ('Vui lòng nhập mật khẩu!');
-                    }
-                  },
-                  onSaved: (val) => setState(() => _user.password = val!),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 140.0, vertical: 20.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    setState(() {
-                      usernameValidator = null;
-                    });
-                    final form = _formKey.currentState;
-                    if (form!.validate()) {
-                      form.save();
-                      ref
-                          .child('users')
-                          .orderByChild('username')
-                          .equalTo(_user.username)
-                          .once()
-                          .then((DataSnapshot snapshot) {
-                        if (snapshot.value != null) {
-                          print(snapshot.value[snapshot.value.keys.elementAt(0)]
-                              ['password']);
-                          setState(() {
-                            usernameValidator = 'Người chơi đã tồn tại!';
-                          });
-                          form.validate();
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50.0, vertical: 10.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Tên người chơi',
+                      ),
+                      maxLines: 1,
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return ('Vui lòng nhập tên người chơi!');
                         } else {
-                          _user.save(ref);
-                          _showRegisteredDialog(context);
+                          return usernameValidator;
                         }
-                      });
-                    }
-                  },
-                  child: Text(
-                    'Đăng kí',
-                    textAlign: TextAlign.center,
+                      },
+                      onSaved: (val) => setState(() => _user.username = val!),
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50.0, vertical: 10.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Mật khẩu',
+                        suffixIcon: IconButton(
+                            icon: Icon(_showPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() => _showPassword = !_showPassword);
+                            }),
+                      ),
+                      maxLines: 1,
+                      obscureText: !_showPassword,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return ('Vui lòng nhập mật khẩu!');
+                        }
+                      },
+                      onSaved: (val) => setState(() => _user.password = val!),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 140.0, vertical: 20.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        setState(() {
+                          usernameValidator = null;
+                        });
+                        final form = _formKey.currentState;
+                        if (form!.validate()) {
+                          form.save();
+                          ref
+                              .child('users')
+                              .orderByChild('username')
+                              .equalTo(_user.username)
+                              .once()
+                              .then((DataSnapshot snapshot) {
+                            if (snapshot.value != null) {
+                              print(snapshot
+                                      .value[snapshot.value.keys.elementAt(0)]
+                                  ['password']);
+                              setState(() {
+                                usernameValidator = 'Người chơi đã tồn tại!';
+                              });
+                              form.validate();
+                            } else {
+                              _user.save(ref);
+                              _showRegisteredDialog(context);
+                            }
+                          });
+                        }
+                      },
+                      child: Text(
+                        'Đăng kí',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 140.0, vertical: 20.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _onBackToLoginPress(context);
+                      },
+                      child: Text(
+                        'Quay lại',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  _onBackToLoginPress(BuildContext context) {
+    Navigator.of(context).pop();
   }
 
   _showRegisteredDialog(BuildContext context) {
