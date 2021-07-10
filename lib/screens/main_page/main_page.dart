@@ -25,6 +25,7 @@ class _MainPageState extends State<MainPage> {
   Widget buildBottomBar() {
     List<BottomNavigationBarItem> barItems = [
       BottomNavigationBarItem(
+        // TODO: Explore more attribute of BottomNavigationBarItem
         icon: Icon(Icons.map),
         label: 'Map',
       ),
@@ -48,6 +49,9 @@ class _MainPageState extends State<MainPage> {
       ));
     }
     return BottomNavigationBar(
+      // TODO: Change backgroudColor,... but not working
+      // TODO: Try it again, if it still, find the way to fix
+      // TODO: Explore more attribute of BottomNavigationBar
       selectedItemColor: Colors.blue,
       unselectedItemColor: Colors.grey,
       unselectedLabelStyle: TextStyle(color: Colors.black),
