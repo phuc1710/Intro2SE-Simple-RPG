@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_rpg/app.dart';
 import '../../style.dart';
 import '../../models/user.dart';
 
@@ -144,12 +145,12 @@ class _RegisterState extends State<Register> {
   }
 
   _onBackToLoginPress(BuildContext context) {
-    Navigator.of(context).pop();
+    Navigator.pushReplacementNamed(context, LoginRoute);
   }
 
   _showRegisteredDialog(BuildContext context) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('Đăng kí thành công')));
-    Navigator.of(context).pop();
+    Navigator.pushReplacementNamed(context, LoginRoute);
   }
 }

@@ -152,11 +152,14 @@ class _LoginState extends State<Login> {
   }
 
   _onRegisterPress(BuildContext context) {
-    Navigator.pushNamed(context, RegisterRoute);
+    Navigator.pushReplacementNamed(context, RegisterRoute);
   }
 
   _onLoginSuccess(BuildContext context, User user) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (BuildContext context) => MainPage(args: {'user': user})));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (BuildContext context) => MainPage(args: {'user': user})),
+    );
   }
 }
