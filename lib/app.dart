@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'screens/login/login.dart';
-import 'screens/main_page/main_page.dart';
 import 'screens/register/register.dart';
 
 const LoginRoute = '/';
 const RegisterRoute = '/register';
-const MainPageRoute = '/mainpage';
 
 class App extends StatelessWidget {
   @override
@@ -31,9 +29,6 @@ class App extends StatelessWidget {
           break;
         case RegisterRoute:
           screen = Register();
-          break;
-        case MainPageRoute:
-          screen = MainPage();
           break;
         default:
           return null;

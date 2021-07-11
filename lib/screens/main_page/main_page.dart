@@ -6,23 +6,26 @@ import 'package:simple_rpg/screens/view_profile/view_profile.dart';
 import 'package:simple_rpg/screens/world_chat/world_chat.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({Key? key, this.args}) : super(key: key);
+  final args;
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
   int index = 0;
-  bool isAdmin = false;
   @override
-  Widget build(BuildContext context) => SafeArea(
-        child: Scaffold(
-          bottomNavigationBar: buildBottomBar(),
-          body: buildPages(),
-        ),
-      );
+  Widget build(BuildContext context) {
+    final args = widget.args;
+    return SafeArea(
+      child: Scaffold(
+        bottomNavigationBar: buildBottomBar(args),
+        body: buildPages(args),
+      ),
+    );
+  }
 
-  Widget buildBottomBar() {
+  Widget buildBottomBar(args) {
     List<BottomNavigationBarItem> barItems = [
       BottomNavigationBarItem(
         // TODO: Explore more attribute of BottomNavigationBarItem
@@ -42,7 +45,7 @@ class _MainPageState extends State<MainPage> {
         label: 'Profile',
       ),
     ];
-    if (isAdmin) {
+    if (args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
         icon: Icon(Icons.manage_accounts),
         label: 'Account',
@@ -61,10 +64,11 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget buildPages() {
+  Widget buildPages(args) {
+    //TODO: pass args for other like AccountManagement if neccessary
     List pages = [MapEnemy(), Inventory(), WorldChat(), ViewProfile()];
-    if (isAdmin) {
-      pages.add(AccountManagement());
+    if (args['user'].isAdmin) {
+      pages.add(AccountManagement(args: args));
     }
     return pages[index];
   }

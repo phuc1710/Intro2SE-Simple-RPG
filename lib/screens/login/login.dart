@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_rpg/screens/main_page/main_page.dart';
 import '../../app.dart';
 import '../../style.dart';
 import '../../models/user.dart';
@@ -15,7 +16,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool _showPassword = false;
   final _formKey = GlobalKey<FormState>();
-  final _user = User();
+  User _user = User();
   final ref = FirebaseDatabase.instance.reference();
   var passwordValidator;
 
@@ -104,14 +105,11 @@ class _LoginState extends State<Login> {
                               .once()
                               .then((DataSnapshot snapshot) {
                             if ((snapshot.value != null)) {
-                              if (snapshot.value[snapshot.value.keys
-                                      .elementAt(0)]['password'] ==
-                                  _user.password) {
-                                _onLoginSuccess(context);
-                                // Widget screen;
-                                // screen = INVENTORY();
-                                // return MaterialPageRoute(
-                                //     builder: (BuildContext context) => screen);
+                              dynamic data = snapshot
+                                  .value[snapshot.value.keys.elementAt(0)];
+                              if (data['password'] == _user.password) {
+                                _user.fromData(data);
+                                _onLoginSuccess(context, _user);
                               } else {
                                 setState(() => passwordValidator =
                                     'Tài khoản hoặc mật khẩu không chính xác!');
@@ -157,8 +155,8 @@ class _LoginState extends State<Login> {
     Navigator.pushNamed(context, RegisterRoute);
   }
 
-  _onLoginSuccess(BuildContext context) {
-    Navigator.of(context).pop();
-    Navigator.pushNamed(context, MainPageRoute);
+  _onLoginSuccess(BuildContext context, User user) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (BuildContext context) => MainPage(args: {'user': user})));
   }
 }
