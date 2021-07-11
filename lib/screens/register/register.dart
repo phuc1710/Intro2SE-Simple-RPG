@@ -151,6 +151,7 @@ class _RegisterState extends State<Register> {
   _showRegisteredDialog(BuildContext context) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('Đăng kí thành công')));
+    // just pushReplacementNamed to avoid UX error
     Navigator.pushReplacementNamed(context, LoginRoute);
   }
 }

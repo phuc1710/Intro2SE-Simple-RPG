@@ -22,6 +22,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    // GestureDetector to unfocus the keyboard when we tap the SafeArea
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: SafeArea(
@@ -108,7 +109,9 @@ class _LoginState extends State<Login> {
                               dynamic data = snapshot
                                   .value[snapshot.value.keys.elementAt(0)];
                               if (data['password'] == _user.password) {
+                                // get more info of user
                                 _user.fromData(data);
+                                // pass user to this to pass to MainPage
                                 _onLoginSuccess(context, _user);
                               } else {
                                 setState(() => passwordValidator =
@@ -134,6 +137,7 @@ class _LoginState extends State<Login> {
                         horizontal: 140.0, vertical: 20.0),
                     child: ElevatedButton(
                       onPressed: () {
+                        // when tap register button
                         _onRegisterPress(context);
                       },
                       child: Text(
@@ -152,10 +156,13 @@ class _LoginState extends State<Login> {
   }
 
   _onRegisterPress(BuildContext context) {
+    // just pushReplacementNamed to avoid UX error
     Navigator.pushReplacementNamed(context, RegisterRoute);
   }
 
   _onLoginSuccess(BuildContext context, User user) {
+    // push not replace cause if user want to login or register new accout
+    // user just press back or tap back button on screen (if it exists)
     Navigator.push(
       context,
       MaterialPageRoute(

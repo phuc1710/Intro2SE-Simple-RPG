@@ -23,7 +23,9 @@ class App extends StatelessWidget {
   RouteFactory _routes() {
     return (settings) {
       Widget screen;
+      // settings.name default is '/'
       switch (settings.name) {
+        // so it will go into this, go to login.dart
         case LoginRoute:
           screen = Login();
           break;

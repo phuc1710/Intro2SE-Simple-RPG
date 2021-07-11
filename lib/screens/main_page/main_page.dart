@@ -7,6 +7,7 @@ import 'package:simple_rpg/screens/world_chat/world_chat.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key, this.args}) : super(key: key);
+  // args pass from login, include user,...
   final args;
   @override
   _MainPageState createState() => _MainPageState();
@@ -16,6 +17,7 @@ class _MainPageState extends State<MainPage> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
+    // get args passed
     final args = widget.args;
     return SafeArea(
       child: Scaffold(
@@ -45,6 +47,7 @@ class _MainPageState extends State<MainPage> {
         label: 'Profile',
       ),
     ];
+    // check admin to add more for admin
     if (args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
         icon: Icon(Icons.manage_accounts),
@@ -67,6 +70,7 @@ class _MainPageState extends State<MainPage> {
   Widget buildPages(args) {
     //TODO: pass args for other like AccountManagement if neccessary
     List pages = [MapEnemy(), Inventory(), WorldChat(), ViewProfile()];
+    // like above, check admin to add more for admin
     if (args['user'].isAdmin) {
       pages.add(AccountManagement(args: args));
     }
