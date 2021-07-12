@@ -102,15 +102,12 @@ class _RegisterState extends State<Register> {
                               .once()
                               .then((DataSnapshot snapshot) {
                             if (snapshot.value != null) {
-                              print(snapshot
-                                      .value[snapshot.value.keys.elementAt(0)]
-                                  ['password']);
                               setState(() {
                                 usernameValidator = 'Người chơi đã tồn tại!';
                               });
                               form.validate();
                             } else {
-                              _user.save(ref);
+                              _user.register();
                               _showRegisteredDialog(context);
                             }
                           });
