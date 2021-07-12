@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'INVENTORY/INVENTORY.dart';
-import 'EQUIPPED/EQUIPPED.dart';
-import 'CRAFTING/CRAFTING.dart';
+import 'package:simple_rpg/screens/inventory/crafting/crafting.dart';
+import 'package:simple_rpg/screens/inventory/equipped/equipped.dart';
+import 'package:simple_rpg/screens/inventory/inventory/inventory.dart';
 
-class Inventory extends StatefulWidget {
-  const Inventory({Key? key, this.args}) : super(key: key);
+class GeneralInventory extends StatefulWidget {
+  const GeneralInventory({Key? key, this.args}) : super(key: key);
   final args;
   @override
-  _InventoryState createState() => _InventoryState();
+  _GeneralInventoryState createState() => _GeneralInventoryState();
 }
 
-class _InventoryState extends State<Inventory> {
+class _GeneralInventoryState extends State<GeneralInventory> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
@@ -26,12 +26,12 @@ class _InventoryState extends State<Inventory> {
   Widget buildBottomBar(args) {
     List<BottomNavigationBarItem> barItems = [
       BottomNavigationBarItem(
-        icon: Icon(Icons.person),
-        label: 'EQUIPPED',
-      ),
-      BottomNavigationBarItem(
         icon: Icon(Icons.inventory_2_outlined),
         label: 'INVENTORY',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        label: 'EQUIPPED',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.precision_manufacturing),
@@ -40,7 +40,7 @@ class _InventoryState extends State<Inventory> {
     ];
     return BottomNavigationBar(
       selectedItemColor: Colors.green,
-      unselectedItemColor: Colors.blueGrey,
+      unselectedItemColor: Colors.grey,
       unselectedLabelStyle: TextStyle(color: Colors.black),
       currentIndex: index,
       items: barItems,
@@ -49,7 +49,7 @@ class _InventoryState extends State<Inventory> {
   }
 
   Widget buildPages(args) {
-    List pages = [Equipped(), INVENTORY(), Crafting()];
+    List pages = [Inventory(), Equipped(), Crafting()];
     return pages[index];
   }
 }

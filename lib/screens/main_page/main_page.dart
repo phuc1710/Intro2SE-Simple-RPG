@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_rpg/screens/account_management/account_management.dart';
-import 'package:simple_rpg/screens/inventory/inventory.dart';
+import 'package:simple_rpg/screens/general_inventory/general_inventory.dart';
 import 'package:simple_rpg/screens/map_enemy/map_enemy.dart';
 import 'package:simple_rpg/screens/view_profile/view_profile.dart';
 import 'package:simple_rpg/screens/world_chat/world_chat.dart';
@@ -30,34 +30,30 @@ class _MainPageState extends State<MainPage> {
   Widget buildBottomBar(args) {
     List<BottomNavigationBarItem> barItems = [
       BottomNavigationBarItem(
-        // TODO: Explore more attribute of BottomNavigationBarItem
         icon: Icon(Icons.map),
-        label: 'Map',
+        label: 'MAP',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.inventory_2),
-        label: 'Inventory',
+        label: 'INVENTORY',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.forum),
-        label: 'Chat',
+        label: 'CHAT',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.account_box),
-        label: 'Profile',
+        label: 'PROFILE',
       ),
     ];
     // check admin to add more for admin
     if (args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
         icon: Icon(Icons.manage_accounts),
-        label: 'Account',
+        label: 'ACCOUNT',
       ));
     }
     return BottomNavigationBar(
-      // TODO: Change backgroudColor,... but not working
-      // TODO: Try it again, if it still, find the way to fix
-      // TODO: Explore more attribute of BottomNavigationBar
       selectedItemColor: Colors.blue,
       unselectedItemColor: Colors.grey,
       unselectedLabelStyle: TextStyle(color: Colors.black),
@@ -69,7 +65,7 @@ class _MainPageState extends State<MainPage> {
 
   Widget buildPages(args) {
     //TODO: pass args for other like AccountManagement if neccessary
-    List pages = [MapEnemy(), Inventory(), WorldChat(), ViewProfile()];
+    List pages = [MapEnemy(), GeneralInventory(), WorldChat(), ViewProfile()];
     // like above, check admin to add more for admin
     if (args['user'].isAdmin) {
       pages.add(AccountManagement(args: args));
