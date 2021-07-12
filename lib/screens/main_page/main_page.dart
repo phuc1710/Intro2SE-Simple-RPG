@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage> {
     // check admin to add more for admin
     if (args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
-        icon: Icon(Icons.manage_accounts),
+        icon: Icon(Icons.admin_panel_settings),
         label: 'ACCOUNT',
       ));
     }
@@ -68,7 +68,7 @@ class _MainPageState extends State<MainPage> {
     List pages = [MapEnemy(), GeneralInventory(), WorldChat(), ViewProfile()];
     // like above, check admin to add more for admin
     if (args['user'].isAdmin) {
-      pages.add(AccountManagement(args: args));
+      pages.add(AccountManagement());
     }
     return pages[index];
   }

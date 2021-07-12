@@ -11,8 +11,20 @@ class AccountManagement extends StatefulWidget {
 }
 
 class _AccountManagementState extends State<AccountManagement> {
+  bool isList = true;
+  var show;
+  var detailUser;
   @override
   Widget build(BuildContext context) {
+    if (isList) {
+      show = accManList();
+    } else {
+      show = accManDetail(detailUser);
+    }
+    return show;
+  }
+
+  FutureBuilder<List<dynamic>> accManList() {
     return FutureBuilder<List>(
       future: User.getUsers(),
       builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
@@ -20,15 +32,20 @@ class _AccountManagementState extends State<AccountManagement> {
           return ListView.builder(
               itemCount: snapshot.data?.length,
               itemBuilder: (context, index) {
-                User user = snapshot.data?[index];
+                User listUser = snapshot.data?[index];
                 return Card(
                   child: ListTile(
                     leading: Icon(Icons.account_circle),
-                    title: Text(user.username),
+                    title: Text(listUser.username),
                     trailing: AccManCardButton(
-                      user: user,
+                      user: listUser,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        isList = false;
+                        detailUser = listUser;
+                      });
+                    },
                   ),
                 );
               });
@@ -37,6 +54,46 @@ class _AccountManagementState extends State<AccountManagement> {
           color: Colors.blue,
         );
       },
+    );
+  }
+
+  Column accManDetail(detailUser) {
+    return Column(
+      children: [
+        TextButton(
+          onPressed: () {
+            setState(() {
+              isList = true;
+            });
+          },
+          child: Text('Back'),
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.badge),
+            title: Text(detailUser.username),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.manage_accounts),
+            title: Text(detailUser.isAdmin ? "YES" : "NO"),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.add_moderator),
+            title: Text(detailUser.isMod ? "YES" : "NO"),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.cake),
+            title: Text(detailUser.creationDate
+                .substring(0, detailUser.creationDate.lastIndexOf('.'))),
+          ),
+        )
+      ],
     );
   }
 }
