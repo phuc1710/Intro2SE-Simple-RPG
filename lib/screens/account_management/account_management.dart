@@ -11,44 +11,135 @@ class AccountManagement extends StatefulWidget {
 }
 
 class _AccountManagementState extends State<AccountManagement> {
-  bool isList = true;
-  var show;
-  var detailUser;
+  bool isSearch = false;
+  bool isInit = true;
+  var accManGeneral;
+  var totalUsers;
+  var page = 0;
+  var lastPage;
+  var showUsers;
+  final searchController = TextEditingController();
+  static const userPerPage =
+      10; //TODO: Change this to fit the screen if neccessary
+  static const topElePadding = 10.0;
   @override
-  Widget build(BuildContext context) {
-    if (isList) {
-      show = accManList();
-    } else {
-      show = accManDetail(detailUser);
-    }
-    return show;
+  void initState() {
+    super.initState();
+    accManGeneral = getAccManGeneral(User.getUsers());
   }
 
-  FutureBuilder<List<dynamic>> accManList() {
+  @override
+  Widget build(BuildContext context) {
+    return accManGeneral;
+  }
+
+  Column getAccManGeneral(dynamic list) {
+    return Column(
+      children: [
+        Expanded(
+            child: Padding(
+          padding: EdgeInsets.all(topElePadding),
+          child: Row(
+            children: [
+              Expanded(
+                  child: TextField(
+                    controller: searchController,
+                  ),
+                  flex: 7),
+              Expanded(
+                child: TextButton(
+                  child: Icon(
+                    isSearch ? Icons.close : Icons.search,
+                    color: Colors.white,
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: isSearch
+                        ? MaterialStateProperty.all(Colors.red[400])
+                        : MaterialStateProperty.all(Colors.blue),
+                    splashFactory: NoSplash.splashFactory,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (!isSearch) {
+                        if (searchController.text != '') {
+                          isSearch = !isSearch;
+                          final searchKey = searchController.text.toLowerCase();
+                          var matchUsers = [];
+                          for (var user in totalUsers) {
+                            if (user.username
+                                .toLowerCase()
+                                .contains(searchKey)) {
+                              matchUsers.add(user);
+                            }
+                          }
+                          showUsers = matchUsers;
+                          page = 0;
+                          accManGeneral = getAccManGeneral(getPageUsers());
+                        }
+                      } else {
+                        isSearch = !isSearch;
+                        page = 0;
+                        showUsers = totalUsers;
+                        accManGeneral = getAccManGeneral(getPageUsers());
+                      }
+                    });
+                  },
+                ),
+                flex: 1,
+              ),
+            ],
+          ),
+        )),
+        Expanded(
+          flex: 7,
+          child: isInit ? getAsync(list) : getSync(list),
+        ),
+        Expanded(
+            child: Row(
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    page--;
+                    if (page >= 0)
+                      accManGeneral = getAccManGeneral(getPageUsers());
+                    else
+                      page = 0;
+                  });
+                },
+                child: Text('Previous'),
+              ),
+            ),
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    page++;
+                    if (page <= getLastPage())
+                      accManGeneral = getAccManGeneral(getPageUsers());
+                    else
+                      page = getLastPage();
+                  });
+                },
+                child: Text('Next'),
+              ),
+            ),
+          ],
+        )),
+      ],
+    );
+  }
+
+  FutureBuilder<List<dynamic>> getAsync(Future<List<dynamic>> list) {
     return FutureBuilder<List>(
-      future: User.getUsers(),
+      future: list,
       builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
         if (snapshot.hasData) {
-          return ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (context, index) {
-                User listUser = snapshot.data?[index];
-                return Card(
-                  child: ListTile(
-                    leading: Icon(Icons.account_circle),
-                    title: Text(listUser.username),
-                    trailing: AccManCardButton(
-                      user: listUser,
-                    ),
-                    onTap: () {
-                      setState(() {
-                        isList = false;
-                        detailUser = listUser;
-                      });
-                    },
-                  ),
-                );
-              });
+          totalUsers = snapshot.data;
+          showUsers = totalUsers;
+          isInit = false;
+          return getSync(getPageUsers());
         }
         return SpinKitRing(
           color: Colors.blue,
@@ -57,16 +148,53 @@ class _AccountManagementState extends State<AccountManagement> {
     );
   }
 
-  Column accManDetail(detailUser) {
+  Widget getSync(List<dynamic> list) {
+    return list.length == 0
+        ? Center(
+            child: Text('NO USER'),
+          )
+        : ListView.builder(
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              User listUser = list[index];
+              return Card(
+                child: ListTile(
+                  leading: Icon(Icons.account_circle),
+                  title: Text(listUser.username),
+                  trailing: AccManCardButton(
+                    user: listUser,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      // isGeneral = false;
+                      // detailUser = listUser;
+                      accManGeneral = getAccManDetail(listUser);
+                    });
+                  },
+                ),
+              );
+            },
+          );
+  }
+
+  Column getAccManDetail(detailUser) {
     return Column(
       children: [
-        TextButton(
-          onPressed: () {
-            setState(() {
-              isList = true;
-            });
-          },
-          child: Text('Back'),
+        Padding(
+          padding: const EdgeInsets.all(topElePadding),
+          child: TextButton(
+            onPressed: () {
+              setState(() {
+                accManGeneral = getAccManGeneral(getPageUsers());
+              });
+            },
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.blue)),
+            child: Text(
+              'BACK',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         ),
         Card(
           child: ListTile(
@@ -95,5 +223,14 @@ class _AccountManagementState extends State<AccountManagement> {
         )
       ],
     );
+  }
+
+  List getPageUsers() {
+    if (page == getLastPage()) return showUsers.sublist(page * userPerPage);
+    return showUsers.sublist(page * userPerPage, (page + 1) * userPerPage);
+  }
+
+  int getLastPage() {
+    return (showUsers.length / userPerPage).ceil() - 1;
   }
 }
