@@ -10,7 +10,25 @@ class User {
   bool isMod = false;
   String creationDate = DateTime.now().toString();
   String id = '';
-
+  List listItem = [
+    0,
+    6,
+    2,
+    18,
+    4,
+    20,
+    9,
+    8,
+    10,
+    12,
+    122,
+    14,
+    1212,
+    145,
+    141,
+    52,
+    51,
+  ];
   fromData(data) {
     this.username = data['username'];
     this.password = data['password'];
@@ -18,6 +36,7 @@ class User {
     this.isMod = data['isMod'];
     this.creationDate = data['creationDate'];
     this.id = data['id'];
+    this.listItem = data['listItem'];
   }
 
   toData() {
@@ -27,7 +46,8 @@ class User {
       'isAdmin': this.isAdmin,
       'isMod': this.isMod,
       'creationDate': this.creationDate,
-      'id': this.id
+      'id': this.id,
+      'listItem': this.listItem
     };
   }
 
