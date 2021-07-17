@@ -65,7 +65,12 @@ class _MainPageState extends State<MainPage> {
 
   Widget buildPages(args) {
     //TODO: pass args for other like AccountManagement if neccessary
-    List pages = [MapEnemy(), GeneralInventory(), WorldChat(), ViewProfile()];
+    List pages = [
+      MapEnemy(),
+      GeneralInventory(args: args),
+      WorldChat(),
+      ViewProfile()
+    ];
     // like above, check admin to add more for admin
     if (args['user'].isAdmin) {
       pages.add(AccountManagement());

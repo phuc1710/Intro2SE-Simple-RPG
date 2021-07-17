@@ -49,7 +49,7 @@ class _GeneralInventoryState extends State<GeneralInventory> {
   }
 
   Widget buildPages(args) {
-    List pages = [Inventory(), Equipped(), Crafting()];
+    List pages = [Inventory(args: args), Equipped(), Crafting()];
     return pages[index];
   }
 }
