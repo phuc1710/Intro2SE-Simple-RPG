@@ -10,25 +10,7 @@ class User {
   bool isMod = false;
   String creationDate = DateTime.now().toString();
   String id = '';
-  List listItem = [
-    0,
-    6,
-    2,
-    18,
-    4,
-    20,
-    9,
-    8,
-    10,
-    12,
-    122,
-    14,
-    1212,
-    145,
-    141,
-    52,
-    51,
-  ];
+  List listItem = [0,1,2,3,4,5];
   fromData(data) {
     this.username = data['username'];
     this.password = data['password'];

@@ -33,10 +33,10 @@ class _GeneralInventoryState extends State<GeneralInventory> {
         icon: Icon(Icons.person),
         label: 'EQUIPPED',
       ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.precision_manufacturing),
-        label: 'CRAFTING',
-      ),
+      // BottomNavigationBarItem(
+      //   icon: Icon(Icons.precision_manufacturing),
+      //   label: 'CRAFTING',
+      // ),
     ];
     return BottomNavigationBar(
       selectedItemColor: Colors.green,
@@ -49,7 +49,10 @@ class _GeneralInventoryState extends State<GeneralInventory> {
   }
 
   Widget buildPages(args) {
-    List pages = [Inventory(args: args), Equipped(), Crafting()];
+    List pages = [
+      Inventory(args: args), Equipped(),
+      //Crafting()
+    ];
     return pages[index];
   }
 }
