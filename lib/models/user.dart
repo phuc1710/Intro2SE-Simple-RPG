@@ -10,7 +10,13 @@ class User {
   bool isMod = false;
   String creationDate = DateTime.now().toString();
   String id = '';
-  List listItem = [0,1,2,3,4,5];
+  List listItem = [0, 1, 2, 3, 4, 5];
+  int level = 0;
+  String name = 'NOOB';
+  int exp = 0;
+  int attack = 100;
+  int health = 100;
+  int gold = 0;
   fromData(data) {
     this.username = data['username'];
     this.password = data['password'];
@@ -19,6 +25,12 @@ class User {
     this.creationDate = data['creationDate'];
     this.id = data['id'];
     this.listItem = data['listItem'];
+    this.level = data['level'];
+    this.name = data['name'];
+    this.exp = data['exp'];
+    this.attack = data['attack'];
+    this.health = data['health'];
+    this.gold = data['gold'];
   }
 
   toData() {
@@ -29,7 +41,13 @@ class User {
       'isMod': this.isMod,
       'creationDate': this.creationDate,
       'id': this.id,
-      'listItem': this.listItem
+      'listItem': this.listItem,
+      'level': this.level,
+      'name': this.name,
+      'exp': this.exp,
+      'attack': this.attack,
+      'health': this.health,
+      'gold': this.gold
     };
   }
 

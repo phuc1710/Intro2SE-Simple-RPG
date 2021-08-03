@@ -21,6 +21,7 @@ class _MainPageState extends State<MainPage> {
     final args = widget.args;
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: buildBottomBar(args),
         body: buildPages(args),
       ),
@@ -69,7 +70,7 @@ class _MainPageState extends State<MainPage> {
       MapEnemy(),
       GeneralInventory(args: args),
       WorldChat(),
-      ViewProfile()
+      ViewProfile(args: args)
     ];
     // like above, check admin to add more for admin
     if (args['user'].isAdmin) {

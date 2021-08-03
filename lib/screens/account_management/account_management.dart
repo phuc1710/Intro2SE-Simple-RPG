@@ -19,8 +19,7 @@ class _AccountManagementState extends State<AccountManagement> {
   var lastPage;
   var showUsers;
   final searchController = TextEditingController();
-  static const userPerPage =
-      10; //TODO: Change this to fit the screen if neccessary
+  static const userPerPage = 10;
   static const topElePadding = 10.0;
   @override
   void initState() {
@@ -37,7 +36,7 @@ class _AccountManagementState extends State<AccountManagement> {
     return Column(
       children: [
         Expanded(
-          child: SearchBar(),
+          child: searchBar(),
         ),
         Expanded(
           flex: 7,
@@ -81,7 +80,7 @@ class _AccountManagementState extends State<AccountManagement> {
     );
   }
 
-  Padding SearchBar({backButton}) {
+  Padding searchBar({backButton}) {
     List<Widget> searchBarWidgets = [
       Expanded(
           child: Padding(
@@ -190,7 +189,7 @@ class _AccountManagementState extends State<AccountManagement> {
   Column getAccManDetail(detailUser) {
     return Column(
       children: [
-        SearchBar(
+        searchBar(
           backButton: Expanded(
             child: TextButton(
               onPressed: () {
@@ -239,6 +238,7 @@ class _AccountManagementState extends State<AccountManagement> {
   }
 
   List getPageUsers() {
+    if (showUsers.length == 0) return showUsers;
     if (page == getLastPage()) return showUsers.sublist(page * userPerPage);
     return showUsers.sublist(page * userPerPage, (page + 1) * userPerPage);
   }
