@@ -37,97 +37,107 @@ class _AccountManagementState extends State<AccountManagement> {
     return Column(
       children: [
         Expanded(
-            child: Padding(
-          padding: EdgeInsets.all(topElePadding),
-          child: Row(
-            children: [
-              Expanded(
-                  child: TextField(
-                    controller: searchController,
-                  ),
-                  flex: 7),
-              Expanded(
-                child: TextButton(
-                  child: Icon(
-                    isSearch ? Icons.close : Icons.search,
-                    color: Colors.white,
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: isSearch
-                        ? MaterialStateProperty.all(Colors.red[400])
-                        : MaterialStateProperty.all(Colors.blue),
-                    splashFactory: NoSplash.splashFactory,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (!isSearch) {
-                        if (searchController.text != '') {
-                          isSearch = !isSearch;
-                          final searchKey = searchController.text.toLowerCase();
-                          var matchUsers = [];
-                          for (var user in totalUsers) {
-                            if (user.username
-                                .toLowerCase()
-                                .contains(searchKey)) {
-                              matchUsers.add(user);
-                            }
-                          }
-                          showUsers = matchUsers;
-                          page = 0;
-                          accManGeneral = getAccManGeneral(getPageUsers());
-                        }
-                      } else {
-                        isSearch = !isSearch;
-                        page = 0;
-                        showUsers = totalUsers;
-                        accManGeneral = getAccManGeneral(getPageUsers());
-                      }
-                    });
-                  },
-                ),
-                flex: 1,
-              ),
-            ],
-          ),
-        )),
+          child: SearchBar(),
+        ),
         Expanded(
           flex: 7,
           child: isInit ? getAsync(list) : getSync(list),
         ),
         Expanded(
-            child: Row(
-          children: [
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    page--;
-                    if (page >= 0)
-                      accManGeneral = getAccManGeneral(getPageUsers());
-                    else
-                      page = 0;
-                  });
-                },
-                child: Text('Previous'),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      page--;
+                      if (page >= 0)
+                        accManGeneral = getAccManGeneral(getPageUsers());
+                      else
+                        page = 0;
+                    });
+                  },
+                  child: Text('Previous'),
+                ),
               ),
-            ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    page++;
-                    if (page <= getLastPage())
-                      accManGeneral = getAccManGeneral(getPageUsers());
-                    else
-                      page = getLastPage();
-                  });
-                },
-                child: Text('Next'),
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      page++;
+                      if (page <= getLastPage())
+                        accManGeneral = getAccManGeneral(getPageUsers());
+                      else
+                        page = getLastPage();
+                    });
+                  },
+                  child: Text('Next'),
+                ),
               ),
-            ),
-          ],
-        )),
+            ],
+          ),
+        ),
       ],
+    );
+  }
+
+  Padding SearchBar({backButton}) {
+    List<Widget> searchBarWidgets = [
+      Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: TextField(
+              controller: searchController,
+            ),
+          ),
+          flex: 7),
+      Expanded(
+        child: TextButton(
+          child: Icon(
+            isSearch ? Icons.close : Icons.search,
+            color: Colors.white,
+          ),
+          style: ButtonStyle(
+            backgroundColor: isSearch
+                ? MaterialStateProperty.all(Colors.red[400])
+                : MaterialStateProperty.all(Colors.blue),
+            splashFactory: NoSplash.splashFactory,
+          ),
+          onPressed: () {
+            setState(() {
+              if (!isSearch) {
+                if (searchController.text != '') {
+                  isSearch = !isSearch;
+                  final searchKey = searchController.text.toLowerCase();
+                  var matchUsers = [];
+                  for (var user in totalUsers) {
+                    if (user.username.toLowerCase().contains(searchKey)) {
+                      matchUsers.add(user);
+                    }
+                  }
+                  showUsers = matchUsers;
+                  page = 0;
+                  accManGeneral = getAccManGeneral(getPageUsers());
+                }
+              } else {
+                searchController.clear();
+                isSearch = !isSearch;
+                page = 0;
+                showUsers = totalUsers;
+                accManGeneral = getAccManGeneral(getPageUsers());
+              }
+            });
+          },
+        ),
+        flex: 1,
+      ),
+    ];
+    if (backButton != null) {
+      searchBarWidgets.insert(0, backButton);
+    }
+    return Padding(
+      padding: EdgeInsets.all(topElePadding),
+      child: Row(children: searchBarWidgets),
     );
   }
 
@@ -180,19 +190,22 @@ class _AccountManagementState extends State<AccountManagement> {
   Column getAccManDetail(detailUser) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(topElePadding),
-          child: TextButton(
-            onPressed: () {
-              setState(() {
-                accManGeneral = getAccManGeneral(getPageUsers());
-              });
-            },
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue)),
-            child: Text(
-              'BACK',
-              style: TextStyle(color: Colors.white),
+        SearchBar(
+          backButton: Expanded(
+            child: TextButton(
+              onPressed: () {
+                setState(() {
+                  accManGeneral = getAccManGeneral(getPageUsers());
+                });
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.blue),
+                splashFactory: NoSplash.splashFactory,
+              ),
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
