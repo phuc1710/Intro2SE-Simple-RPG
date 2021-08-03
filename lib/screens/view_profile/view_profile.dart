@@ -13,7 +13,7 @@ class ViewProfile extends StatefulWidget {
 class _ViewProfileState extends State<ViewProfile> {
   bool isSearch = false;
   bool isInit = true;
-  var accManGeneral;
+  var viewProList;
   var totalUsers;
   var page = 0;
   var lastPage;
@@ -25,15 +25,15 @@ class _ViewProfileState extends State<ViewProfile> {
   @override
   void initState() {
     super.initState();
-    accManGeneral = getAccManDetail(widget.args['user'], true);
+    viewProList = getViewPro(widget.args['user'], true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return accManGeneral;
+    return viewProList;
   }
 
-  Column getAccManGeneral([searchKey]) {
+  Column getViewProList([searchKey]) {
     return Column(
       children: [
         Expanded(
@@ -54,7 +54,7 @@ class _ViewProfileState extends State<ViewProfile> {
                     setState(() {
                       page--;
                       if (page >= 0)
-                        accManGeneral = getAccManGeneral();
+                        viewProList = getViewProList();
                       else
                         page = 0;
                     });
@@ -68,7 +68,7 @@ class _ViewProfileState extends State<ViewProfile> {
                     setState(() {
                       page++;
                       if (page <= getLastPage())
-                        accManGeneral = getAccManGeneral();
+                        viewProList = getViewProList();
                       else
                         page = getLastPage();
                     });
@@ -98,7 +98,7 @@ class _ViewProfileState extends State<ViewProfile> {
                     } else {
                       searchIcon = Icons.search;
                     }
-                    accManGeneral = getAccManDetail(widget.args['user'], true);
+                    viewProList = getViewPro(widget.args['user'], true);
                   }
                 });
               },
@@ -124,12 +124,12 @@ class _ViewProfileState extends State<ViewProfile> {
                 searchIcon = Icons.close;
                 final searchKey = searchController.text.toLowerCase();
                 page = 0;
-                accManGeneral = getAccManGeneral(searchKey);
+                viewProList = getViewProList(searchKey);
               } else {
                 searchController.clear();
                 searchIcon = Icons.dehaze;
                 isSearch = !isSearch;
-                accManGeneral = getAccManDetail(widget.args['user'], true);
+                viewProList = getViewPro(widget.args['user'], true);
               }
             });
           },
@@ -182,7 +182,7 @@ class _ViewProfileState extends State<ViewProfile> {
                     setState(() {
                       // isGeneral = false;
                       // detailUser = listUser;
-                      accManGeneral = getAccManDetail(listUser, false);
+                      viewProList = getViewPro(listUser, false);
                     });
                   },
                 ),
@@ -191,14 +191,14 @@ class _ViewProfileState extends State<ViewProfile> {
           );
   }
 
-  Column getAccManDetail(detailUser, isMyProfile) {
+  Column getViewPro(detailUser, isMyProfile) {
     var backButton;
     if (!isMyProfile) {
       backButton = Expanded(
         child: TextButton(
           onPressed: () {
             setState(() {
-              accManGeneral = getAccManGeneral();
+              viewProList = getViewProList();
             });
           },
           style: ButtonStyle(
