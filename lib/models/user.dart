@@ -26,7 +26,6 @@ class User {
     this.id = data['id'];
     this.listItem = data['listItem'];
     this.level = data['level'];
-    this.name = data['name'];
     this.exp = data['exp'];
     this.attack = data['attack'];
     this.health = data['health'];
@@ -43,7 +42,6 @@ class User {
       'id': this.id,
       'listItem': this.listItem,
       'level': this.level,
-      'name': this.name,
       'exp': this.exp,
       'attack': this.attack,
       'health': this.health,

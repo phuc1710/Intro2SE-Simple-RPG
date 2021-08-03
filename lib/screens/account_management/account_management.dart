@@ -86,6 +86,7 @@ class _AccountManagementState extends State<AccountManagement> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: TextField(
+              enabled: !isSearch,
               controller: searchController,
             ),
           ),

@@ -89,6 +89,7 @@ class _ViewProfileState extends State<ViewProfile> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: TextField(
+              enabled: !isSearch,
               controller: searchController,
               onChanged: (val) {
                 setState(() {
@@ -121,6 +122,7 @@ class _ViewProfileState extends State<ViewProfile> {
             setState(() {
               if (!isSearch) {
                 isSearch = !isSearch;
+
                 searchIcon = Icons.close;
                 final searchKey = searchController.text.toLowerCase();
                 page = 0;
@@ -220,7 +222,7 @@ class _ViewProfileState extends State<ViewProfile> {
         Card(
           child: ListTile(
             leading: Icon(Icons.badge),
-            title: Text(detailUser.name),
+            title: Text(detailUser.username),
           ),
         ),
         Card(
