@@ -8,12 +8,14 @@ class User {
   String password = '';
   bool isAdmin = false;
   bool isMod = false;
+  bool isVIP = false;
   String creationDate = DateTime.now().toString();
   String id = '';
   List listItem = [0, 1, 2, 3, 4, 5];
   int level = 0;
   String name = 'NOOB';
   int exp = 0;
+  int vip_exp = 0;  //min = 0, max = 100 when vip_exp == 100, isVIP = true
   int attack = 100;
   int health = 100;
   int gold = 0;
@@ -22,11 +24,13 @@ class User {
     this.password = data['password'];
     this.isAdmin = data['isAdmin'];
     this.isMod = data['isMod'];
+    this.isVIP = data['isVIP'];
     this.creationDate = data['creationDate'];
     this.id = data['id'];
     this.listItem = data['listItem'];
     this.level = data['level'];
     this.exp = data['exp'];
+    this.vip_exp = data['vip_exp'];
     this.attack = data['attack'];
     this.health = data['health'];
     this.gold = data['gold'];
@@ -38,11 +42,13 @@ class User {
       'password': this.password,
       'isAdmin': this.isAdmin,
       'isMod': this.isMod,
+      'isVIP': this.isVIP,
       'creationDate': this.creationDate,
       'id': this.id,
       'listItem': this.listItem,
       'level': this.level,
       'exp': this.exp,
+      'vip_exp': this.vip_exp,
       'attack': this.attack,
       'health': this.health,
       'gold': this.gold
