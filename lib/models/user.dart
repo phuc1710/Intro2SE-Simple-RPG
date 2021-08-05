@@ -1,5 +1,4 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'dart:math';
 
 var dbRef = FirebaseDatabase.instance.reference();
 
@@ -11,11 +10,12 @@ class User {
   bool isVIP = false;
   String creationDate = DateTime.now().toString();
   String id = '';
-  List listItem = [0, 1, 2, 3, 4, 5];
+  List listItem = ["i00", "i01", "i02", "i03", "i04", "i05"];
+  List listEquipped = ["i00", "i01", "i02", "i03", "i04"];
   int level = 0;
   String name = 'NOOB';
   int exp = 0;
-  int vip_exp = 0;  //min = 0, max = 100 when vip_exp == 100, isVIP = true
+  int vip_exp = 0; //min = 0, max = 100 when vip_exp == 100, isVIP = true
   int attack = 100;
   int health = 100;
   int gold = 0;
@@ -28,6 +28,7 @@ class User {
     this.creationDate = data['creationDate'];
     this.id = data['id'];
     this.listItem = data['listItem'];
+    this.listEquipped = data['listEquipped'];
     this.level = data['level'];
     this.exp = data['exp'];
     this.vip_exp = data['vip_exp'];
@@ -46,6 +47,7 @@ class User {
       'creationDate': this.creationDate,
       'id': this.id,
       'listItem': this.listItem,
+      'listEquipped': this.listEquipped,
       'level': this.level,
       'exp': this.exp,
       'vip_exp': this.vip_exp,

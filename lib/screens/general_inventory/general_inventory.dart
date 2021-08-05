@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:simple_rpg/screens/inventory/crafting/crafting.dart';
 import 'package:simple_rpg/screens/inventory/equipped/equipped.dart';
 import 'package:simple_rpg/screens/inventory/inventory/inventory.dart';
 
@@ -33,10 +32,6 @@ class _GeneralInventoryState extends State<GeneralInventory> {
         icon: Icon(Icons.person),
         label: 'EQUIPPED',
       ),
-      // BottomNavigationBarItem(
-      //   icon: Icon(Icons.precision_manufacturing),
-      //   label: 'CRAFTING',
-      // ),
     ];
     return BottomNavigationBar(
       selectedItemColor: Colors.green,
@@ -50,8 +45,8 @@ class _GeneralInventoryState extends State<GeneralInventory> {
 
   Widget buildPages(args) {
     List pages = [
-      Inventory(args: args), Equipped(),
-      //Crafting()
+      Inventory(args: args),
+      Equipped(),
     ];
     return pages[index];
   }
