@@ -10,14 +10,21 @@ class Item {
   int atk = 0;
   String about = '';
 
-  addItem2Db(id, name, type, hp, atk, about) {
+  addItem2Db(
+    id,
+    name,
+    type,
+    hp,
+    atk,
+    about,
+  ) {
     this.id = id;
     this.name = name;
     this.type = type;
     this.hp = hp;
     this.atk = atk;
     this.about = about;
-    addItem();
+    addItem(id);
   }
 
   toData() {
@@ -31,9 +38,12 @@ class Item {
     };
   }
 
-  addItem() {
-    var record = dbRef.child('listItem').push();
-    record.set(toData());
+  addItem(key) {
+    if (key != null) {
+      dbRef.child('listItem').child(key).set(toData());
+    } else {
+      dbRef.child('listItem').push().set(toData());
+    }
   }
 
   fromData(data) {
