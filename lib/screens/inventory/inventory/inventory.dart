@@ -18,8 +18,9 @@ class _InventoryState extends State<Inventory> {
   @override
   void initState() {
     super.initState();
+    widget.args['user'].listInventory = [];
     invItemsRef = Item.getInvItemsDBRef(widget.args['user'].id);
-    invItemsRef?.onChildChanged.listen(_onInvItemAdded);
+    invItemsRef?.onChildAdded.listen(_onInvItemAdded);
   }
 
   _onInvItemAdded(env) {
