@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:simple_rpg/models/user.dart';
@@ -20,12 +21,29 @@ class _ViewProfileState extends State<ViewProfile> {
   var showUsers;
   var searchIcon = Icons.dehaze;
   final searchController = TextEditingController();
+  DatabaseReference? allUserRef;
   static const userPerPage = 10;
   static const topElePadding = 10.0;
   @override
   void initState() {
     super.initState();
+    allUserRef = User.getAllUserRef();
+    allUserRef?.onChildChanged.listen(_onAllUserChange);
     viewProList = getViewPro(widget.args['user'], true);
+  }
+
+  _onAllUserChange(event) {
+    // if(this.mounted) {
+    // setState(() {
+    //   User changeUser = User();
+    //   changeUser.fromData(event.snapshot.value);
+    //   if (changeUser.username == widget.args['user'].username) {
+    //     widget.args['user'] = changeUser;
+    //   }
+    //   isInit = false;
+    //   print('change');
+    // });
+    // }
   }
 
   @override

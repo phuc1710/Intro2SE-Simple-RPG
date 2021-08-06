@@ -23,9 +23,9 @@ class _InventoryState extends State<Inventory> {
     invItemsRef?.onChildAdded.listen(_onInvItemAdded);
   }
 
-  _onInvItemAdded(env) {
+  _onInvItemAdded(event) {
     setState(() {
-      widget.args['user'].addItem2ListInv(env.snapshot.value);
+      widget.args['user'].addItem2ListInv(event.snapshot.value);
     });
   }
 

@@ -87,6 +87,14 @@ class User {
     dbRef.child('users').child(this.id).update(toData());
   }
 
+  getUserRef() {
+    return dbRef.child('users').child(this.id);
+  }
+
+  static getAllUserRef() {
+    return dbRef.child('users');
+  }
+
   static bulkRegister() {
     const _chars =
         'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';

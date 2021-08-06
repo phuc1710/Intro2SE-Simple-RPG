@@ -67,7 +67,7 @@ class _MainPageState extends State<MainPage> {
   Widget buildPages(args) {
     //TODO: pass args for other like AccountManagement if neccessary
     List pages = [
-      MapWidget(user: args['user']),
+      MapWidget(args: args),
       GeneralInventory(args: args),
       WorldChat(),
       ViewProfile(args: args)
