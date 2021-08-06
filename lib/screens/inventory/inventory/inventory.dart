@@ -38,7 +38,7 @@ class _InventoryState extends State<Inventory> {
           var userItemListEquipped = [];
           for (var a in itemIDListInventory) {
             for (var b in listAllActualItem!) {
-              if (a == b.id) userItemListInventory.add(b);
+              if (a == b.id && a != 'i00') userItemListInventory.add(b);
             }
           }
           for (var a in itemIdListEquipped) {
@@ -54,11 +54,11 @@ class _InventoryState extends State<Inventory> {
                 var itemEquipped = userItemListEquipped[position];
                 var user = args['user'];
                 var icons = [
-                  'https://image.flaticon.com/icons/png/512/861/861891.png',
-                  'https://image.flaticon.com/icons/png/512/812/812023.png',
-                  'https://image.flaticon.com/icons/png/512/1065/1065435.png',
-                  'https://image.flaticon.com/icons/png/512/2288/2288369.png',
-                  'https://image.flaticon.com/icons/png/512/2043/2043907.png',
+                  'assets/images/vu_khi.png',
+                  'assets/images/non.png',
+                  'assets/images/ao.png',
+                  'assets/images/quan.png',
+                  'assets/images/giay.png',
                 ];
                 var cardColor = [
                   Colors.red,
@@ -75,7 +75,7 @@ class _InventoryState extends State<Inventory> {
                     color: cardColor[itemInventory.type],
                     child: ListTile(
                         leading: Image(
-                          image: NetworkImage(icons[itemInventory.type]),
+                          image: AssetImage(icons[itemInventory.type]),
                           width: 40.0,
                           height: 40.0,
                         ),
@@ -112,10 +112,10 @@ class _InventoryState extends State<Inventory> {
                                   user.listInventory[user.listInventory
                                       .indexOf(invItemID)] = equipItemID;
 
-                                  user.health += itemInventory.hp;
-                                  user.health -= itemEquipped.hp;
-                                  user.attack += itemInventory.atk;
-                                  user.attack -= itemEquipped.atk;
+                                  user.hp += itemInventory.hp;
+                                  user.hp -= itemEquipped.hp;
+                                  user.atk += itemInventory.atk;
+                                  user.atk -= itemEquipped.atk;
 
                                   user.save();
                                   inventoryPage = inventorySate();
@@ -130,8 +130,7 @@ class _InventoryState extends State<Inventory> {
                           },
                         ),
                         onTap: () {
-                          Navigator.push(
-                            context,
+                          Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (context) =>
                                     getIn4Item(itemInventory)),
@@ -146,76 +145,75 @@ class _InventoryState extends State<Inventory> {
     );
   }
 
-  Column getIn4Item(item) {
+  Widget getIn4Item(item) {
     var listIn4 = ['Vũ khí', 'Nón', 'Áo', 'Quần', 'Giày'];
-    return Column(
-      children: [
-        Card(
-          child: ListTile(
-            leading: Image(
-              image: NetworkImage(
-                  'https://image.flaticon.com/icons/png/512/2965/2965519.png'),
-              width: 30.0,
-              height: 30.0,
+    return Container(
+      color: Colors.grey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Card(
+            child: ListTile(
+              leading: Image(
+                image: AssetImage('assets/images/ten.png'),
+                width: 30.0,
+                height: 30.0,
+              ),
+              title: Text('Tên: ' + item.name.toString()),
             ),
-            title: Text('Tên: ' + item.name.toString()),
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Image(
-              image: NetworkImage(
-                  'https://image.flaticon.com/icons/png/512/157/157933.png'),
-              width: 30.0,
-              height: 30.0,
+          Card(
+            child: ListTile(
+              leading: Image(
+                image: AssetImage('assets/images/thong_tin.png'),
+                width: 30.0,
+                height: 30.0,
+              ),
+              title: Text('Thông tin: ' + item.about.toString()),
             ),
-            title: Text('Thông tin: ' + item.about.toString()),
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Image(
-              image: NetworkImage(
-                  'https://image.flaticon.com/icons/png/512/4334/4334049.png'),
-              width: 30.0,
-              height: 30.0,
+          Card(
+            child: ListTile(
+              leading: Image(
+                image: AssetImage('assets/images/tan_cong.png'),
+                width: 30.0,
+                height: 30.0,
+              ),
+              title: Text('Tấn công: +' + item.atk.toString()),
             ),
-            title: Text('Tấn công: +' + item.atk.toString()),
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Image(
-              image: NetworkImage(
-                  'https://image.flaticon.com/icons/png/512/154/154016.png'),
-              width: 30.0,
-              height: 30.0,
+          Card(
+            child: ListTile(
+              leading: Image(
+                image: AssetImage('assets/images/mau.png'),
+                width: 30.0,
+                height: 30.0,
+              ),
+              title: Text('Máu: +' + item.hp.toString()),
             ),
-            title: Text('Máu: +' + item.hp.toString()),
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Image(
-              image: NetworkImage(
-                  'https://image.flaticon.com/icons/png/512/3209/3209761.png'),
-              width: 30.0,
-              height: 30.0,
+          Card(
+            child: ListTile(
+              leading: Image(
+                image: AssetImage('assets/images/loai_trang_bi.png'),
+                width: 30.0,
+                height: 30.0,
+              ),
+              title: Text('Loại trang bị: ' + listIn4[item.type]),
             ),
-            title: Text('Loại trang bị: ' + listIn4[item.type]),
           ),
-        ),
-        Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 140.0, vertical: 20.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Trở lại'),
-          ),
-        )
-      ],
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 140.0, vertical: 20.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Trở lại'),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

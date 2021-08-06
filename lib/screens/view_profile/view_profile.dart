@@ -240,18 +240,18 @@ class _ViewProfileState extends State<ViewProfile> {
         Card(
           child: ListTile(
             leading: Icon(Icons.colorize),
-            title: Text(detailUser.attack.toString()),
+            title: Text(detailUser.atk.toString()),
           ),
         ),
         Card(
           child: ListTile(
             leading: Icon(Icons.health_and_safety),
-            title: Text(detailUser.health.toString()),
+            title: Text(detailUser.hp.toString()),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.euro),
+            leading: Icon(Icons.polymer),
             title: Text(detailUser.gold.toString()),
           ),
         )

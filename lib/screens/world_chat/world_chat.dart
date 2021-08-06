@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:simple_rpg/models/item.dart';
 
 class WorldChat extends StatefulWidget {
   const WorldChat({Key? key}) : super(key: key);

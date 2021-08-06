@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_rpg/screens/account_management/account_management.dart';
 import 'package:simple_rpg/screens/general_inventory/general_inventory.dart';
-import 'package:simple_rpg/screens/map_enemy/map_enemy.dart';
+import 'package:simple_rpg/screens/map_enemy/map.dart';
 import 'package:simple_rpg/screens/view_profile/view_profile.dart';
 import 'package:simple_rpg/screens/world_chat/world_chat.dart';
 
@@ -67,7 +67,7 @@ class _MainPageState extends State<MainPage> {
   Widget buildPages(args) {
     //TODO: pass args for other like AccountManagement if neccessary
     List pages = [
-      MapEnemy(),
+      MapWidget(user: args['user']),
       GeneralInventory(args: args),
       WorldChat(),
       ViewProfile(args: args)

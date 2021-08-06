@@ -10,14 +10,14 @@ class User {
   bool isVIP = false;
   String creationDate = DateTime.now().toString();
   String id = '';
-  List listInventory = ["i06", "i07", "i08", "i09", "i10"];
+  List listInventory = ["i00", "i06", "i07", "i08", "i09", "i10"];
   List listEquipped = ["i01", "i02", "i03", "i04", "i05"];
-  int level = 0;
+  int level = 1;
   String name = 'NOOB';
   int exp = 0;
   int vip_exp = 0; //min = 0, max = 100 when vip_exp == 100, isVIP = true
-  int attack = 150;
-  int health = 300;
+  int atk = 150;
+  int hp = 300;
   int gold = 0;
 
   fromData(data) {
@@ -33,8 +33,8 @@ class User {
     this.level = data['level'];
     this.exp = data['exp'];
     this.vip_exp = data['vip_exp'];
-    this.attack = data['attack'];
-    this.health = data['health'];
+    this.atk = data['atk'];
+    this.hp = data['hp'];
     this.gold = data['gold'];
   }
 
@@ -52,8 +52,8 @@ class User {
       'level': this.level,
       'exp': this.exp,
       'vip_exp': this.vip_exp,
-      'attack': this.attack,
-      'health': this.health,
+      'atk': this.atk,
+      'hp': this.hp,
       'gold': this.gold
     };
   }
