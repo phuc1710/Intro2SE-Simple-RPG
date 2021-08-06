@@ -118,10 +118,12 @@ class _InventoryState extends State<Inventory> {
                                   user.attack -= itemEquipped.atk;
 
                                   user.save();
+                                  inventoryPage = inventorySate();
                                   break;
                                 case 'drop':
                                   user.removeItemFromListInv(itemInventory.id);
                                   user.save();
+                                  inventoryPage = inventorySate();
                                   break;
                               }
                             });
