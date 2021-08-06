@@ -5,7 +5,7 @@ var dbRef = FirebaseDatabase.instance.reference();
 class Item {
   String id = '';
   String name = '';
-  String type = '';
+  int type = 0;
   int hp = 0;
   int atk = 0;
   String about = '';
@@ -40,9 +40,9 @@ class Item {
 
   addItem(key) {
     if (key != null) {
-      dbRef.child('listItem').child(key).set(toData());
+      dbRef.child('listAllItem').child(key).set(toData());
     } else {
-      dbRef.child('listItem').push().set(toData());
+      dbRef.child('listAllItem').push().set(toData());
     }
   }
 
@@ -55,8 +55,8 @@ class Item {
     this.name = data['name'];
   }
 
-  static Future<List> getListItem() async {
-    var itemRef = await dbRef.child('listItem').get();
+  static Future<List> getlistAllItem() async {
+    var itemRef = await dbRef.child('listAllItem').get();
     return itemRef?.value.entries.map((entry) {
       Item item = Item();
       item.fromData(entry.value);

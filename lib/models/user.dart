@@ -10,15 +10,16 @@ class User {
   bool isVIP = false;
   String creationDate = DateTime.now().toString();
   String id = '';
-  List listItem = ["i00", "i01", "i02", "i03", "i04", "i05"];
-  List listEquipped = ["i00", "i01", "i02", "i03", "i04"];
+  List listInventory = ["i06", "i07", "i08", "i09", "i10"];
+  List listEquipped = ["i01", "i02", "i03", "i04", "i05"];
   int level = 0;
   String name = 'NOOB';
   int exp = 0;
   int vip_exp = 0; //min = 0, max = 100 when vip_exp == 100, isVIP = true
-  int attack = 100;
-  int health = 100;
+  int attack = 150;
+  int health = 300;
   int gold = 0;
+
   fromData(data) {
     this.username = data['username'];
     this.password = data['password'];
@@ -27,7 +28,7 @@ class User {
     this.isVIP = data['isVIP'];
     this.creationDate = data['creationDate'];
     this.id = data['id'];
-    this.listItem = data['listItem'];
+    this.listInventory = data['listInventory'];
     this.listEquipped = data['listEquipped'];
     this.level = data['level'];
     this.exp = data['exp'];
@@ -46,7 +47,7 @@ class User {
       'isVIP': this.isVIP,
       'creationDate': this.creationDate,
       'id': this.id,
-      'listItem': this.listItem,
+      'listInventory': this.listInventory,
       'listEquipped': this.listEquipped,
       'level': this.level,
       'exp': this.exp,
@@ -66,6 +67,24 @@ class User {
   changeMod() {
     this.isMod = !this.isMod;
     dbRef.child('users').child(this.id).update({'isMod': this.isMod});
+  }
+
+  addItem2ListInv(itemID) {
+    List list = new List.empty();
+    list += listInventory;
+    list.add(itemID);
+    listInventory = list;
+  }
+
+  removeItemFromListInv(itemID) {
+    List list = new List.empty();
+    list += listInventory;
+    list.remove(itemID);
+    listInventory = list;
+  }
+
+  save() {
+    dbRef.child('users').child(this.id).update(toData());
   }
 
   static bulkRegister() {
