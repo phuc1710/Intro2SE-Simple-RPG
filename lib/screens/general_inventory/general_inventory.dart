@@ -26,11 +26,11 @@ class _GeneralInventoryState extends State<GeneralInventory> {
     List<BottomNavigationBarItem> barItems = [
       BottomNavigationBarItem(
         icon: Icon(Icons.inventory_2_outlined),
-        label: 'INVENTORY',
+        label: 'TÚI ĐỒ',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.person),
-        label: 'EQUIPPED',
+        label: 'TRANG BỊ',
       ),
     ];
     return BottomNavigationBar(
@@ -46,7 +46,7 @@ class _GeneralInventoryState extends State<GeneralInventory> {
   Widget buildPages(args) {
     List pages = [
       Inventory(args: args),
-      Equipped(),
+      Equipped(args: args),
     ];
     return pages[index];
   }

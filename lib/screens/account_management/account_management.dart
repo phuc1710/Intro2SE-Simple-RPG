@@ -56,7 +56,7 @@ class _AccountManagementState extends State<AccountManagement> {
                         page = 0;
                     });
                   },
-                  child: Text('Previous'),
+                  child: Text('Trang trước'),
                 ),
               ),
               Expanded(
@@ -70,7 +70,7 @@ class _AccountManagementState extends State<AccountManagement> {
                         page = getLastPage();
                     });
                   },
-                  child: Text('Next'),
+                  child: Text('Trang tiếp theo'),
                 ),
               ),
             ],
