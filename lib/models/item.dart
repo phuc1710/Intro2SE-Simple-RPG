@@ -55,6 +55,10 @@ class Item {
     this.name = data['name'];
   }
 
+  static getInvItemsDBRef(id) {
+    return dbRef.child('users').child(id).child('listInventory');
+  }
+
   static Future<List> getlistAllItem() async {
     var itemRef = await dbRef.child('listAllItem').get();
     return itemRef?.value.entries.map((entry) {

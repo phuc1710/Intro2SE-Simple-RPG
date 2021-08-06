@@ -13,22 +13,26 @@ class Inventory extends StatefulWidget {
 }
 
 class _InventoryState extends State<Inventory> {
-  var inventoryPage;
+  DatabaseReference? invItemsRef;
+  List itemIDListInventory = [];
+  @override
   void initState() {
     super.initState();
-    inventoryPage = inventorySate();
+    invItemsRef = Item.getInvItemsDBRef(widget.args['user'].id);
+    invItemsRef?.onChildChanged.listen(_onInvItemAdded);
+  }
+
+  _onInvItemAdded(env) {
+    setState(() {
+      widget.args['user'].addItem2ListInv(env.snapshot.value);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return inventoryPage;
-  }
-
-  Widget inventorySate() {
-    final args = widget.args;
-    List itemIDListInventory = args['user'].listInventory;
-    List itemIdListEquipped = args['user'].listEquipped;
     var listAllItem = Item.getlistAllItem();
+    itemIDListInventory = widget.args['user'].listInventory;
+    List itemIdListEquipped = widget.args['user'].listEquipped;
     return FutureBuilder<List>(
       future: listAllItem,
       builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
@@ -51,8 +55,8 @@ class _InventoryState extends State<Inventory> {
               itemCount: userItemListInventory.length,
               itemBuilder: (BuildContext context, int position) {
                 var itemInventory = userItemListInventory[position];
-                var itemEquipped = userItemListEquipped[position];
-                var user = args['user'];
+                var itemEquipped = userItemListEquipped[itemInventory.type];
+                var user = widget.args['user'];
                 var icons = [
                   'assets/images/vu_khi.png',
                   'assets/images/non.png',
@@ -111,19 +115,16 @@ class _InventoryState extends State<Inventory> {
                                       invItemID;
                                   user.listInventory[user.listInventory
                                       .indexOf(invItemID)] = equipItemID;
-
                                   user.hp += itemInventory.hp;
                                   user.hp -= itemEquipped.hp;
                                   user.atk += itemInventory.atk;
                                   user.atk -= itemEquipped.atk;
 
                                   user.save();
-                                  inventoryPage = inventorySate();
                                   break;
                                 case 'drop':
                                   user.removeItemFromListInv(itemInventory.id);
                                   user.save();
-                                  inventoryPage = inventorySate();
                                   break;
                               }
                             });

@@ -34,9 +34,11 @@ class _CombatState extends State<Combat> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  enemy.name,
-                  style: TextStyle(fontSize: 24),
+                Expanded(
+                  child: Text(
+                    enemy.name,
+                    style: TextStyle(fontSize: 24),
+                  ),
                 ),
                 Row(
                   children: [
@@ -61,12 +63,14 @@ class _CombatState extends State<Combat> {
                 minHeight: 20.0,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 100),
-              child: Container(
-                alignment: Alignment.center,
-                child: Image(
-                  image: AssetImage('assets/images/chien_dau.png'),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 100),
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Image(
+                    image: AssetImage('assets/images/chien_dau.png'),
+                  ),
                 ),
               ),
             ),
