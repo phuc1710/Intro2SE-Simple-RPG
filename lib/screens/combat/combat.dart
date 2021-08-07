@@ -189,30 +189,4 @@ class _CombatState extends State<Combat> {
       ),
     );
   }
-<<<<<<< Updated upstream
-
-  _showUserNoHPDialog(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Bạn đã bị đánh bại. Ấn OK để quay về màn hình kẻ thù.'),
-        action: SnackBarAction(
-            label: 'OK',
-            onPressed: () {
-              Navigator.of(context).pop();
-            })));
-  }
-
-  _showUserDefeatEnemy(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Bạn đã thắng. Ấn OK để tiến hành nhận thưởng.'),
-        action: SnackBarAction(
-            label: 'OK',
-            onPressed: () {
-              // Navigator.of(context).pop();
-              // TODO: Implement looting
-            })));
-  }
-
-  // TODO: Upgrade user exp and vipExp
-=======
->>>>>>> Stashed changes
 }
