@@ -59,81 +59,91 @@ class _LootState extends State<Loot> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: dropItemList.length,
-                      itemBuilder: (BuildContext context, int position) {
-                        var itemDrop = dropItemList[position];
-                        var user = widget.user;
-                        var icons = [
-                          'assets/images/vu_khi.png',
-                          'assets/images/non.png',
-                          'assets/images/ao.png',
-                          'assets/images/quan.png',
-                          'assets/images/giay.png',
-                        ];
-                        var cardColor = [
-                          Colors.red[300],
-                          Colors.yellow[300],
-                          Colors.green[300],
-                          Colors.blue[300],
-                          Colors.orange[300],
-                        ];
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          elevation: 5,
-                          color: cardColor[itemDrop.type],
-                          child: ListTile(
-                            leading: Image(
-                              image: AssetImage(icons[itemDrop.type]),
-                              width: 40.0,
-                              height: 40.0,
+                    dropItemList.length == 0
+                        ? Expanded(
+                            child: Center(
+                              child: Text(
+                                'Chúc bạn may mắn lần sau!',
+                                style: TextStyle(fontSize: 25.0),
+                              ),
                             ),
-                            title: Text(
-                              '${itemDrop.name}',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            subtitle: Row(
-                              children: [
-                                itemDrop.hp != 0
-                                    ? Icon(
-                                        Icons.favorite,
-                                        size: 15,
-                                      )
-                                    : Text(''),
-                                Text(
-                                  (itemDrop.hp == 0
-                                      ? ''
-                                      : ' HP +${itemDrop.hp} '),
+                            flex: 7,
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: dropItemList.length,
+                            itemBuilder: (BuildContext context, int position) {
+                              var itemDrop = dropItemList[position];
+                              var user = widget.user;
+                              var icons = [
+                                'assets/images/vu_khi.png',
+                                'assets/images/non.png',
+                                'assets/images/ao.png',
+                                'assets/images/quan.png',
+                                'assets/images/giay.png',
+                              ];
+                              var cardColor = [
+                                Colors.red[300],
+                                Colors.yellow[300],
+                                Colors.green[300],
+                                Colors.blue[300],
+                                Colors.orange[300],
+                              ];
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
-                                itemDrop.atk != 0
-                                    ? Icon(
-                                        Icons.local_fire_department,
-                                        size: 15,
-                                      )
-                                    : Text(''),
-                                Text(
-                                  (itemDrop.atk == 0
-                                      ? ''
-                                      : ' ATK +${itemDrop.atk}'),
+                                elevation: 5,
+                                color: cardColor[itemDrop.type],
+                                child: ListTile(
+                                  leading: Image(
+                                    image: AssetImage(icons[itemDrop.type]),
+                                    width: 40.0,
+                                    height: 40.0,
+                                  ),
+                                  title: Text(
+                                    '${itemDrop.name}',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  subtitle: Row(
+                                    children: [
+                                      itemDrop.hp != 0
+                                          ? Icon(
+                                              Icons.favorite,
+                                              size: 15,
+                                            )
+                                          : Text(''),
+                                      Text(
+                                        (itemDrop.hp == 0
+                                            ? ''
+                                            : ' HP +${itemDrop.hp} '),
+                                      ),
+                                      itemDrop.atk != 0
+                                          ? Icon(
+                                              Icons.local_fire_department,
+                                              size: 15,
+                                            )
+                                          : Text(''),
+                                      Text(
+                                        (itemDrop.atk == 0
+                                            ? ''
+                                            : ' ATK +${itemDrop.atk}'),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(
+                                      () {
+                                        user.addItem2ListInv(itemDrop.id);
+                                        user.save();
+                                        dropItemIDList.remove(itemDrop.id);
+                                      },
+                                    );
+                                  },
                                 ),
-                              ],
-                            ),
-                            onTap: () {
-                              setState(
-                                () {
-                                  user.addItem2ListInv(itemDrop.id);
-                                  user.save();
-                                  dropItemIDList.remove(itemDrop.id);
-                                },
                               );
                             },
                           ),
-                        );
-                      },
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
