@@ -29,6 +29,7 @@ class _ViewProfileState extends State<ViewProfile> {
     super.initState();
     allUserRef = User.getAllUserRef();
     allUserRef?.onChildChanged.listen(_onAllUserChange);
+    allUserRef?.onChildAdded.listen(_onAllUserChange);
     viewProList = getViewPro(widget.args['user'], true);
   }
 
