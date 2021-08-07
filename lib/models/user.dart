@@ -90,13 +90,10 @@ class User {
     listInventory = list;
   }
 
-  updateEXP(int newEXP) {
-    if (newEXP != 0) {
-      int exp;
-      exp = this.exp;
-      exp += newEXP;
-      this.exp = exp;
-    }
+  incExpGold(int incExp, int incGold) {
+    exp += incExp;
+    gold += incGold;
+    save();
   }
 
   promoteVIP() {
@@ -106,7 +103,7 @@ class User {
   }
 
   // input exp of enemy (normal exp)
-  updateVIP_exp(int newEXP) {
+  updateVIPExp(int newEXP) {
     if (newEXP != 0) {
       if (this.isVIP == false) {
         // random to whether update or not
@@ -116,10 +113,10 @@ class User {
         // VipExp drop success. 0 can be replaced if like as a condition
         if (randomNumber == 0) {
           this.ensurance = 0;
-          int v_exp;
-          v_exp = this.vipExp;
-          v_exp += 1; //increase 1 exp each successful drop.
-          this.vipExp = v_exp;
+          int vExp;
+          vExp = this.vipExp;
+          vExp += 1; //increase 1 exp each successful drop.
+          this.vipExp = vExp;
 
           if (this.vipExp >= TOBE_VIP) {
             promoteVIP();

@@ -21,7 +21,9 @@ class _CombatState extends State<Combat> {
       combatStatus,
       anouncements,
       buttonTexts,
-      buttonColors;
+      buttonColors,
+      exp,
+      gold;
   double logBase(num x, num base) => log(x) / log(base);
   @override
   void initState() {
@@ -32,22 +34,27 @@ class _CombatState extends State<Combat> {
     currentUserHP = user.hp;
     combatStatus = 1;
     var mapLevel = widget.mapLevel;
-    var exp =
-        ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
-    var gold =
-        ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
-    var vipExpText = '';
-    if (Random().nextDouble() <= 0.01) {
-      vipExpText = ', 1 điểm VIP';
-      user.expVIP += 1;
-    }
+    exp = ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
+    gold = ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
     anouncements = [
       'Bạn đã bị đánh bại. Ấn Quay lại để về màn hình kẻ thù.',
       '',
-      'Bạn đã thắng. Bạn nhận được ${exp.toString()} kinh nghiệm, ${gold.toString()} tiền${vipExpText.toString()}. Ấn Nhận thưởng để tiến hành nhận các phần thưởng hấp dẫn khác.'
+      _getWinText
     ];
     buttonTexts = ['Quay lại', 'Tấn công', 'Nhận thưởng'];
     buttonColors = [Colors.black, Colors.blue, Colors.green[600]];
+  }
+
+  _getWinText(exp, gold) {
+    var vipExpText = '';
+    if (Random().nextDouble() <= 0.01) {
+      vipExpText = ', 1 điểm VIP';
+      user.vipExp += 1;
+      user.save();
+    }
+    return 'Bạn đã thắng. Bạn nhận được ${exp.toString()} kinh nghiệm, ${gold.toString()} tiền' +
+        vipExpText +
+        '. Ấn Nhận thưởng để tiến hành nhận các phần thưởng hấp dẫn khác.';
   }
 
   @override
@@ -61,42 +68,45 @@ class _CombatState extends State<Combat> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: Text(
-                      enemy.name,
-                      style: TextStyle(fontSize: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          enemy.name,
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          ),
+                          Text(
+                            ' HP: $currentEnemyHP',
+                            style: TextStyle(fontSize: 20, color: Colors.red),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    width: 10,
+                    child: LinearProgressIndicator(
+                      value: currentEnemyHP / enemy.hp,
+                      color: Colors.red,
+                      backgroundColor: Colors.red[100],
+                      minHeight: 20.0,
                     ),
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                      ),
-                      Text(
-                        ' HP: $currentEnemyHP',
-                        style: TextStyle(fontSize: 20, color: Colors.red),
-                      ),
-                    ],
-                  )
                 ],
               ),
-              SizedBox(
-                width: 10,
-                child: LinearProgressIndicator(
-                  value: currentEnemyHP / enemy.hp,
-                  color: Colors.red,
-                  backgroundColor: Colors.red[100],
-                  minHeight: 20.0,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 120),
+              Expanded(
                 child: Container(
                   alignment: Alignment.center,
                   child: Image(
@@ -104,85 +114,94 @@ class _CombatState extends State<Combat> {
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    user.username,
-                    style: TextStyle(fontSize: 24),
-                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                      ),
                       Text(
-                        ' HP: $currentUserHP',
-                        style: TextStyle(fontSize: 20, color: Colors.red),
+                        user.username,
+                        style: TextStyle(fontSize: 24),
                       ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          ),
+                          Text(
+                            ' HP: $currentUserHP',
+                            style: TextStyle(fontSize: 20, color: Colors.red),
+                          ),
+                        ],
+                      )
                     ],
-                  )
-                ],
-              ),
-              SizedBox(
-                width: 10,
-                child: LinearProgressIndicator(
-                  value: currentUserHP / user.hp,
-                  color: Colors.red,
-                  backgroundColor: Colors.red[100],
-                  minHeight: 20.0,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 80.0),
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(buttonColors[combatStatus]),
+                  ),
+                  SizedBox(
+                    width: 10,
+                    child: LinearProgressIndicator(
+                      value: currentUserHP / user.hp,
+                      color: Colors.red,
+                      backgroundColor: Colors.red[100],
+                      minHeight: 20.0,
                     ),
-                    child: Text(
-                      buttonTexts[combatStatus],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 80.0),
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              buttonColors[combatStatus]),
+                        ),
+                        child: Text(
+                          buttonTexts[combatStatus],
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if (combatStatus == 0) {
+                              Navigator.pop(context);
+                            }
+                            if (combatStatus == 2) {
+                              user.incExpGold(exp, gold);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Loot(
+                                      dropList: enemy.dropList, user: user),
+                                ),
+                              );
+                            }
+                            if (currentUserHP == 0 || currentEnemyHP == 0) {
+                              return;
+                            }
+                            currentUserHP = (currentUserHP - enemy.atk) > 0
+                                ? currentUserHP - enemy.atk
+                                : 0;
+                            currentEnemyHP = (currentEnemyHP - user.atk) > 0
+                                ? currentEnemyHP - user.atk
+                                : 0;
+                            if (currentUserHP == 0) {
+                              combatStatus = 0;
+                            } else if (currentEnemyHP == 0) {
+                              combatStatus = 2;
+                            }
+                          });
+                        }),
+                  ),
+                  Text(
+                      combatStatus != 2
+                          ? anouncements[combatStatus]
+                          : anouncements[combatStatus](exp, gold),
+                      textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 30,
-                      ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        if (combatStatus == 0) {
-                          Navigator.pop(context);
-                        }
-                        if (combatStatus == 2) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  Loot(dropList: enemy.dropList, user: user),
-                            ),
-                          );
-                        }
-                        if (currentUserHP == 0 || currentEnemyHP == 0) {
-                          return;
-                        }
-                        currentUserHP = (currentUserHP - enemy.atk) > 0
-                            ? currentUserHP - enemy.atk
-                            : 0;
-                        currentEnemyHP = (currentEnemyHP - user.atk) > 0
-                            ? currentEnemyHP - user.atk
-                            : 0;
-                        if (currentUserHP == 0) {
-                          combatStatus = 0;
-                        } else if (currentEnemyHP == 0) {
-                          combatStatus = 2;
-                        }
-                      });
-                    }),
-              ),
-              Text(anouncements[combatStatus],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 15.0, color: buttonColors[combatStatus])),
+                          fontSize: 15.0, color: buttonColors[combatStatus])),
+                ],
+              )
             ],
           ),
         ),

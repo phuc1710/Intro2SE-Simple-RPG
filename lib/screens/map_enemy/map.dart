@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:simple_rpg/models/map.dart';
+import 'package:simple_rpg/models/user.dart';
 import 'package:simple_rpg/screens/map_enemy/enemy.dart';
 
 class MapWidget extends StatefulWidget {
@@ -17,20 +18,22 @@ class _MapWidgetState extends State<MapWidget> {
   var allMaps;
   var page = 0;
   var lastPage;
-  DatabaseReference? userRef;
+  DatabaseReference? allUserRef;
   @override
   void initState() {
     super.initState();
-    userRef = widget.args['user'].getUserRef();
-    userRef?.onChildChanged.listen(_onLevelChange);
+    allUserRef = User.getAllUserRef();
+    allUserRef?.onChildChanged.listen(_onUserChange);
+    allUserRef?.onChildAdded.listen(_onUserChange);
   }
 
-  _onLevelChange(event) {
+  _onUserChange(event) {
     if (this.mounted) {
       setState(() {
-        DataSnapshot snapshot = event.snapshot;
-        if (snapshot.key == 'level') {
-          widget.args['user'].level = snapshot.value;
+        User changeUser = User();
+        changeUser.fromData(event.snapshot.value);
+        if (widget.args['user'].username == changeUser.username) {
+          widget.args['user'] = changeUser;
         }
       });
     }
