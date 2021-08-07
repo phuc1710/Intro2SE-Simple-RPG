@@ -29,23 +29,23 @@ class _ViewProfileState extends State<ViewProfile> {
   @override
   void initState() {
     super.initState();
-    allUserRef = User.getAllUserRef();
-    allUserRef?.onChildChanged.listen(_onAllUserChange);
-    allUserRef?.onChildAdded.listen(_onAllUserChange);
+    // allUserRef = User.getAllUserRef();
+    // allUserRef?.onChildChanged.listen(_onAllUserChange);
+    // allUserRef?.onChildAdded.listen(_onAllUserChange);
     viewProList = getViewPro(widget.args['user'], true);
   }
 
-  _onAllUserChange(event) {
-    if (this.mounted) {
-      setState(() {
-        User changeUser = User();
-        changeUser.fromData(event.snapshot.value);
-        if (widget.args['user'].username == changeUser.username)
-          viewProList = getViewPro(changeUser, true);
-        isInit = false;
-      });
-    }
-  }
+  // _onAllUserChange(event) {
+  //   if (this.mounted) {
+  //     setState(() {
+  //       User changeUser = User();
+  //       changeUser.fromData(event.snapshot.value);
+  //       if (widget.args['user'].username == changeUser.username)
+  //         viewProList = getViewPro(changeUser, true);
+  //       isInit = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
