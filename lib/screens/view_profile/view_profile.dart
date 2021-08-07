@@ -293,9 +293,9 @@ class _ViewProfileState extends State<ViewProfile> {
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.api, color: Colors.blue),
+            leading: Icon(Icons.verified, color: Colors.cyan),
             title: Text('Kinh nghiệm VIP: ${detailUser.vipExp.toString()}',
-                style: TextStyle(color: Colors.blue)),
+                style: TextStyle(color: Colors.cyan)),
           ),
         ),
       ],
