@@ -33,17 +33,15 @@ class _ViewProfileState extends State<ViewProfile> {
   }
 
   _onAllUserChange(event) {
-    // if(this.mounted) {
-    // setState(() {
-    //   User changeUser = User();
-    //   changeUser.fromData(event.snapshot.value);
-    //   if (changeUser.username == widget.args['user'].username) {
-    //     widget.args['user'] = changeUser;
-    //   }
-    //   isInit = false;
-    //   print('change');
-    // });
-    // }
+    if (this.mounted) {
+      setState(() {
+        User changeUser = User();
+        changeUser.fromData(event.snapshot.value);
+        if (widget.args['user'].username == changeUser.username)
+          viewProList = getViewPro(changeUser, true);
+        isInit = false;
+      });
+    }
   }
 
   @override

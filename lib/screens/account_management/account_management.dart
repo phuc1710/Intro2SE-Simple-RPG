@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:simple_rpg/models/user.dart';
@@ -19,12 +20,35 @@ class _AccountManagementState extends State<AccountManagement> {
   var lastPage;
   var showUsers;
   final searchController = TextEditingController();
+  User detailUser = User();
+  var isInDetail = false;
+  DatabaseReference? allUserRef;
   static const userPerPage = 10;
   static const topElePadding = 10.0;
   @override
   void initState() {
     super.initState();
+    allUserRef = User.getAllUserRef();
+    allUserRef?.onChildChanged.listen(_onAllUserChange);
     accManGeneral = getAccManGeneral(User.getUsers());
+  }
+
+  _onAllUserChange(event) {
+    if (this.mounted) {
+      setState(() {
+        isInit = true;
+        if (isInDetail) {
+          User changeUser = User();
+          changeUser.fromData(event.snapshot.value);
+          if (detailUser.username == changeUser.username) {
+            detailUser = changeUser;
+            accManGeneral = getAccManDetail();
+          }
+        } else {
+          accManGeneral = getAccManGeneral(User.getUsers());
+        }
+      });
+    }
   }
 
   @override
@@ -176,9 +200,9 @@ class _AccountManagementState extends State<AccountManagement> {
                   ),
                   onTap: () {
                     setState(() {
-                      // isGeneral = false;
-                      // detailUser = listUser;
-                      accManGeneral = getAccManDetail(listUser);
+                      detailUser = listUser;
+                      accManGeneral = getAccManDetail();
+                      isInDetail = true;
                     });
                   },
                 ),
@@ -187,7 +211,7 @@ class _AccountManagementState extends State<AccountManagement> {
           );
   }
 
-  Column getAccManDetail(detailUser) {
+  Column getAccManDetail() {
     return Column(
       children: [
         searchBar(
@@ -195,7 +219,11 @@ class _AccountManagementState extends State<AccountManagement> {
             child: TextButton(
               onPressed: () {
                 setState(() {
-                  accManGeneral = getAccManGeneral(getPageUsers());
+                  if (isInit)
+                    accManGeneral = getAccManGeneral(User.getUsers());
+                  else
+                    accManGeneral = getAccManGeneral(getPageUsers());
+                  isInDetail = false;
                 });
               },
               style: ButtonStyle(
