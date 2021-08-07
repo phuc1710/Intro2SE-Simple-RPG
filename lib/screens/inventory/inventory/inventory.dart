@@ -13,7 +13,7 @@ class Inventory extends StatefulWidget {
 }
 
 class _InventoryState extends State<Inventory> {
-  DatabaseReference? invItemsRef;
+  DatabaseReference? invItemsRef, userRef;
   List itemIDListInventory = [];
   @override
   void initState() {
@@ -21,6 +21,20 @@ class _InventoryState extends State<Inventory> {
     widget.args['user'].listInventory = [];
     invItemsRef = Item.getInvItemsDBRef(widget.args['user'].id);
     invItemsRef?.onChildAdded.listen(_onInvItemAdded);
+    userRef = widget.args['user'].getUserRef();
+    userRef?.onChildChanged.listen(_onLevelChange);
+    userRef?.onChildAdded.listen(_onLevelChange);
+  }
+
+  _onLevelChange(event) {
+    if (this.mounted) {
+      setState(() {
+        DataSnapshot snapshot = event.snapshot;
+        if (snapshot.key == 'level') {
+          widget.args['user'].level = snapshot.value;
+        }
+      });
+    }
   }
 
   _onInvItemAdded(event) {

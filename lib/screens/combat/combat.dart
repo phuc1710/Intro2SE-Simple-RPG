@@ -1,15 +1,28 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:simple_rpg/screens/loot/loot.dart';
 
 class Combat extends StatefulWidget {
-  const Combat({Key? key, this.user, this.enemy}) : super(key: key);
+  const Combat({Key? key, this.user, this.enemy, this.mapLevel})
+      : super(key: key);
   final user;
   final enemy;
+  final mapLevel;
   @override
   _CombatState createState() => _CombatState();
 }
 
 class _CombatState extends State<Combat> {
-  var user, enemy, currentEnemyHP, currentUserHP;
+  var user,
+      enemy,
+      currentEnemyHP,
+      currentUserHP,
+      combatStatus,
+      anouncements,
+      buttonTexts,
+      buttonColors;
+  double logBase(num x, num base) => log(x) / log(base);
   @override
   void initState() {
     super.initState();
@@ -17,6 +30,24 @@ class _CombatState extends State<Combat> {
     enemy = widget.enemy;
     currentEnemyHP = enemy.hp;
     currentUserHP = user.hp;
+    combatStatus = 1;
+    var mapLevel = widget.mapLevel;
+    var exp =
+        ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
+    var gold =
+        ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
+    var vipExpText = '';
+    if (Random().nextDouble() <= 0.01) {
+      vipExpText = ', 1 điểm VIP';
+      user.expVIP += 1;
+    }
+    anouncements = [
+      'Bạn đã bị đánh bại. Ấn Quay lại để về màn hình kẻ thù.',
+      '',
+      'Bạn đã thắng. Bạn nhận được ${exp.toString()} kinh nghiệm, ${gold.toString()} tiền${vipExpText.toString()}. Ấn Nhận thưởng để tiến hành nhận các phần thưởng hấp dẫn khác.'
+    ];
+    buttonTexts = ['Quay lại', 'Tấn công', 'Nhận thưởng'];
+    buttonColors = [Colors.black, Colors.blue, Colors.green[600]];
   }
 
   @override
@@ -107,36 +138,58 @@ class _CombatState extends State<Combat> {
                 padding: const EdgeInsets.symmetric(
                     vertical: 15.0, horizontal: 80.0),
                 child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(buttonColors[combatStatus]),
+                    ),
                     child: Text(
-                      'Tấn công',
+                      buttonTexts[combatStatus],
                       style: TextStyle(
                         fontSize: 30,
                       ),
                     ),
                     onPressed: () {
                       setState(() {
-                        while (currentUserHP > 0 && currentEnemyHP > 0) {
-                          currentUserHP = (currentUserHP - enemy.atk) > 0
-                              ? currentUserHP - enemy.atk
-                              : 0;
-                          currentEnemyHP = (currentEnemyHP - user.atk) > 0
-                              ? currentEnemyHP - user.atk
-                              : 0;
+                        if (combatStatus == 0) {
+                          Navigator.pop(context);
                         }
+                        if (combatStatus == 2) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  Loot(dropList: enemy.dropList, user: user),
+                            ),
+                          );
+                        }
+                        if (currentUserHP == 0 || currentEnemyHP == 0) {
+                          return;
+                        }
+                        currentUserHP = (currentUserHP - enemy.atk) > 0
+                            ? currentUserHP - enemy.atk
+                            : 0;
+                        currentEnemyHP = (currentEnemyHP - user.atk) > 0
+                            ? currentEnemyHP - user.atk
+                            : 0;
                         if (currentUserHP == 0) {
-                          _showUserNoHPDialog(context);
-                        } else {
-                          _showUserDefeatEnemy(context);
+                          combatStatus = 0;
+                        } else if (currentEnemyHP == 0) {
+                          combatStatus = 2;
                         }
                       });
                     }),
-              )
+              ),
+              Text(anouncements[combatStatus],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 15.0, color: buttonColors[combatStatus])),
             ],
           ),
         ),
       ),
     );
   }
+<<<<<<< Updated upstream
 
   _showUserNoHPDialog(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -160,4 +213,6 @@ class _CombatState extends State<Combat> {
   }
 
   // TODO: Upgrade user exp and vipExp
+=======
+>>>>>>> Stashed changes
 }

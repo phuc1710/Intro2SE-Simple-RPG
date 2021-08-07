@@ -78,11 +78,15 @@ class _MapWidgetState extends State<MapWidget> {
                   ),
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GameEnemy(
-                                enemyList: map.enemyList.values.toList(),
-                                args: widget.args)));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GameEnemy(
+                          enemyList: map.enemyList.values.toList(),
+                          args: widget.args,
+                          mapLevel: map.level,
+                        ),
+                      ),
+                    );
                   },
                 ),
               );

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -263,7 +265,7 @@ class _ViewProfileState extends State<ViewProfile> {
           child: ListTile(
             leading: Icon(Icons.api, color: Colors.blue),
             title: Text(
-                'Kinh nghiệm: ${detailUser.exp}/${(1000 * detailUser.level * detailUser.level * detailUser.level).round()} (${((detailUser.exp / (1000 * detailUser.level * detailUser.level * detailUser.level)) * 100).round()}%)',
+                'Kinh nghiệm: ${detailUser.exp}/${((pow(detailUser.level, logBase(detailUser.level, 3))) * (100 - detailUser.level)).round()} (${(detailUser.exp / (pow(detailUser.level, logBase(detailUser.level, 3)) * (100 - detailUser.level) * 100)).round()}%)',
                 style: TextStyle(color: Colors.blue)),
           ),
         ),
@@ -301,6 +303,8 @@ class _ViewProfileState extends State<ViewProfile> {
       ],
     );
   }
+
+  double logBase(num x, num base) => log(x) / log(base);
 
   List getPageUsers([searchKey]) {
     if (searchKey != null) {

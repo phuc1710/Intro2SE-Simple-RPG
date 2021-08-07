@@ -3,8 +3,9 @@ import 'package:simple_rpg/models/enemy.dart';
 import 'package:simple_rpg/screens/combat/combat.dart';
 
 class GameEnemy extends StatelessWidget {
-  const GameEnemy({Key? key, this.enemyList, this.args}) : super(key: key);
-  final enemyList, args;
+  const GameEnemy({Key? key, this.enemyList, this.args, this.mapLevel})
+      : super(key: key);
+  final enemyList, args, mapLevel;
   @override
   Widget build(BuildContext context) {
     var enemyRList = new List.from(enemyList.reversed);
@@ -21,7 +22,8 @@ class GameEnemy extends StatelessWidget {
               enemyData['hp'], enemyData['drop_list']);
           return Card(
             child: ListTile(
-              leading: Icon(Icons.pest_control_rounded, size: 40.0, color: Colors.red[300]),
+              leading: Icon(Icons.pest_control_rounded,
+                  size: 40.0, color: Colors.red[300]),
               title: Text(enemy.name),
               subtitle: Row(
                 children: [
@@ -49,8 +51,10 @@ class GameEnemy extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            Combat(user: args['user'], enemy: enemy)));
+                        builder: (context) => Combat(
+                            user: args['user'],
+                            enemy: enemy,
+                            mapLevel: mapLevel)));
               },
             ),
           );
