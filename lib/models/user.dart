@@ -1,6 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'dart:math';
 
 var dbRef = FirebaseDatabase.instance.reference();
+const MAX_ENSURANCE = 10;
+const TOBE_VIP = 100; // amount of vipExp to be a VIP
 
 class User {
   String username = '';
@@ -15,7 +18,11 @@ class User {
   int level = 1;
   String name = 'NOOB';
   int exp = 0;
+
   int vipExp = 0;
+  int ensurance =
+      0; //a number to put in the random func to make sure the user get vipEXP after a certain number of time
+  // max is 10 (times) return to 0 when reach 10
   int atk = 150;
   int hp = 300;
   int gold = 0;
@@ -81,6 +88,51 @@ class User {
     list += listInventory;
     list.remove(itemID);
     listInventory = list;
+  }
+
+  updateEXP(int newEXP) {
+    if (newEXP != 0) {
+      int exp;
+      exp = this.exp;
+      exp += newEXP;
+      this.exp = exp;
+    }
+  }
+
+  promoteVIP() {
+    // this.isVIP = !this.isVIP;
+    this.isVIP = true;
+    dbRef.child('users').child(this.id).update({'isVIP': this.isVIP});
+  }
+
+  // input exp of enemy (normal exp)
+  updateVIP_exp(int newEXP) {
+    if (newEXP != 0) {
+      if (this.isVIP == false) {
+        // random to whether update or not
+        Random random = new Random();
+        int randomNumber = random.nextInt(MAX_ENSURANCE - this.ensurance);
+
+        // VipExp drop success. 0 can be replaced if like as a condition
+        if (randomNumber == 0) {
+          this.ensurance = 0;
+          int v_exp;
+          v_exp = this.vipExp;
+          v_exp += 1; //increase 1 exp each successful drop.
+          this.vipExp = v_exp;
+
+          if (this.vipExp >= TOBE_VIP) {
+            promoteVIP();
+          }
+        }
+        // VipExp drop fail.
+        else {
+          int ens = this.ensurance;
+          ens += 1;
+          this.ensurance = ens;
+        }
+      }
+    }
   }
 
   save() {

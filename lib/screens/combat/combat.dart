@@ -158,4 +158,6 @@ class _CombatState extends State<Combat> {
               // TODO: Implement looting
             })));
   }
+
+  // TODO: Upgrade user exp and vipExp
 }
