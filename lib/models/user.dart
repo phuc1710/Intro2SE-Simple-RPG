@@ -15,7 +15,7 @@ class User {
   int level = 1;
   String name = 'NOOB';
   int exp = 0;
-  int vip_exp = 0; //min = 0, max = 100 when vip_exp == 100, isVIP = true
+  int vipExp = 0;
   int atk = 150;
   int hp = 300;
   int gold = 0;
@@ -32,7 +32,7 @@ class User {
     this.listEquipped = data['listEquipped'];
     this.level = data['level'];
     this.exp = data['exp'];
-    this.vip_exp = data['vip_exp'];
+    this.vipExp = data['vip_exp'];
     this.atk = data['atk'];
     this.hp = data['hp'];
     this.gold = data['gold'];
@@ -51,7 +51,7 @@ class User {
       'listEquipped': this.listEquipped,
       'level': this.level,
       'exp': this.exp,
-      'vip_exp': this.vip_exp,
+      'vip_exp': this.vipExp,
       'atk': this.atk,
       'hp': this.hp,
       'gold': this.gold

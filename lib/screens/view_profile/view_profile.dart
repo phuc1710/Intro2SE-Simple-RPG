@@ -195,9 +195,16 @@ class _ViewProfileState extends State<ViewProfile> {
               User listUser = list[index];
               return Card(
                 child: ListTile(
-                  leading: Icon(Icons.account_circle, color: Colors.blue,),
-                  title: Text(listUser.username, style: TextStyle(color: Colors.indigo)),
-                  trailing: Text('Cấp độ: ' + listUser.level.toString(), style: TextStyle(color: Colors.purple),),
+                  leading: Icon(
+                    Icons.account_circle,
+                    color: Colors.blue,
+                  ),
+                  title: Text(listUser.username,
+                      style: TextStyle(color: Colors.indigo)),
+                  trailing: Text(
+                    'Cấp độ: ' + listUser.level.toString(),
+                    style: TextStyle(color: Colors.purple),
+                  ),
                   onTap: () {
                     setState(() {
                       // isGeneral = false;
@@ -254,7 +261,8 @@ class _ViewProfileState extends State<ViewProfile> {
         Card(
           child: ListTile(
             leading: Icon(Icons.api, color: Colors.blue),
-            title: Text('Kinh nghiệm: ${detailUser.exp.toString()}',
+            title: Text(
+                'Kinh nghiệm: ${detailUser.exp}/${(1000 * detailUser.level * detailUser.level * detailUser.level).round()} (${((detailUser.exp / (1000 * detailUser.level * detailUser.level * detailUser.level)) * 100).round()}%)',
                 style: TextStyle(color: Colors.blue)),
           ),
         ),
@@ -281,7 +289,14 @@ class _ViewProfileState extends State<ViewProfile> {
             title: Text('Tiền: ${detailUser.gold.toString()}',
                 style: TextStyle(color: Colors.yellow[800])),
           ),
-        )
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.api, color: Colors.blue),
+            title: Text('Kinh nghiệm VIP: ${detailUser.vipExp.toString()}',
+                style: TextStyle(color: Colors.blue)),
+          ),
+        ),
       ],
     );
   }

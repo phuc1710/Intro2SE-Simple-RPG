@@ -90,27 +90,27 @@ class _InventoryState extends State<Inventory> {
                         ),
                         subtitle: Row(
                           children: [
-                            itemEquipped.hp != 0
+                            itemInventory.hp != 0
                                 ? Icon(
                                     Icons.favorite,
                                     size: 15,
                                   )
                                 : Text(''),
                             Text(
-                              (itemEquipped.hp == 0
+                              (itemInventory.hp == 0
                                   ? ''
-                                  : ' HP +${itemEquipped.hp} '),
+                                  : ' HP +${itemInventory.hp} '),
                             ),
-                            itemEquipped.atk != 0
+                            itemInventory.atk != 0
                                 ? Icon(
                                     Icons.local_fire_department,
                                     size: 15,
                                   )
                                 : Text(''),
                             Text(
-                              (itemEquipped.atk == 0
+                              (itemInventory.atk == 0
                                   ? ''
-                                  : ' ATK +${itemEquipped.atk}'),
+                                  : ' ATK +${itemInventory.atk}'),
                             ),
                           ],
                         ),
