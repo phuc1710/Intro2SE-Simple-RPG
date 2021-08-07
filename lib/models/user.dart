@@ -20,9 +20,10 @@ class User {
   int exp = 0;
 
   int vipExp = 0;
-  int ensurance =
-      0; //a number to put in the random func to make sure the user get vipEXP after a certain number of time
+  //a number to put in the random func to make sure the user get vipEXP after a certain number of time
   // max is 10 (times) return to 0 when reach 10
+  int ensurance = 0; 
+  
   int atk = 150;
   int hp = 300;
   int gold = 0;
@@ -40,6 +41,7 @@ class User {
     this.level = data['level'];
     this.exp = data['exp'];
     this.vipExp = data['vip_exp'];
+    this.ensurance = data['ensurance'];
     this.atk = data['atk'];
     this.hp = data['hp'];
     this.gold = data['gold'];
@@ -59,6 +61,7 @@ class User {
       'level': this.level,
       'exp': this.exp,
       'vip_exp': this.vipExp,
+      'ensurance': this.ensurance,
       'atk': this.atk,
       'hp': this.hp,
       'gold': this.gold
