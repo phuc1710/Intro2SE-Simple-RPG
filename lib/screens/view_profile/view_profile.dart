@@ -77,7 +77,7 @@ class _ViewProfileState extends State<ViewProfile> {
                         page = 0;
                     });
                   },
-                  child: Text('Previous'),
+                  child: Text('Trang trước'),
                 ),
               ),
               Expanded(
@@ -91,7 +91,7 @@ class _ViewProfileState extends State<ViewProfile> {
                         page = getLastPage();
                     });
                   },
-                  child: Text('Next'),
+                  child: Text('Trang tiếp theo'),
                 ),
               ),
             ],
@@ -105,22 +105,24 @@ class _ViewProfileState extends State<ViewProfile> {
     List<Widget> searchBarWidgets = [
       Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: TextField(
-              enabled: !isSearch,
-              controller: searchController,
-              onChanged: (val) {
-                setState(() {
-                  if (!isSearch) {
-                    if (val.length == 0) {
-                      searchIcon = Icons.dehaze;
-                    } else {
-                      searchIcon = Icons.search;
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: Card(
+              child: TextField(
+                enabled: !isSearch,
+                controller: searchController,
+                onChanged: (val) {
+                  setState(() {
+                    if (!isSearch) {
+                      if (val.length == 0) {
+                        searchIcon = Icons.dehaze;
+                      } else {
+                        searchIcon = Icons.search;
+                      }
+                      viewProList = getViewPro(widget.args['user'], true);
                     }
-                    viewProList = getViewPro(widget.args['user'], true);
-                  }
-                });
-              },
+                  });
+                },
+              ),
             ),
           ),
           flex: 7),
@@ -187,7 +189,7 @@ class _ViewProfileState extends State<ViewProfile> {
   Widget getSync(List<dynamic> list) {
     return list.length == 0
         ? Center(
-            child: Text('NO USER'),
+            child: Text('Không tồn tại người dùng này'),
           )
         : ListView.builder(
             itemCount: list.length,
@@ -195,9 +197,9 @@ class _ViewProfileState extends State<ViewProfile> {
               User listUser = list[index];
               return Card(
                 child: ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text(listUser.username),
-                  trailing: Text('level ' + listUser.level.toString()),
+                  leading: Icon(Icons.account_circle, color: Colors.blue,),
+                  title: Text(listUser.username, style: TextStyle(color: Colors.indigo)),
+                  trailing: Text('Cấp độ: ' + listUser.level.toString(), style: TextStyle(color: Colors.purple),),
                   onTap: () {
                     setState(() {
                       // isGeneral = false;
@@ -239,38 +241,47 @@ class _ViewProfileState extends State<ViewProfile> {
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.badge),
-            title: Text(detailUser.username),
+            leading: Icon(Icons.badge, color: Colors.indigo),
+            title: Text('Tên người dùng: ${detailUser.username}',
+                style: TextStyle(color: Colors.indigo)),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.signal_cellular_alt),
-            title: Text(detailUser.level.toString()),
+            leading: Icon(Icons.signal_cellular_alt, color: Colors.purple),
+            title: Text('Cấp độ: ${detailUser.level.toString()}',
+                style: TextStyle(color: Colors.purple)),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.donut_large),
-            title: Text(detailUser.exp.toString()),
+            leading: Icon(Icons.api, color: Colors.blue),
+            title: Text('Kinh nghiệm: ${detailUser.exp.toString()}',
+                style: TextStyle(color: Colors.blue)),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.colorize),
-            title: Text(detailUser.atk.toString()),
+            leading: Icon(
+              Icons.local_fire_department,
+              color: Colors.green,
+            ),
+            title: Text('Tấn công: ${detailUser.atk.toString()}',
+                style: TextStyle(color: Colors.green)),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.health_and_safety),
-            title: Text(detailUser.hp.toString()),
+            leading: Icon(Icons.favorite, color: Colors.red),
+            title: Text('Máu: ${detailUser.hp.toString()}',
+                style: TextStyle(color: Colors.red)),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.polymer),
-            title: Text(detailUser.gold.toString()),
+            leading: Icon(Icons.polymer, color: Colors.yellow[800]),
+            title: Text('Tiền: ${detailUser.gold.toString()}',
+                style: TextStyle(color: Colors.yellow[800])),
           ),
         )
       ],

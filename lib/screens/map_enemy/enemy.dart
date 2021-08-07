@@ -11,7 +11,7 @@ class GameEnemy extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text('Enemy'),
+        title: Text('Kẻ thù'),
       ),
       body: ListView.builder(
         itemCount: enemyList.length,
@@ -21,7 +21,7 @@ class GameEnemy extends StatelessWidget {
               enemyData['hp'], enemyData['drop_list']);
           return Card(
             child: ListTile(
-              leading: Icon(Icons.pest_control_rounded, size: 40.0),
+              leading: Icon(Icons.pest_control_rounded, size: 40.0, color: Colors.red[300]),
               title: Text(enemy.name),
               subtitle: Row(
                 children: [

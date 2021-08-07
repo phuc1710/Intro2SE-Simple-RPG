@@ -57,9 +57,25 @@ class _MapWidgetState extends State<MapWidget> {
               GameMap map = list[index];
               return Card(
                 child: ListTile(
-                  leading: Icon(Icons.map_rounded, size: 40.0),
-                  title: Text(map.name),
-                  subtitle: Text(map.description),
+                  leading:
+                      Icon(Icons.map_rounded, size: 40.0, color: Colors.blue),
+                  title: Text(
+                    map.name,
+                    style: TextStyle(fontSize: 20, color: Colors.cyan[500]),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        map.description,
+                        overflow: TextOverflow.fade,
+                      ),
+                      Text(
+                        'Cấp độ: ${map.level}',
+                        style: TextStyle(color: Colors.purple),
+                      )
+                    ],
+                  ),
                   onTap: () {
                     Navigator.push(
                         context,

@@ -32,11 +32,11 @@ class _MainPageState extends State<MainPage> {
     List<BottomNavigationBarItem> barItems = [
       BottomNavigationBarItem(
         icon: Icon(Icons.map),
-        label: 'MAP',
+        label: 'BẢN ĐỒ',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.inventory_2),
-        label: 'INVENTORY',
+        label: 'HÀNH TRANG',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.forum),
@@ -44,14 +44,14 @@ class _MainPageState extends State<MainPage> {
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.account_box),
-        label: 'PROFILE',
+        label: 'THÔNG TIN',
       ),
     ];
     // check admin to add more for admin
     if (args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
         icon: Icon(Icons.admin_panel_settings),
-        label: 'ACCOUNT',
+        label: 'QUẢN LÝ TK',
       ));
     }
     return BottomNavigationBar(
