@@ -66,11 +66,11 @@ class _InventoryState extends State<Inventory> {
                   'assets/images/giay.png',
                 ];
                 var cardColor = [
-                  Colors.red,
-                  Colors.yellow,
-                  Colors.green,
-                  Colors.blue,
-                  Colors.orange,
+                  Colors.red[300],
+                  Colors.yellow[300],
+                  Colors.green[300],
+                  Colors.blue[300],
+                  Colors.orange[300],
                 ];
                 return Card(
                     shape: RoundedRectangleBorder(
@@ -88,12 +88,32 @@ class _InventoryState extends State<Inventory> {
                           '${itemInventory.name}',
                           style: TextStyle(color: Colors.black),
                         ),
-                        subtitle: Text((itemInventory.hp == 0
-                                ? ''
-                                : 'Hp + ${itemInventory.hp}    ') +
-                            (itemInventory.atk == 0
-                                ? ''
-                                : 'Atk + ${itemInventory.atk}')),
+                        subtitle: Row(
+                          children: [
+                            itemEquipped.hp != 0
+                                ? Icon(
+                                    Icons.favorite,
+                                    size: 15,
+                                  )
+                                : Text(''),
+                            Text(
+                              (itemEquipped.hp == 0
+                                  ? ''
+                                  : ' HP +${itemEquipped.hp} '),
+                            ),
+                            itemEquipped.atk != 0
+                                ? Icon(
+                                    Icons.local_fire_department,
+                                    size: 15,
+                                  )
+                                : Text(''),
+                            Text(
+                              (itemEquipped.atk == 0
+                                  ? ''
+                                  : ' ATK +${itemEquipped.atk}'),
+                            ),
+                          ],
+                        ),
                         trailing: PopupMenuButton<String>(
                           itemBuilder: (BuildContext context) => [
                             PopupMenuItem<String>(

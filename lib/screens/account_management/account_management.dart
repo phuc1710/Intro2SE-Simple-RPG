@@ -108,10 +108,12 @@ class _AccountManagementState extends State<AccountManagement> {
     List<Widget> searchBarWidgets = [
       Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: TextField(
-              enabled: !isSearch,
-              controller: searchController,
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: Card(
+              child: TextField(
+                enabled: !isSearch,
+                controller: searchController,
+              ),
             ),
           ),
           flex: 7),
@@ -193,8 +195,14 @@ class _AccountManagementState extends State<AccountManagement> {
               User listUser = list[index];
               return Card(
                 child: ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text(listUser.username),
+                  leading: Icon(
+                    Icons.account_circle,
+                    color: Colors.blue,
+                  ),
+                  title: Text(
+                    listUser.username,
+                    style: TextStyle(color: Colors.indigo),
+                  ),
                   trailing: AccManCardButton(
                     user: listUser,
                   ),
@@ -239,27 +247,40 @@ class _AccountManagementState extends State<AccountManagement> {
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.badge),
-            title: Text(detailUser.username),
+            leading: Icon(
+              Icons.badge,
+              color: Colors.indigo,
+            ),
+            title: Text('Tên người dùng: ${detailUser.username}',
+                style: TextStyle(color: Colors.indigo)),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.manage_accounts),
-            title: Text(detailUser.isAdmin ? "YES" : "NO"),
+            leading: Icon(
+              Icons.manage_accounts,
+              color: Colors.red,
+            ),
+            title: Text(
+              'Quyền quản trị: ' + (detailUser.isAdmin ? "Có" : "Không"),
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.add_moderator),
-            title: Text(detailUser.isMod ? "YES" : "NO"),
+            leading: Icon(Icons.add_moderator, color: Colors.orange),
+            title: Text(
+                'Quyền kiểm duyệt: ' + (detailUser.isMod ? "Có" : "Không"),
+                style: TextStyle(color: Colors.orange)),
           ),
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.cake),
-            title: Text(detailUser.creationDate
-                .substring(0, detailUser.creationDate.lastIndexOf('.'))),
+            leading: Icon(Icons.cake, color: Colors.green,),
+            title: Text('Thời gian tạo TK: ' +
+                detailUser.creationDate
+                    .substring(0, detailUser.creationDate.lastIndexOf('.')),style: TextStyle(color: Colors.green)),
           ),
         )
       ],

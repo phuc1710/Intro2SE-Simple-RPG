@@ -64,14 +64,12 @@ class _CombatState extends State<Combat> {
                   minHeight: 20.0,
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 100),
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Image(
-                      image: AssetImage('assets/images/chien_dau.png'),
-                    ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 120),
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Image(
+                    image: AssetImage('assets/images/chien_dau.png'),
                   ),
                 ),
               ),
@@ -106,8 +104,8 @@ class _CombatState extends State<Combat> {
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15.0, horizontal: 80.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15.0, horizontal: 80.0),
                 child: ElevatedButton(
                     child: Text(
                       'Tấn công',
@@ -117,12 +115,19 @@ class _CombatState extends State<Combat> {
                     ),
                     onPressed: () {
                       setState(() {
-                        currentUserHP = (currentUserHP - enemy.atk) > 0
-                            ? currentUserHP - enemy.atk
-                            : 0;
-                        currentEnemyHP = (currentEnemyHP - user.atk) > 0
-                            ? currentEnemyHP - user.atk
-                            : 0;
+                        while (currentUserHP > 0 && currentEnemyHP > 0) {
+                          currentUserHP = (currentUserHP - enemy.atk) > 0
+                              ? currentUserHP - enemy.atk
+                              : 0;
+                          currentEnemyHP = (currentEnemyHP - user.atk) > 0
+                              ? currentEnemyHP - user.atk
+                              : 0;
+                        }
+                        if (currentUserHP == 0) {
+                          _showUserNoHPDialog(context);
+                        } else {
+                          _showUserDefeatEnemy(context);
+                        }
                       });
                     }),
               )
@@ -131,5 +136,26 @@ class _CombatState extends State<Combat> {
         ),
       ),
     );
+  }
+
+  _showUserNoHPDialog(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Bạn đã bị đánh bại. Ấn OK để quay về màn hình kẻ thù.'),
+        action: SnackBarAction(
+            label: 'OK',
+            onPressed: () {
+              Navigator.of(context).pop();
+            })));
+  }
+
+  _showUserDefeatEnemy(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Bạn đã thắng. Ấn OK để tiến hành nhận thưởng.'),
+        action: SnackBarAction(
+            label: 'OK',
+            onPressed: () {
+              // Navigator.of(context).pop();
+              // TODO: Implement looting
+            })));
   }
 }

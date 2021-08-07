@@ -31,7 +31,7 @@ class _AccManCardButtonState extends State<AccManCardButton> {
   PopupMenuItem<String> getModItem(isMod) {
     return PopupMenuItem<String>(
       value: 'mod',
-      child: Text(isMod ? 'Remove Moderator' : 'Assign Moderator'),
+      child: Text(isMod ? 'Gỡ quyền kiểm duyệt' : 'Cấp quyền kiểm duyệt'),
     );
   }
 }

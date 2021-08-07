@@ -18,7 +18,7 @@ class _WorldChatState extends State<WorldChat> {
     // item.addItem2Db('i09', 'Quần jean', 3, 300, 0, 'Cực kì bền');
     // item.addItem2Db('i10', 'Giày sandal', 4, 100, 100, 'Có quay hậu');
     return Container(
-      child: Text('WORLD CHAT'),
+      child: Text('Chat thế giới'),
       alignment: Alignment.center,
     );
   }
