@@ -136,7 +136,7 @@ class _ViewListProfileState extends State<ViewListProfile> {
           showUsers = totalUsers;
           var otherUsers = [];
           for (var u in totalUsers) {
-            if (u.username != user.username) {
+            if (u.username != user.username && u.username.contains(searchKey)) {
               otherUsers.add(u);
             }
           }
