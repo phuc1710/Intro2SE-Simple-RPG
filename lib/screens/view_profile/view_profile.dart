@@ -15,7 +15,6 @@ class ViewProfile extends StatefulWidget {
 
 class _ViewProfileState extends State<ViewProfile> {
   bool isSearch = false;
-  bool isInit = true;
   var viewProList;
   var totalUsers;
   var page = 0;
@@ -23,7 +22,7 @@ class _ViewProfileState extends State<ViewProfile> {
   var showUsers;
   var searchIcon = Icons.dehaze;
   final searchController = TextEditingController();
-  DatabaseReference? allUserRef;
+  // DatabaseReference? allUserRef;
   static const userPerPage = 10;
   static const topElePadding = 10.0;
   @override
@@ -31,7 +30,6 @@ class _ViewProfileState extends State<ViewProfile> {
     super.initState();
     // allUserRef = User.getAllUserRef();
     // allUserRef?.onChildChanged.listen(_onAllUserChange);
-    // allUserRef?.onChildAdded.listen(_onAllUserChange);
     viewProList = getViewPro(widget.args['user'], true);
   }
 
@@ -42,7 +40,6 @@ class _ViewProfileState extends State<ViewProfile> {
   //       changeUser.fromData(event.snapshot.value);
   //       if (widget.args['user'].username == changeUser.username)
   //         viewProList = getViewPro(changeUser, true);
-  //       isInit = false;
   //     });
   //   }
   // }
@@ -60,9 +57,7 @@ class _ViewProfileState extends State<ViewProfile> {
         ),
         Expanded(
           flex: 7,
-          child: isInit
-              ? getAsync(User.getUsers(), searchKey)
-              : getSync(getPageUsers(searchKey)),
+          child: getAsync(User.getUsers(), searchKey),
         ),
         Expanded(
           child: Row(
@@ -177,7 +172,13 @@ class _ViewProfileState extends State<ViewProfile> {
         if (snapshot.hasData) {
           totalUsers = snapshot.data;
           showUsers = totalUsers;
-          isInit = false;
+          var otherUsers = [];
+          for (var u in totalUsers) {
+            if (u.username != widget.args['user'].username) {
+              otherUsers.add(u);
+            }
+          }
+          totalUsers = otherUsers;
           return getSync(getPageUsers(searchKey));
         }
         return SpinKitRing(

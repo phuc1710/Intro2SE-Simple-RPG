@@ -23,7 +23,8 @@ class _CombatState extends State<Combat> {
       buttonTexts,
       buttonColors,
       exp,
-      gold;
+      gold,
+      isGetVipExp;
   double logBase(num x, num base) => log(x) / log(base);
   @override
   void initState() {
@@ -33,13 +34,14 @@ class _CombatState extends State<Combat> {
     currentEnemyHP = enemy.hp;
     currentUserHP = user.hp;
     combatStatus = 1;
+    isGetVipExp = false;
     var mapLevel = widget.mapLevel;
     exp = ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
     gold = ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
     anouncements = [
       'Bạn đã bị đánh bại. Ấn Quay lại để về màn hình kẻ thù.',
       '',
-      _getWinText
+      _getWinText(exp, gold)
     ];
     buttonTexts = ['Quay lại', 'Tấn công', 'Nhận thưởng'];
     buttonColors = [Colors.black, Colors.blue, Colors.green[600]];
@@ -49,8 +51,7 @@ class _CombatState extends State<Combat> {
     var vipExpText = '';
     if (Random().nextDouble() <= 0.01) {
       vipExpText = ', 1 điểm VIP';
-      user.vipExp += 1;
-      user.save();
+      isGetVipExp = true;
     }
     return 'Bạn đã thắng. Bạn nhận được ${exp.toString()} kinh nghiệm, ${gold.toString()} tiền' +
         vipExpText +
@@ -167,7 +168,7 @@ class _CombatState extends State<Combat> {
                               Navigator.pop(context);
                             }
                             if (combatStatus == 2) {
-                              user.incExpGold(exp, gold);
+                              user.incStatAfterCombat(exp, gold, isGetVipExp);
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -193,10 +194,7 @@ class _CombatState extends State<Combat> {
                           });
                         }),
                   ),
-                  Text(
-                      combatStatus != 2
-                          ? anouncements[combatStatus]
-                          : anouncements[combatStatus](exp, gold),
+                  Text(anouncements[combatStatus],
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 15.0, color: buttonColors[combatStatus])),

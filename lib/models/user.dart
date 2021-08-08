@@ -22,8 +22,8 @@ class User {
   int vipExp = 0;
   //a number to put in the random func to make sure the user get vipEXP after a certain number of time
   // max is 10 (times) return to 0 when reach 10
-  int ensurance = 0; 
-  
+  int ensurance = 0;
+
   int atk = 150;
   int hp = 300;
   int gold = 0;
@@ -40,7 +40,7 @@ class User {
     this.listEquipped = data['listEquipped'];
     this.level = data['level'];
     this.exp = data['exp'];
-    this.vipExp = data['vip_exp'];
+    this.vipExp = data['vipExp'];
     this.ensurance = data['ensurance'];
     this.atk = data['atk'];
     this.hp = data['hp'];
@@ -60,7 +60,7 @@ class User {
       'listEquipped': this.listEquipped,
       'level': this.level,
       'exp': this.exp,
-      'vip_exp': this.vipExp,
+      'vipExp': this.vipExp,
       'ensurance': this.ensurance,
       'atk': this.atk,
       'hp': this.hp,
@@ -93,9 +93,10 @@ class User {
     listInventory = list;
   }
 
-  incExpGold(int incExp, int incGold) {
+  incStatAfterCombat(int incExp, int incGold, bool isGetVipExp) {
     exp += incExp;
     gold += incGold;
+    vipExp += isGetVipExp ? 1 : 0;
     save();
   }
 
