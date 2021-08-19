@@ -32,6 +32,10 @@ class Chat {
     this.sendDate = data['sendDate'];
   }
 
+  static getAllChatRef() {
+    return dbRef.child('listWorldChat');
+  }
+
   static Future<List> getListWorldChat() async {
     var wcRef = await dbRef.child('listWorldChat').get();
     return wcRef?.value.entries.map((entry) {
