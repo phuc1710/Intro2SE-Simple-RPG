@@ -13,6 +13,10 @@ class _WorldChatState extends State<WorldChat> {
   TextEditingController messageEditingController = new TextEditingController();
   bool isInit = true;
   var listWorldChat, allChatRef;
+  var _scrollController = ScrollController();
+  final otherMessageColor = Color(0xFF858585);
+  final myMessageColor = Colors.blueAccent;
+  final maxMessage = 30;
   @override
   void initState() {
     super.initState();
@@ -42,22 +46,26 @@ class _WorldChatState extends State<WorldChat> {
             for (var a in listAllChat!) {
               listChat.add(a);
             }
+            // if (listChat.length == 0)
+            //   return Center(
+            //     child: Text(
+            //       'NO MESSAGE',
+            //       style: TextStyle(
+            //         fontSize: 20,
+            //       ),
+            //     ),
+            //   );
             listChat.sort((a, b) {
               var dateA = DateTime.parse(a.sendDate);
               var dateB = DateTime.parse(b.sendDate);
               return dateA.compareTo(dateB);
             });
+            var start = listChat.length - maxMessage;
+            if (start < 0) start = 0;
+            listChat = listChat.sublist(start);
             listWorldChat = listChat;
-            if (listChat.length == 0)
-              return Center(
-                child: Text(
-                  'NO MESSAGE',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-              );
             return ListView.builder(
+                controller: _scrollController,
                 itemCount: listChat.length,
                 itemBuilder: (BuildContext context, int pos) {
                   return Container(
@@ -86,8 +94,8 @@ class _WorldChatState extends State<WorldChat> {
                                 topRight: Radius.circular(23),
                                 bottomRight: Radius.circular(23)),
                         color: sentByMe(listChat[pos].userName)
-                            ? Colors.blueAccent
-                            : Colors.grey[700],
+                            ? myMessageColor
+                            : otherMessageColor,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +126,12 @@ class _WorldChatState extends State<WorldChat> {
 
   Widget syncChatMessages() {
     var listChat = listWorldChat;
+    var start = listChat.length - maxMessage;
+    if (start < 0) start = 0;
+    listChat = listChat.sublist(start);
+    listWorldChat = listChat;
     return ListView.builder(
+        controller: _scrollController,
         itemCount: listChat.length,
         itemBuilder: (BuildContext context, int pos) {
           return Container(
@@ -147,8 +160,8 @@ class _WorldChatState extends State<WorldChat> {
                         topRight: Radius.circular(23),
                         bottomRight: Radius.circular(23)),
                 color: sentByMe(listChat[pos].userName)
-                    ? Colors.blueAccent
-                    : Colors.grey[700],
+                    ? myMessageColor
+                    : otherMessageColor,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,6 +192,7 @@ class _WorldChatState extends State<WorldChat> {
       chat.addChat();
       messageEditingController.clear();
       FocusScope.of(context).unfocus();
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     }
   }
 
@@ -199,7 +213,7 @@ class _WorldChatState extends State<WorldChat> {
           width: MediaQuery.of(context).size.width,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-            color: Colors.grey[700],
+            color: otherMessageColor,
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -224,7 +238,7 @@ class _WorldChatState extends State<WorldChat> {
                     height: 50.0,
                     width: 50.0,
                     decoration: BoxDecoration(
-                        color: Colors.blueAccent,
+                        color: myMessageColor,
                         borderRadius: BorderRadius.circular(50)),
                     child: Center(child: Icon(Icons.send, color: Colors.white)),
                   ),
