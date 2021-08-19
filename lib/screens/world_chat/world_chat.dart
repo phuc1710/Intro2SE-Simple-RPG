@@ -22,6 +22,11 @@ class _WorldChatState extends State<WorldChat> {
             for (var a in listAllChat!) {
               listChat.add(a);
             }
+            listChat.sort((a, b) {
+              var dateA = DateTime.parse(a.sendDate);
+              var dateB = DateTime.parse(b.sendDate);
+              return dateA.compareTo(dateB);
+            });
             return ListView.builder(
                 itemCount: listChat.length,
                 itemBuilder: (BuildContext context, int pos) {
@@ -57,7 +62,7 @@ class _WorldChatState extends State<WorldChat> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(listChat[pos].userName.toUpperCase(),
+                          Text(listChat[pos].userName,
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   fontSize: 13.0,
@@ -88,6 +93,7 @@ class _WorldChatState extends State<WorldChat> {
           DateTime.now().toString());
       chat.addChat();
       messageEditingController.clear();
+      FocusScope.of(context).unfocus();
     }
   }
 
