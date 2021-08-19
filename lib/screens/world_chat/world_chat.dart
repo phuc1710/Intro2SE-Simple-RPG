@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:simple_rpg/models/world_chat.dart';
+import 'package:simple_rpg/models/chat.dart';
 
 class WorldChat extends StatefulWidget {
   const WorldChat({Key? key, this.args}) : super(key: key);
@@ -48,6 +48,15 @@ class _WorldChatState extends State<WorldChat> {
               return dateA.compareTo(dateB);
             });
             listWorldChat = listChat;
+            if (listChat.length == 0)
+              return Center(
+                child: Text(
+                  'NO MESSAGE',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              );
             return ListView.builder(
                 itemCount: listChat.length,
                 itemBuilder: (BuildContext context, int pos) {

@@ -38,6 +38,7 @@ class Chat {
 
   static Future<List> getListWorldChat() async {
     var wcRef = await dbRef.child('listWorldChat').get();
+    if (wcRef?.value == null) return [];
     return wcRef?.value.entries.map((entry) {
       Chat wchat = Chat();
       wchat.fromData(entry.value);
