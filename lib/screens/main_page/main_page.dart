@@ -21,7 +21,7 @@ class _MainPageState extends State<MainPage> {
     final args = widget.args;
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         bottomNavigationBar: buildBottomBar(args),
         body: buildPages(args),
       ),

@@ -87,6 +87,7 @@ class _WorldChatState extends State<WorldChat> {
       chat.setChat(widget.args['user'].username, messageEditingController.text,
           DateTime.now().toString());
       chat.addChat();
+      messageEditingController.clear();
     }
   }
 
@@ -99,60 +100,49 @@ class _WorldChatState extends State<WorldChat> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("World Chat", style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-        backgroundColor: Colors.black87,
-        elevation: 0.0,
-      ),
-      body: Container(
-        child: Stack(
-          children: <Widget>[
-            chatMessages(),
-            Container(
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-                color: Colors.grey[700],
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: messageEditingController,
-                        style: TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                            hintText: "Send a message ...",
-                            hintStyle: TextStyle(
-                              color: Colors.white38,
-                              fontSize: 16,
-                            ),
-                            border: InputBorder.none),
-                      ),
-                    ),
-                    SizedBox(width: 12.0),
-                    GestureDetector(
-                      onTap: () {
-                        sendMessage();
-                      },
-                      child: Container(
-                        height: 50.0,
-                        width: 50.0,
-                        decoration: BoxDecoration(
-                            color: Colors.blueAccent,
-                            borderRadius: BorderRadius.circular(50)),
-                        child: Center(
-                            child: Icon(Icons.send, color: Colors.white)),
-                      ),
-                    )
-                  ],
+    return Column(
+      children: <Widget>[
+        Expanded(child: chatMessages()),
+        Container(
+          alignment: Alignment.bottomCenter,
+          width: MediaQuery.of(context).size.width,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+            color: Colors.grey[700],
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: messageEditingController,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                        hintText: "Send a message ...",
+                        hintStyle: TextStyle(
+                          color: Colors.white38,
+                          fontSize: 16,
+                        ),
+                        border: InputBorder.none),
+                  ),
                 ),
-              ),
-            )
-          ],
+                SizedBox(width: 12.0),
+                GestureDetector(
+                  onTap: () {
+                    sendMessage();
+                  },
+                  child: Container(
+                    height: 50.0,
+                    width: 50.0,
+                    decoration: BoxDecoration(
+                        color: Colors.blueAccent,
+                        borderRadius: BorderRadius.circular(50)),
+                    child: Center(child: Icon(Icons.send, color: Colors.white)),
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
