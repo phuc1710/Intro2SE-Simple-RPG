@@ -68,7 +68,7 @@ class _MainPageState extends State<MainPage> {
     List pages = [
       MapWidget(args: args),
       GeneralInventory(args: args),
-      WorldChat(),
+      WorldChat(args: args),
       ViewProfile(
         user: args['user'],
         profileUser: args['user'],
