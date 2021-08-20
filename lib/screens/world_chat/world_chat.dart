@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:simple_rpg/models/chat.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
 
 class WorldChat extends StatefulWidget {
   const WorldChat({Key? key, this.args}) : super(key: key);
@@ -57,15 +59,6 @@ class _WorldChatState extends State<WorldChat> {
             for (var a in listAllChat!) {
               listChat.add(a);
             }
-            // if (listChat.length == 0)
-            //   return Center(
-            //     child: Text(
-            //       'NO MESSAGE',
-            //       style: TextStyle(
-            //         fontSize: 20,
-            //       ),
-            //     ),
-            //   );
             listChat.sort((a, b) {
               var dateA = DateTime.parse(a.sendDate);
               var dateB = DateTime.parse(b.sendDate);
@@ -88,42 +81,79 @@ class _WorldChatState extends State<WorldChat> {
                     alignment: sentByMe(listChat[pos].userName)
                         ? Alignment.centerRight
                         : Alignment.centerLeft,
-                    child: Container(
-                      margin: sentByMe(listChat[pos].userName)
-                          ? EdgeInsets.only(left: 30)
-                          : EdgeInsets.only(right: 30),
-                      padding: EdgeInsets.only(
-                          top: 17, bottom: 17, left: 20, right: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: sentByMe(listChat[pos].userName)
-                            ? BorderRadius.only(
-                                topLeft: Radius.circular(23),
-                                topRight: Radius.circular(23),
-                                bottomLeft: Radius.circular(23))
-                            : BorderRadius.only(
-                                topLeft: Radius.circular(23),
-                                topRight: Radius.circular(23),
-                                bottomRight: Radius.circular(23)),
-                        color: sentByMe(listChat[pos].userName)
-                            ? myMessageColor
-                            : otherMessageColor,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(listChat[pos].userName,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  letterSpacing: -0.5)),
-                          SizedBox(height: 7.0),
-                          Text(listChat[pos].chat,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  fontSize: 15.0, color: Colors.white)),
-                        ],
+                    child: FocusedMenuHolder(
+                      menuWidth: MediaQuery.of(context).size.width * 0.50,
+                      blurSize: 5.0,
+                      menuItemExtent: 45,
+                      menuBoxDecoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(15.0))),
+                      duration: Duration(milliseconds: 100),
+                      animateMenuItems: true,
+                      blurBackgroundColor: Colors.black54,
+                      openWithTap:
+                          true, // Open Focused-Menu on Tap rather than Long Press
+                      menuOffset:
+                          10.0, // Offset value to show menuItem from the selected item
+                      bottomOffsetHeight:
+                          80.0, // Offset height to consider, for showing the menu item ( for example bottom navigation bar), so that the popup menu will be shown on top of selected item.
+                      menuItems: [
+                        FocusedMenuItem(
+                          title: Text("View Profile"),
+                          trailingIcon: Icon(Icons.portrait),
+                          onPressed: () {},
+                        ),
+                        FocusedMenuItem(
+                          title: Text(
+                            isModorAdmin() ? "Ban" : "Report",
+                            style: TextStyle(color: Colors.redAccent),
+                          ),
+                          trailingIcon: Icon(
+                            Icons.report_problem,
+                            color: Colors.redAccent,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ],
+                      onPressed: () {},
+                      child: Container(
+                        margin: sentByMe(listChat[pos].userName)
+                            ? EdgeInsets.only(left: 30)
+                            : EdgeInsets.only(right: 30),
+                        padding: EdgeInsets.only(
+                            top: 17, bottom: 17, left: 20, right: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: sentByMe(listChat[pos].userName)
+                              ? BorderRadius.only(
+                                  topLeft: Radius.circular(23),
+                                  topRight: Radius.circular(23),
+                                  bottomLeft: Radius.circular(23))
+                              : BorderRadius.only(
+                                  topLeft: Radius.circular(23),
+                                  topRight: Radius.circular(23),
+                                  bottomRight: Radius.circular(23)),
+                          color: sentByMe(listChat[pos].userName)
+                              ? myMessageColor
+                              : otherMessageColor,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(listChat[pos].userName,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    letterSpacing: -0.5)),
+                            SizedBox(height: 7.0),
+                            Text(listChat[pos].chat,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: 15.0, color: Colors.white)),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -154,41 +184,77 @@ class _WorldChatState extends State<WorldChat> {
             alignment: sentByMe(listChat[pos].userName)
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
-            child: Container(
-              margin: sentByMe(listChat[pos].userName)
-                  ? EdgeInsets.only(left: 30)
-                  : EdgeInsets.only(right: 30),
-              padding:
-                  EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
-              decoration: BoxDecoration(
-                borderRadius: sentByMe(listChat[pos].userName)
-                    ? BorderRadius.only(
-                        topLeft: Radius.circular(23),
-                        topRight: Radius.circular(23),
-                        bottomLeft: Radius.circular(23))
-                    : BorderRadius.only(
-                        topLeft: Radius.circular(23),
-                        topRight: Radius.circular(23),
-                        bottomRight: Radius.circular(23)),
-                color: sentByMe(listChat[pos].userName)
-                    ? myMessageColor
-                    : otherMessageColor,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(listChat[pos].userName,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          fontSize: 13.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          letterSpacing: -0.5)),
-                  SizedBox(height: 7.0),
-                  Text(listChat[pos].chat,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 15.0, color: Colors.white)),
-                ],
+            child: FocusedMenuHolder(
+              menuWidth: MediaQuery.of(context).size.width * 0.50,
+              blurSize: 5.0,
+              menuItemExtent: 45,
+              menuBoxDecoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              duration: Duration(milliseconds: 100),
+              animateMenuItems: true,
+              blurBackgroundColor: Colors.black54,
+              openWithTap:
+                  true, // Open Focused-Menu on Tap rather than Long Press
+              menuOffset:
+                  10.0, // Offset value to show menuItem from the selected item
+              bottomOffsetHeight:
+                  80.0, // Offset height to consider, for showing the menu item ( for example bottom navigation bar), so that the popup menu will be shown on top of selected item.
+              menuItems: [
+                FocusedMenuItem(
+                  title: Text("View Profile"),
+                  trailingIcon: Icon(Icons.portrait),
+                  onPressed: () {},
+                ),
+                FocusedMenuItem(
+                  title: Text(
+                    isModorAdmin() ? "Ban" : "Report",
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
+                  trailingIcon: Icon(
+                    Icons.report_problem,
+                    color: Colors.redAccent,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
+              onPressed: () {},
+              child: Container(
+                margin: sentByMe(listChat[pos].userName)
+                    ? EdgeInsets.only(left: 30)
+                    : EdgeInsets.only(right: 30),
+                padding:
+                    EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
+                decoration: BoxDecoration(
+                  borderRadius: sentByMe(listChat[pos].userName)
+                      ? BorderRadius.only(
+                          topLeft: Radius.circular(23),
+                          topRight: Radius.circular(23),
+                          bottomLeft: Radius.circular(23))
+                      : BorderRadius.only(
+                          topLeft: Radius.circular(23),
+                          topRight: Radius.circular(23),
+                          bottomRight: Radius.circular(23)),
+                  color: sentByMe(listChat[pos].userName)
+                      ? myMessageColor
+                      : otherMessageColor,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(listChat[pos].userName,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            letterSpacing: -0.5)),
+                    SizedBox(height: 7.0),
+                    Text(listChat[pos].chat,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 15.0, color: Colors.white)),
+                  ],
+                ),
               ),
             ),
           );
