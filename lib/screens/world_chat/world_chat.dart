@@ -46,7 +46,11 @@ class _WorldChatState extends State<WorldChat> {
     if (this.mounted) {
       setState(() {
         var snapshot = event.snapshot;
-        widget.args['user'].fromData(snapshot.value);
+        if (snapshot.key == 'isMod') {
+          widget.args['user'].isMod = snapshot.value;
+        } else if (snapshot.key == 'isAdmin') {
+          widget.args['user'].isAdmin = snapshot.value;
+        }
       });
     }
   }
