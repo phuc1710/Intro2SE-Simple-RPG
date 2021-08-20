@@ -32,13 +32,21 @@ class _WorldChatState extends State<WorldChat> {
   _onAllChatAdded(event) {
     if (this.mounted) {
       setState(() {
+        var newChat = Chat();
+        newChat.fromData(event.snapshot.value);
+        listWorldChat.add(newChat);
+      });
+    }
+  }
+
+  _onRightChange(event) {
+    if (this.mounted) {
+      setState(() {
         var snapshot = event.snapshot;
         widget.args['user'].fromData(snapshot.value);
       });
     }
   }
-
-  _onRightChange(event) {}
 
   Widget asyncChatMessages() {
     return FutureBuilder<List>(
