@@ -144,6 +144,14 @@ class User {
     return dbRef.child('users').child(this.id);
   }
 
+  static getByUserName(username) {
+    return dbRef
+        .child('users')
+        .orderByChild('username')
+        .equalTo(username)
+        .get();
+  }
+
   static getAllUserRef() {
     return dbRef.child('users');
   }

@@ -137,7 +137,9 @@ class _AccountManagementState extends State<AccountManagement> {
                   final searchKey = searchController.text.toLowerCase();
                   var matchUsers = [];
                   for (var user in totalUsers) {
-                    if (user.username.toLowerCase().contains(searchKey)) {
+                    if (user.username
+                        .toLowerCase()
+                        .contains(searchKey.toLowerCase())) {
                       matchUsers.add(user);
                     }
                   }
@@ -277,10 +279,15 @@ class _AccountManagementState extends State<AccountManagement> {
         ),
         Card(
           child: ListTile(
-            leading: Icon(Icons.cake, color: Colors.green,),
-            title: Text('Thời gian tạo TK: ' +
-                detailUser.creationDate
-                    .substring(0, detailUser.creationDate.lastIndexOf('.')),style: TextStyle(color: Colors.green)),
+            leading: Icon(
+              Icons.cake,
+              color: Colors.green,
+            ),
+            title: Text(
+                'Thời gian tạo TK: ' +
+                    detailUser.creationDate
+                        .substring(0, detailUser.creationDate.lastIndexOf('.')),
+                style: TextStyle(color: Colors.green)),
           ),
         )
       ],

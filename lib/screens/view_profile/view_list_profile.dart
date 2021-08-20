@@ -136,7 +136,8 @@ class _ViewListProfileState extends State<ViewListProfile> {
           showUsers = totalUsers;
           var otherUsers = [];
           for (var u in totalUsers) {
-            if (u.username != user.username && u.username.contains(searchKey)) {
+            if (u.username != user.username &&
+                u.username.toLowerCase().contains(searchKey.toLowerCase())) {
               otherUsers.add(u);
             }
           }
@@ -181,6 +182,7 @@ class _ViewListProfileState extends State<ViewListProfile> {
                             user: user,
                             profileUser: listUser,
                             searchKey: searchKey,
+                            isFromChat: false,
                           ),
                         ),
                       );

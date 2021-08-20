@@ -4,16 +4,17 @@ import 'package:simple_rpg/models/user.dart';
 import 'package:simple_rpg/screens/view_profile/view_list_profile.dart';
 
 class ViewProfile extends StatefulWidget {
-  const ViewProfile({Key? key, this.user, this.profileUser, this.searchKey})
+  const ViewProfile(
+      {Key? key, this.user, this.profileUser, this.searchKey, this.isFromChat})
       : super(key: key);
 
-  final user, profileUser, searchKey;
+  final user, profileUser, searchKey, isFromChat;
   @override
   _ViewProfileState createState() => _ViewProfileState();
 }
 
 class _ViewProfileState extends State<ViewProfile> {
-  var user, profileUser, searchKey, allUserRef;
+  var user, profileUser, searchKey, allUserRef, isFromChat;
   @override
   void initState() {
     super.initState();
@@ -22,6 +23,7 @@ class _ViewProfileState extends State<ViewProfile> {
     user = widget.user;
     profileUser = widget.profileUser;
     searchKey = widget.searchKey;
+    isFromChat = widget.isFromChat;
   }
 
   _onAllUserChange(event) {
@@ -38,8 +40,9 @@ class _ViewProfileState extends State<ViewProfile> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> topWidgets = [
-      TextButton(
+    List<Widget> topWidgets = [];
+    if (!isFromChat) {
+      topWidgets.add(TextButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.blue),
           splashFactory: NoSplash.splashFactory,
@@ -56,8 +59,8 @@ class _ViewProfileState extends State<ViewProfile> {
                   builder: (context) =>
                       ViewListProfile(user: user, searchKey: searchKey)));
         },
-      ),
-    ];
+      ));
+    }
     if (user.username != profileUser.username) {
       topWidgets.insert(
           0,
@@ -65,11 +68,13 @@ class _ViewProfileState extends State<ViewProfile> {
             onPressed: () {
               //BACK TO SEARCH SCREEN TO SEE PREVIOUS RESULT
               Navigator.pop(context);
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ViewListProfile(user: user, searchKey: searchKey)));
+              if (!isFromChat) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ViewListProfile(user: user, searchKey: searchKey)));
+              }
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -96,9 +101,11 @@ class _ViewProfileState extends State<ViewProfile> {
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: user.username != profileUser.username
-                ? MainAxisAlignment.spaceBetween
-                : MainAxisAlignment.end,
+            mainAxisAlignment: isFromChat
+                ? MainAxisAlignment.start
+                : (user.username != profileUser.username
+                    ? MainAxisAlignment.spaceBetween
+                    : MainAxisAlignment.end),
             children: topWidgets,
           ),
           Card(

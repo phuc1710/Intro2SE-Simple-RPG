@@ -73,6 +73,7 @@ class _MainPageState extends State<MainPage> {
         user: args['user'],
         profileUser: args['user'],
         searchKey: '',
+        isFromChat: false,
       )
     ];
     // like above, check admin to add more for admin
