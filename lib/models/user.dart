@@ -149,7 +149,7 @@ class User {
         .child('users')
         .orderByChild('username')
         .equalTo(username)
-        .get();
+        .once();
   }
 
   static getAllUserRef() {

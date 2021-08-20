@@ -189,10 +189,14 @@ class _WorldChatState extends State<WorldChat> {
             var data =
                 snapshot.data.value[snapshot.data.value.keys.elementAt(0)];
             oUser.fromData(data);
+            var cUser = widget.args['user'];
+            if (widget.args['user'].username == oUser.username) {
+              cUser = User();
+            }
             return SafeArea(
               child: Scaffold(
                 body: ViewProfile(
-                  user: widget.args['user'],
+                  user: cUser,
                   profileUser: oUser,
                   searchKey: '',
                   isFromChat: true,
