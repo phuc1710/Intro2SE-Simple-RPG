@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:simple_rpg/models/user.dart';
@@ -22,7 +21,7 @@ class _AccountManagementState extends State<AccountManagement> {
   final searchController = TextEditingController();
   User detailUser = User();
   var isInDetail = false;
-  DatabaseReference? allUserRef;
+  var allUserRef;
   static const userPerPage = 10;
   static const topElePadding = 10.0;
   @override
@@ -189,7 +188,7 @@ class _AccountManagementState extends State<AccountManagement> {
   Widget getSync(List<dynamic> list) {
     return list.length == 0
         ? Center(
-            child: Text('NO USER'),
+            child: Text('KHÔNG CÓ NGƯỜI CHƠI NÀO'),
           )
         : ListView.builder(
             itemCount: list.length,

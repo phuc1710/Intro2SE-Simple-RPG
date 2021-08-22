@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:simple_rpg/models/chat.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:simple_rpg/models/report.dart';
 import 'package:simple_rpg/models/user.dart';
 import 'package:simple_rpg/screens/view_profile/view_profile.dart';
 
@@ -47,7 +48,9 @@ class _WorldChatState extends State<WorldChat> {
       setState(() {
         var newChat = Chat();
         newChat.fromData(event.snapshot.value);
-        listWorldChat.add(newChat);
+        try {
+          listWorldChat.add(newChat);
+        } catch (e) {}
       });
     }
   }
@@ -114,12 +117,12 @@ class _WorldChatState extends State<WorldChat> {
                 ? chatBox(listChat, pos)
                 : FocusedMenuHolder(
                     menuWidth: MediaQuery.of(context).size.width * 0.50,
-                    blurSize: 5.0,
+                    blurSize: 2.0,
                     menuItemExtent: 45,
                     menuBoxDecoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                    duration: Duration(milliseconds: 100),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                    duration: Duration(milliseconds: 0),
                     animateMenuItems: true,
                     blurBackgroundColor: Colors.black54,
                     openWithTap:
@@ -154,6 +157,10 @@ class _WorldChatState extends State<WorldChat> {
                         onPressed: () {
                           if (isModorAdmin()) {
                             User.banByUsername(listChat[pos].userName);
+                          } else {
+                            var rp = Report(widget.args['user'].username,
+                                listChat[pos].userName, listChat[pos].chat);
+                            rp.addReport();
                           }
                         },
                       ),

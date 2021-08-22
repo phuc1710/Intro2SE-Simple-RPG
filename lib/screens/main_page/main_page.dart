@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_rpg/screens/account_management/account_management.dart';
 import 'package:simple_rpg/screens/general_inventory/general_inventory.dart';
 import 'package:simple_rpg/screens/map_enemy/map.dart';
+import 'package:simple_rpg/screens/report_chat/report_chat.dart';
 import 'package:simple_rpg/screens/view_profile/view_profile.dart';
 import 'package:simple_rpg/screens/world_chat/world_chat.dart';
 
@@ -53,7 +54,12 @@ class _MainPageState extends State<MainPage> {
         label: 'THÔNG TIN',
       ),
     ];
-    // check admin to add more for admin
+    if (args['user'].isMod) {
+      barItems.add(BottomNavigationBarItem(
+        icon: Icon(Icons.report),
+        label: 'BÁO CÁO',
+      ));
+    }
     if (args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
         icon: Icon(Icons.admin_panel_settings),
@@ -82,7 +88,9 @@ class _MainPageState extends State<MainPage> {
         isFromChat: false,
       )
     ];
-    // like above, check admin to add more for admin
+    if (args['user'].isMod) {
+      pages.add(ReportChat());
+    }
     if (args['user'].isAdmin) {
       pages.add(AccountManagement());
     }
