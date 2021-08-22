@@ -54,7 +54,7 @@ class _MainPageState extends State<MainPage> {
         label: 'THÔNG TIN',
       ),
     ];
-    if (args['user'].isMod) {
+    if (args['user'].isMod || args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
         icon: Icon(Icons.report),
         label: 'BÁO CÁO',
@@ -88,7 +88,7 @@ class _MainPageState extends State<MainPage> {
         isFromChat: false,
       )
     ];
-    if (args['user'].isMod) {
+    if (args['user'].isMod || args['user'].isAdmin) {
       pages.add(ReportChat());
     }
     if (args['user'].isAdmin) {
