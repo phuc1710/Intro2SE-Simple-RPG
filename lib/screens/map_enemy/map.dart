@@ -84,7 +84,7 @@ class _MapWidgetState extends State<MapWidget> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => GameEnemy(
-                          enemyList: map.enemyList.values.toList(),
+                          enemies: map.enemies.values.toList(),
                           args: widget.args,
                           mapLevel: map.level,
                         ),

@@ -9,14 +9,14 @@ class Chat {
 
   toData() {
     return {
-      'userName': this.userName,
+      'username': this.userName,
       'chat': this.chat,
-      'sendDate': this.sendDate
+      'send_date': this.sendDate
     };
   }
 
   addChat() {
-    var record = dbRef.child('listWorldChat').push();
+    var record = dbRef.child('world_chats').push();
     record.set(toData());
   }
 
@@ -27,17 +27,17 @@ class Chat {
   }
 
   fromData(data) {
-    this.userName = data['userName'];
+    this.userName = data['username'];
     this.chat = data['chat'];
-    this.sendDate = data['sendDate'];
+    this.sendDate = data['send_date'];
   }
 
   static getAllChatRef() {
-    return dbRef.child('listWorldChat');
+    return dbRef.child('world_chats');
   }
 
   static Future<List> getListWorldChat() async {
-    var wcRef = await dbRef.child('listWorldChat').get();
+    var wcRef = await dbRef.child('world_chats').get();
     if (wcRef?.value == null) return [];
     return wcRef?.value.entries.map((entry) {
       Chat wchat = Chat();

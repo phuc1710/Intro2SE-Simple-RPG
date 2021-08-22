@@ -11,6 +11,7 @@ class User {
   bool isAdmin = false;
   bool isMod = false;
   bool isVIP = false;
+  bool isBan = false;
   String creationDate = DateTime.now().toString();
   String id = '';
   List listInventory = ["i00", "i06", "i07", "i08", "i09", "i10"];
@@ -31,16 +32,17 @@ class User {
   fromData(data) {
     this.username = data['username'];
     this.password = data['password'];
-    this.isAdmin = data['isAdmin'];
-    this.isMod = data['isMod'];
-    this.isVIP = data['isVIP'];
-    this.creationDate = data['creationDate'];
+    this.isAdmin = data['is_admin'];
+    this.isMod = data['is_mod'];
+    this.isVIP = data['is_VIP'];
+    this.isBan = data['is_ban'];
+    this.creationDate = data['creation_date'];
     this.id = data['id'];
-    this.listInventory = data['listInventory'];
-    this.listEquipped = data['listEquipped'];
+    this.listInventory = data['inventory_item_ids'];
+    this.listEquipped = data['equipped_item_ids'];
     this.level = data['level'];
     this.exp = data['exp'];
-    this.vipExp = data['vipExp'];
+    this.vipExp = data['vip_exp'];
     this.ensurance = data['ensurance'];
     this.atk = data['atk'];
     this.hp = data['hp'];
@@ -51,16 +53,17 @@ class User {
     return {
       'username': this.username,
       'password': this.password,
-      'isAdmin': this.isAdmin,
-      'isMod': this.isMod,
-      'isVIP': this.isVIP,
-      'creationDate': this.creationDate,
+      'is_admin': this.isAdmin,
+      'is_mod': this.isMod,
+      'is_VIP': this.isVIP,
+      'is_ban': this.isBan,
+      'creation_date': this.creationDate,
       'id': this.id,
-      'listInventory': this.listInventory,
-      'listEquipped': this.listEquipped,
+      'inventory_item_ids': this.listInventory,
+      'equipped_item_ids': this.listEquipped,
       'level': this.level,
       'exp': this.exp,
-      'vipExp': this.vipExp,
+      'vip_exp': this.vipExp,
       'ensurance': this.ensurance,
       'atk': this.atk,
       'hp': this.hp,
@@ -76,7 +79,7 @@ class User {
 
   changeMod() {
     this.isMod = !this.isMod;
-    dbRef.child('users').child(this.id).update({'isMod': this.isMod});
+    dbRef.child('users').child(this.id).update({'is_mod': this.isMod});
   }
 
   addItem2ListInv(itemID) {
@@ -103,7 +106,7 @@ class User {
   promoteVIP() {
     // this.isVIP = !this.isVIP;
     this.isVIP = true;
-    dbRef.child('users').child(this.id).update({'isVIP': this.isVIP});
+    dbRef.child('users').child(this.id).update({'is_VIP': this.isVIP});
   }
 
   // input exp of enemy (normal exp)
@@ -144,7 +147,19 @@ class User {
     return dbRef.child('users').child(this.id);
   }
 
-  static getByUserName(username) {
+  static banByUsername(username) {
+    return dbRef
+        .child('users')
+        .orderByChild('username')
+        .equalTo(username)
+        .once()
+        .then((DataSnapshot snapshot) {
+      var banUserId = snapshot.value.keys.elementAt(0);
+      dbRef.child('users').child(banUserId).update({'is_ban': true});
+    });
+  }
+
+  static getByUsername(username) {
     return dbRef
         .child('users')
         .orderByChild('username')

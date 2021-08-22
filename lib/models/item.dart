@@ -40,9 +40,9 @@ class Item {
 
   addItem(key) {
     if (key != null) {
-      dbRef.child('listAllItem').child(key).set(toData());
+      dbRef.child('items').child(key).set(toData());
     } else {
-      dbRef.child('listAllItem').push().set(toData());
+      dbRef.child('items').push().set(toData());
     }
   }
 
@@ -56,11 +56,11 @@ class Item {
   }
 
   static getInvItemsDBRef(id) {
-    return dbRef.child('users').child(id).child('listInventory');
+    return dbRef.child('users').child(id).child('inventory_item_ids');
   }
 
   static Future<List> getlistAllItem() async {
-    var itemRef = await dbRef.child('listAllItem').get();
+    var itemRef = await dbRef.child('items').get();
     return itemRef?.value.entries.map((entry) {
       Item item = Item();
       item.fromData(entry.value);

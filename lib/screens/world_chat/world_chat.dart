@@ -27,7 +27,7 @@ class _WorldChatState extends State<WorldChat> {
     super.initState();
     listWorldChat = Chat.getListWorldChat();
     userRef = widget.args['user'].getUserRef();
-    userRef?.onChildChanged.listen(_onRightChange);
+    userRef?.onChildChanged.listen(_onAttrChange);
     allChatRef = Chat.getAllChatRef();
     allChatRef?.onChildAdded.listen(_onAllChatAdded);
   }
@@ -42,14 +42,16 @@ class _WorldChatState extends State<WorldChat> {
     }
   }
 
-  _onRightChange(event) {
+  _onAttrChange(event) {
     if (this.mounted) {
       setState(() {
         var snapshot = event.snapshot;
-        if (snapshot.key == 'isMod') {
+        if (snapshot.key == 'is_mod') {
           widget.args['user'].isMod = snapshot.value;
-        } else if (snapshot.key == 'isAdmin') {
+        } else if (snapshot.key == 'is_admin') {
           widget.args['user'].isAdmin = snapshot.value;
+        } else if (snapshot.key == 'is_ban') {
+          widget.args['user'].isBan = snapshot.value;
         }
       });
     }
@@ -98,93 +100,102 @@ class _WorldChatState extends State<WorldChat> {
             alignment: sentByMe(listChat[pos].userName)
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
-            child: FocusedMenuHolder(
-              menuWidth: MediaQuery.of(context).size.width * 0.50,
-              blurSize: 5.0,
-              menuItemExtent: 45,
-              menuBoxDecoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(15.0))),
-              duration: Duration(milliseconds: 100),
-              animateMenuItems: true,
-              blurBackgroundColor: Colors.black54,
-              openWithTap:
-                  true, // Open Focused-Menu on Tap rather than Long Press
-              menuOffset:
-                  10.0, // Offset value to show menuItem from the selected item
-              bottomOffsetHeight:
-                  80.0, // Offset height to consider, for showing the menu item ( for example bottom navigation bar), so that the popup menu will be shown on top of selected item.
-              menuItems: [
-                FocusedMenuItem(
-                  title: Text("View Profile"),
-                  trailingIcon: Icon(Icons.portrait),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            viewOtherProfile(listChat[pos].userName),
+            child: sentByMe(listChat[pos].userName)
+                ? chatBox(listChat, pos)
+                : FocusedMenuHolder(
+                    menuWidth: MediaQuery.of(context).size.width * 0.50,
+                    blurSize: 5.0,
+                    menuItemExtent: 45,
+                    menuBoxDecoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                    duration: Duration(milliseconds: 100),
+                    animateMenuItems: true,
+                    blurBackgroundColor: Colors.black54,
+                    openWithTap:
+                        true, // Open Focused-Menu on Tap rather than Long Press
+                    menuOffset:
+                        10.0, // Offset value to show menuItem from the selected item
+                    bottomOffsetHeight:
+                        80.0, // Offset height to consider, for showing the menu item ( for example bottom navigation bar), so that the popup menu will be shown on top of selected item.
+                    menuItems: [
+                      FocusedMenuItem(
+                        title: Text("View Profile"),
+                        trailingIcon: Icon(Icons.portrait),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  viewOtherProfile(listChat[pos].userName),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                FocusedMenuItem(
-                  title: Text(
-                    isModorAdmin() ? "Ban" : "Report",
-                    style: TextStyle(color: Colors.redAccent),
+                      FocusedMenuItem(
+                        title: Text(
+                          isModorAdmin() ? "Ban" : "Report",
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                        trailingIcon: Icon(
+                          Icons.report_problem,
+                          color: Colors.redAccent,
+                        ),
+                        onPressed: () {
+                          if (isModorAdmin()) {
+                            User.banByUsername(listChat[pos].userName);
+                          }
+                        },
+                      ),
+                    ],
+                    onPressed: () {},
+                    child: chatBox(listChat, pos),
                   ),
-                  trailingIcon: Icon(
-                    Icons.report_problem,
-                    color: Colors.redAccent,
-                  ),
-                  onPressed: () {},
-                ),
-              ],
-              onPressed: () {},
-              child: Container(
-                margin: sentByMe(listChat[pos].userName)
-                    ? EdgeInsets.only(left: 30)
-                    : EdgeInsets.only(right: 30),
-                padding:
-                    EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
-                decoration: BoxDecoration(
-                  borderRadius: sentByMe(listChat[pos].userName)
-                      ? BorderRadius.only(
-                          topLeft: Radius.circular(23),
-                          topRight: Radius.circular(23),
-                          bottomLeft: Radius.circular(23))
-                      : BorderRadius.only(
-                          topLeft: Radius.circular(23),
-                          topRight: Radius.circular(23),
-                          bottomRight: Radius.circular(23)),
-                  color: sentByMe(listChat[pos].userName)
-                      ? myMessageColor
-                      : otherMessageColor,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(listChat[pos].userName,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            letterSpacing: -0.5)),
-                    SizedBox(height: 7.0),
-                    Text(listChat[pos].chat,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 15.0, color: Colors.white)),
-                  ],
-                ),
-              ),
-            ),
           );
         });
   }
 
+  Container chatBox(listChat, int pos) {
+    return Container(
+      margin: sentByMe(listChat[pos].userName)
+          ? EdgeInsets.only(left: 30)
+          : EdgeInsets.only(right: 30),
+      padding: EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
+      decoration: BoxDecoration(
+        borderRadius: sentByMe(listChat[pos].userName)
+            ? BorderRadius.only(
+                topLeft: Radius.circular(23),
+                topRight: Radius.circular(23),
+                bottomLeft: Radius.circular(23))
+            : BorderRadius.only(
+                topLeft: Radius.circular(23),
+                topRight: Radius.circular(23),
+                bottomRight: Radius.circular(23)),
+        color: sentByMe(listChat[pos].userName)
+            ? myMessageColor
+            : otherMessageColor,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(listChat[pos].userName,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  letterSpacing: -0.5)),
+          SizedBox(height: 7.0),
+          Text(listChat[pos].chat,
+              textAlign: TextAlign.start,
+              style: TextStyle(fontSize: 15.0, color: Colors.white)),
+        ],
+      ),
+    );
+  }
+
   FutureBuilder viewOtherProfile(otherUsername) {
-    var otherUser = User.getByUserName(otherUsername);
+    var otherUser = User.getByUsername(otherUsername);
     return FutureBuilder(
         future: otherUser,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -238,53 +249,75 @@ class _WorldChatState extends State<WorldChat> {
     return user.isMod || user.isAdmin;
   }
 
+  isBan() {
+    return widget.args['user'].isBan;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-            child:
-                isInit ? asyncChatMessages() : syncChatMessages(listWorldChat)),
-        Container(
-          alignment: Alignment.bottomCenter,
-          width: MediaQuery.of(context).size.width,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-            color: otherMessageColor,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: messageEditingController,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                        hintText: "Send a message ...",
-                        hintStyle: TextStyle(
-                          color: Colors.white38,
-                          fontSize: 16,
-                        ),
-                        border: InputBorder.none),
+    return isBan()
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.report, color: Colors.red[400], size: 100),
+                Text(
+                  'BANNED',
+                  style: TextStyle(
+                    fontSize: 30,
                   ),
                 ),
-                SizedBox(width: 12.0),
-                GestureDetector(
-                  onTap: () {
-                    sendMessage();
-                  },
-                  child: Container(
-                    height: 50.0,
-                    width: 50.0,
-                    decoration: BoxDecoration(
-                        color: myMessageColor,
-                        borderRadius: BorderRadius.circular(50)),
-                    child: Center(child: Icon(Icons.send, color: Colors.white)),
-                  ),
-                )
               ],
             ),
-          ),
-        ),
-      ],
-    );
+          )
+        : Column(
+            children: <Widget>[
+              Expanded(
+                  child: isInit
+                      ? asyncChatMessages()
+                      : syncChatMessages(listWorldChat)),
+              Container(
+                alignment: Alignment.bottomCenter,
+                width: MediaQuery.of(context).size.width,
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                  color: otherMessageColor,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          controller: messageEditingController,
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                              hintText: "Send a message ...",
+                              hintStyle: TextStyle(
+                                color: Colors.white38,
+                                fontSize: 16,
+                              ),
+                              border: InputBorder.none),
+                        ),
+                      ),
+                      SizedBox(width: 12.0),
+                      GestureDetector(
+                        onTap: () {
+                          sendMessage();
+                        },
+                        child: Container(
+                          height: 50.0,
+                          width: 50.0,
+                          decoration: BoxDecoration(
+                              color: myMessageColor,
+                              borderRadius: BorderRadius.circular(50)),
+                          child: Center(
+                              child: Icon(Icons.send, color: Colors.white)),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
   }
 }
