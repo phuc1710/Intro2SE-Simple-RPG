@@ -27,22 +27,39 @@ class _ReportChatState extends State<ReportChat> {
   void initState() {
     super.initState();
     allReportRef = Report.getAllReportRef();
-    // allReportRef?.onChildChanged.listen(_onReportAddedorRemoved);
-    reportGeneral = getAccManGeneral(Report.getListReport());
+    allReportRef?.onChildAdded.listen(_onReportAdded);
+    allReportRef?.onChildRemoved.listen(_onReportRemoved);
+    reportGeneral = getReportGeneral(Report.getListReport());
   }
 
-  // _onReportAddedorRemoved(event) {
-  //   if (this.mounted) {
-  //     setState(() {});
-  //   }
-  // }
+  _onReportAdded(event) {
+    if (this.mounted) {
+      setState(() {
+        var newReport = Report.fromDB(event.snapshot.value);
+        try {
+          totalReports.add(newReport);
+          showReports = totalReports;
+          reportGeneral = getReportGeneral(totalReports);
+        } catch (e) {}
+      });
+    }
+  }
+
+  _onReportRemoved(event) {
+    if (this.mounted) {
+      setState(() {
+        var removedReport = Report.fromDB(event.snapshot.value);
+        removeAndUpdate(removedReport);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return reportGeneral;
   }
 
-  Column getAccManGeneral(dynamic list) {
+  Column getReportGeneral(dynamic list) {
     return Column(
       children: [
         Expanded(
@@ -61,7 +78,7 @@ class _ReportChatState extends State<ReportChat> {
                     setState(() {
                       page--;
                       if (page >= 0)
-                        reportGeneral = getAccManGeneral(getPageUsers());
+                        reportGeneral = getReportGeneral(getPageUsers());
                       else
                         page = 0;
                     });
@@ -75,7 +92,7 @@ class _ReportChatState extends State<ReportChat> {
                     setState(() {
                       page++;
                       if (page <= getLastPage())
-                        reportGeneral = getAccManGeneral(getPageUsers());
+                        reportGeneral = getReportGeneral(getPageUsers());
                       else
                         page = getLastPage();
                     });
@@ -138,14 +155,14 @@ class _ReportChatState extends State<ReportChat> {
                     }
                     showReports = matchReports;
                     page = 0;
-                    reportGeneral = getAccManGeneral(getPageUsers());
+                    reportGeneral = getReportGeneral(getPageUsers());
                   }
                 } else {
                   searchController.clear();
                   isSearch = !isSearch;
                   page = 0;
                   showReports = totalReports;
-                  reportGeneral = getAccManGeneral(getPageUsers());
+                  reportGeneral = getReportGeneral(getPageUsers());
                 }
               });
             },
@@ -175,17 +192,10 @@ class _ReportChatState extends State<ReportChat> {
 
   removeAndUpdate(listReport) {
     removeReport(listReport);
-    listReport.remove();
-    reportGeneral = getAccManGeneral(getPageUsers());
+    reportGeneral = getReportGeneral(totalReports);
   }
 
   removeReport(listReport) {
-    for (var i = 0; i < showReports.length; ++i) {
-      if (listReport.compare(showReports[i])) {
-        showReports.removeAt(i);
-        break;
-      }
-    }
     for (var i = 0; i < totalReports.length; ++i) {
       if (listReport.compare(totalReports[i])) {
         totalReports.removeAt(i);
@@ -236,7 +246,7 @@ class _ReportChatState extends State<ReportChat> {
                         onPressed: () {
                           setState(() {
                             User.banByUsername(listReport.toUsername);
-                            removeAndUpdate(listReport);
+                            listReport.remove();
                           });
                         },
                       ),
@@ -257,7 +267,7 @@ class _ReportChatState extends State<ReportChat> {
                         ),
                         onPressed: () {
                           setState(() {
-                            removeAndUpdate(listReport);
+                            listReport.remove();
                           });
                         },
                       )
