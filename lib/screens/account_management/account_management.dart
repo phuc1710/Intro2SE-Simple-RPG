@@ -63,7 +63,7 @@ class _AccountManagementState extends State<AccountManagement> {
           child: searchBar(),
         ),
         Expanded(
-          flex: 7,
+          flex: 6,
           child: isInit ? getAsync(list) : getSync(list),
         ),
         Expanded(

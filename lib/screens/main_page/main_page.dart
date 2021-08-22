@@ -15,13 +15,19 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int index = 0;
+
+  isResize() {
+    var worldChatIndex = 2;
+    return index == worldChatIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
     // get args passed
     final args = widget.args;
     return SafeArea(
       child: Scaffold(
-        // resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: isResize(),
         bottomNavigationBar: buildBottomBar(args),
         body: buildPages(args),
       ),

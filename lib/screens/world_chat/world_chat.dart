@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:simple_rpg/models/chat.dart';
@@ -22,6 +21,8 @@ class _WorldChatState extends State<WorldChat> {
   final otherMessageColor = Color(0xFF858585);
   final myMessageColor = Colors.blueAccent;
   final maxMessage = 30;
+  var chatInputHint = 'Gửi tin nhắn...';
+  var chatFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -30,6 +31,15 @@ class _WorldChatState extends State<WorldChat> {
     userRef?.onChildChanged.listen(_onAttrChange);
     allChatRef = Chat.getAllChatRef();
     allChatRef?.onChildAdded.listen(_onAllChatAdded);
+    chatFocusNode.addListener(() {
+      setState(() {
+        if (chatFocusNode.hasFocus) {
+          chatInputHint = '';
+        } else {
+          chatInputHint = 'Gửi tin nhắn...';
+        }
+      });
+    });
   }
 
   _onAllChatAdded(event) {
@@ -120,7 +130,7 @@ class _WorldChatState extends State<WorldChat> {
                         80.0, // Offset height to consider, for showing the menu item ( for example bottom navigation bar), so that the popup menu will be shown on top of selected item.
                     menuItems: [
                       FocusedMenuItem(
-                        title: Text("View Profile"),
+                        title: Text("Xem thông tin"),
                         trailingIcon: Icon(Icons.portrait),
                         onPressed: () {
                           Navigator.push(
@@ -134,7 +144,7 @@ class _WorldChatState extends State<WorldChat> {
                       ),
                       FocusedMenuItem(
                         title: Text(
-                          isModorAdmin() ? "Ban" : "Report",
+                          isModorAdmin() ? "Cấm" : "Báo Cáo",
                           style: TextStyle(color: Colors.redAccent),
                         ),
                         trailingIcon: Icon(
@@ -277,44 +287,41 @@ class _WorldChatState extends State<WorldChat> {
                       ? asyncChatMessages()
                       : syncChatMessages(listWorldChat)),
               Container(
-                alignment: Alignment.bottomCenter,
-                width: MediaQuery.of(context).size.width,
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-                  color: otherMessageColor,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: messageEditingController,
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                              hintText: "Send a message ...",
-                              hintStyle: TextStyle(
-                                color: Colors.white38,
-                                fontSize: 16,
-                              ),
-                              border: InputBorder.none),
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                color: otherMessageColor,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        focusNode: chatFocusNode,
+                        controller: messageEditingController,
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: chatInputHint,
+                          hintStyle: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 16,
+                          ),
+                          border: InputBorder.none,
                         ),
                       ),
-                      SizedBox(width: 12.0),
-                      GestureDetector(
-                        onTap: () {
-                          sendMessage();
-                        },
-                        child: Container(
-                          height: 50.0,
-                          width: 50.0,
-                          decoration: BoxDecoration(
-                              color: myMessageColor,
-                              borderRadius: BorderRadius.circular(50)),
-                          child: Center(
-                              child: Icon(Icons.send, color: Colors.white)),
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                    SizedBox(width: 12.0),
+                    GestureDetector(
+                      onTap: () {
+                        sendMessage();
+                      },
+                      child: Container(
+                        height: 50.0,
+                        width: 50.0,
+                        decoration: BoxDecoration(
+                            color: myMessageColor,
+                            borderRadius: BorderRadius.circular(50)),
+                        child: Center(
+                            child: Icon(Icons.send, color: Colors.white)),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ],

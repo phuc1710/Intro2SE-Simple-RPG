@@ -47,9 +47,11 @@ class _ViewListProfileState extends State<ViewListProfile> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      body: getViewProList(),
-    ));
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: getViewProList(),
+      ),
+    );
   }
 
   Column getViewProList() {
