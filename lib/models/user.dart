@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:math';
 
+import 'package:ntp/ntp.dart';
+
 var dbRef = FirebaseDatabase.instance.reference();
 const MAX_ENSURANCE = 10;
 const TOBE_VIP = 100; // amount of vipExp to be a VIP
@@ -12,6 +14,8 @@ class User {
   bool isMod = false;
   bool isVIP = false;
   bool isBan = false;
+  int banCount = 0;
+  String banExpired = '';
   String creationDate = DateTime.now().toString();
   String id = '';
   List listInventory = ["i00", "i06", "i07", "i08", "i09", "i10"];
@@ -47,6 +51,8 @@ class User {
     this.atk = data['atk'];
     this.hp = data['hp'];
     this.gold = data['gold'];
+    this.banCount = data['ban_count'];
+    this.banExpired = data['ban_expired'];
   }
 
   toData() {
@@ -67,7 +73,9 @@ class User {
       'ensurance': this.ensurance,
       'atk': this.atk,
       'hp': this.hp,
-      'gold': this.gold
+      'gold': this.gold,
+      'ban_count': this.banCount,
+      'ban_expired': this.banExpired,
     };
   }
 
@@ -147,15 +155,49 @@ class User {
     return dbRef.child('users').child(this.id);
   }
 
-  static banByUsername(username) {
+  getNormalBanTime() {
+    // The unit is Day
+    var banLevelTimes = [1, 7, 30, 365];
+    var len = banLevelTimes.length;
+    var banDay;
+    if (this.banCount >= len)
+      banDay = 365 * pow(2, this.banCount + 1 - len);
+    else
+      banDay = banLevelTimes[this.banCount];
+    return banDay;
+  }
+
+  unBan() {
+    this.isBan = false;
+    dbRef
+        .child('users')
+        .child(this.id)
+        .update({'is_ban': false, 'ban_expired': ""});
+  }
+
+  static banByUsername(username, [time]) {
     return dbRef
         .child('users')
         .orderByChild('username')
         .equalTo(username)
         .once()
         .then((DataSnapshot snapshot) {
-      var banUserId = snapshot.value.keys.elementAt(0);
-      dbRef.child('users').child(banUserId).update({'is_ban': true});
+      var banUser = User();
+      banUser.fromData(snapshot.value[snapshot.value.keys.elementAt(0)]);
+      if (time == null) {
+        time = banUser.getNormalBanTime();
+      }
+      var curDate = NTP.now();
+      curDate.then((value) {
+        //CHANGE TO minutes TO TEST
+        value = value.add(Duration(days: time));
+        var strValue = value.toUtc().toString();
+        dbRef.child('users').child(banUser.id).update({
+          'is_ban': true,
+          'ban_expired': strValue,
+          'ban_count': ++banUser.banCount
+        });
+      });
     });
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_rpg/models/user.dart';
 import 'package:simple_rpg/screens/account_management/account_management.dart';
 import 'package:simple_rpg/screens/general_inventory/general_inventory.dart';
 import 'package:simple_rpg/screens/map_enemy/map.dart';
@@ -16,10 +17,22 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int index = 0;
+  var allUserRef;
 
   isResize() {
     var worldChatIndex = 2;
     return index == worldChatIndex;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    allUserRef = User.getAllUserRef();
+    allUserRef?.onChildChanged.listen(_onAllUserChange);
+  }
+
+  _onAllUserChange(event) {
+    widget.args['user'].fromData(event.snapshot.value);
   }
 
   @override

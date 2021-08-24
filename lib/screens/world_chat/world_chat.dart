@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:ntp/ntp.dart';
 import 'package:simple_rpg/models/chat.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -23,7 +26,6 @@ class _WorldChatState extends State<WorldChat> {
   final myMessageColor = Colors.blueAccent;
   final maxMessage = 30;
   var chatInputHint = 'Gửi tin nhắn...';
-  var chatFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -32,15 +34,6 @@ class _WorldChatState extends State<WorldChat> {
     userRef?.onChildChanged.listen(_onAttrChange);
     allChatRef = Chat.getAllChatRef();
     allChatRef?.onChildAdded.listen(_onAllChatAdded);
-    chatFocusNode.addListener(() {
-      setState(() {
-        if (chatFocusNode.hasFocus) {
-          chatInputHint = '';
-        } else {
-          chatInputHint = 'Gửi tin nhắn...';
-        }
-      });
-    });
   }
 
   _onAllChatAdded(event) {
@@ -65,6 +58,8 @@ class _WorldChatState extends State<WorldChat> {
           widget.args['user'].isAdmin = snapshot.value;
         } else if (snapshot.key == 'is_ban') {
           widget.args['user'].isBan = snapshot.value;
+        } else if (snapshot.key == 'ban_expired') {
+          widget.args['user'].banExpired = snapshot.value;
         }
       });
     }
@@ -273,20 +268,7 @@ class _WorldChatState extends State<WorldChat> {
   @override
   Widget build(BuildContext context) {
     return isBan()
-        ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.report, color: Colors.red[400], size: 100),
-                Text(
-                  'BANNED',
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                ),
-              ],
-            ),
-          )
+        ? banScreen()
         : Column(
             children: <Widget>[
               Expanded(
@@ -300,7 +282,6 @@ class _WorldChatState extends State<WorldChat> {
                   children: <Widget>[
                     Expanded(
                       child: TextField(
-                        focusNode: chatFocusNode,
                         controller: messageEditingController,
                         style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
@@ -333,5 +314,50 @@ class _WorldChatState extends State<WorldChat> {
               ),
             ],
           );
+  }
+
+  FutureBuilder banScreen() {
+    return FutureBuilder(
+        future: NTP.now(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var curDate = snapshot.data.toUtc();
+            var expiredDate = DateTime.parse(widget.args['user'].banExpired);
+            var banRemDur = expiredDate.difference(curDate);
+            if (banRemDur.isNegative) {
+              widget.args['user'].unBan();
+            }
+            Future.delayed(banRemDur, () {
+              widget.args['user'].unBan();
+            });
+            var localExpiredDateStr = expiredDate.toLocal().toString();
+            localExpiredDateStr = localExpiredDateStr.substring(
+                0, localExpiredDateStr.lastIndexOf('.'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.report, color: Colors.red[400], size: 100),
+                  Text(
+                    'BANNED',
+                    style: TextStyle(
+                      fontSize: 30,
+                    ),
+                  ),
+                  Text(
+                    "Expire at: $localExpiredDateStr",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
+
+          return SpinKitRing(
+            color: Colors.blue,
+          );
+        });
   }
 }
