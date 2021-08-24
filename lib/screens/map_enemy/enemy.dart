@@ -32,18 +32,22 @@ class GameEnemy extends StatelessWidget {
                     color: Colors.red,
                     size: 15.0,
                   ),
-                  Text(
-                    ' HP: ${enemy.hp}     ',
-                    style: TextStyle(color: Colors.red),
+                  Expanded(
+                    child: Text(
+                      ' HP: ${enemy.hp}     ',
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
                   Icon(
                     Icons.local_fire_department,
                     color: Colors.green,
                     size: 15.0,
                   ),
-                  Text(
-                    ' ATK: ${enemy.atk}',
-                    style: TextStyle(color: Colors.green),
+                  Expanded(
+                    child: Text(
+                      ' ATK: ${enemy.atk}',
+                      style: TextStyle(color: Colors.green),
+                    ),
                   ),
                 ],
               ),
