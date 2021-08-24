@@ -21,6 +21,7 @@ class _ReportChatState extends State<ReportChat> {
   final searchController = TextEditingController();
   var isInDetail = false;
   var allReportRef;
+  var searchFocusNode = FocusNode();
   static const reportPerPage = 5;
   static const topElePadding = 10.0;
   @override
@@ -59,7 +60,7 @@ class _ReportChatState extends State<ReportChat> {
     return reportGeneral;
   }
 
-  Column getReportGeneral(dynamic list) {
+  Widget getReportGeneral(dynamic list) {
     return Column(
       children: [
         Expanded(
@@ -118,6 +119,7 @@ class _ReportChatState extends State<ReportChat> {
                 child: TextField(
                   enabled: !isSearch,
                   controller: searchController,
+                  focusNode: searchFocusNode,
                 ),
               ),
             ),
@@ -204,39 +206,54 @@ class _ReportChatState extends State<ReportChat> {
     }
   }
 
+  unFocusSearch() {
+    if (searchFocusNode.hasFocus) {
+      searchFocusNode.unfocus();
+    }
+  }
+
   Widget getSync(List<dynamic> list) {
     return list.length == 0
-        ? Center(
-            child: Text('KHÔNG CÓ BÁO CÁO HAY YÊU CẦU NÀO'),
+        ? GestureDetector(
+            child: Container(
+              color: Colors.white,
+              alignment: Alignment.center,
+              child: Text('KHÔNG CÓ BÁO CÁO HAY YÊU CẦU NÀO'),
+            ),
+            onTap: unFocusSearch,
           )
-        : ListView.builder(
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              Report listReport = list[index];
-              return Card(
-                child: ListTile(
-                  leading: Icon(
-                    listReport.isRequest ? Icons.article : Icons.feedback,
-                    color:
-                        listReport.isRequest ? Colors.green : Colors.amber[700],
-                    size: 40.0,
+        : GestureDetector(
+            onTap: unFocusSearch,
+            child: ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                Report listReport = list[index];
+                return Card(
+                  child: ListTile(
+                    leading: Icon(
+                      listReport.isRequest ? Icons.article : Icons.feedback,
+                      color: listReport.isRequest
+                          ? Colors.green
+                          : Colors.amber[700],
+                      size: 40.0,
+                    ),
+                    title: Text(
+                      listReport.isRequest
+                          ? listReport.fromUsername
+                          : listReport.toUsername,
+                      style: TextStyle(color: Colors.indigo),
+                    ),
+                    subtitle: Text(
+                      listReport.chat,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    trailing: listReport.isRequest
+                        ? requestMenu(listReport, context)
+                        : reportMenu(listReport, context),
                   ),
-                  title: Text(
-                    listReport.isRequest
-                        ? listReport.fromUsername
-                        : listReport.toUsername,
-                    style: TextStyle(color: Colors.indigo),
-                  ),
-                  subtitle: Text(
-                    listReport.chat,
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                  trailing: listReport.isRequest
-                      ? requestMenu(listReport, context)
-                      : reportMenu(listReport, context),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
   }
 
