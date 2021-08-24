@@ -32,7 +32,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   _onAllUserChange(event) {
-    widget.args['user'].fromData(event.snapshot.value);
+    if (event.snapshot.value['username'] == widget.args['user'].username)
+      widget.args['user'].fromData(event.snapshot.value);
   }
 
   @override
