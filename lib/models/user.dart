@@ -14,6 +14,7 @@ class User {
   bool isMod = false;
   bool isVIP = false;
   bool isBan = false;
+  bool isRequest = false;
   int banCount = 0;
   String banExpired = '';
   String creationDate = DateTime.now().toString();
@@ -53,6 +54,7 @@ class User {
     this.gold = data['gold'];
     this.banCount = data['ban_count'];
     this.banExpired = data['ban_expired'];
+    this.isRequest = data['is_request'];
   }
 
   toData() {
@@ -76,6 +78,7 @@ class User {
       'gold': this.gold,
       'ban_count': this.banCount,
       'ban_expired': this.banExpired,
+      'is_request': this.isRequest
     };
   }
 
@@ -168,11 +171,14 @@ class User {
   }
 
   unBan() {
-    this.isBan = false;
     dbRef
         .child('users')
         .child(this.id)
-        .update({'is_ban': false, 'ban_expired': ""});
+        .update({'is_ban': false, 'ban_expired': "", 'is_request': false});
+  }
+
+  request() {
+    dbRef.child('users').child(this.id).update({'is_request': true});
   }
 
   static banByUsername(username, [time]) {

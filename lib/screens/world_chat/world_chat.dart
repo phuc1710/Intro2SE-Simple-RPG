@@ -26,6 +26,7 @@ class _WorldChatState extends State<WorldChat> {
   final myMessageColor = Colors.blueAccent;
   final maxMessage = 30;
   var chatInputHint = 'Gửi tin nhắn...';
+  var isRequest = false;
   @override
   void initState() {
     super.initState();
@@ -60,6 +61,8 @@ class _WorldChatState extends State<WorldChat> {
           widget.args['user'].isBan = snapshot.value;
         } else if (snapshot.key == 'ban_expired') {
           widget.args['user'].banExpired = snapshot.value;
+        } else if (snapshot.key == 'is_request') {
+          widget.args['user'].isRequest = snapshot.value;
         }
       });
     }
@@ -347,6 +350,77 @@ class _WorldChatState extends State<WorldChat> {
                     style: TextStyle(
                       fontSize: 20,
                     ),
+                  ),
+                  GestureDetector(
+                    child: Container(
+                      decoration: BoxDecoration(color: Colors.green),
+                      child: Text(
+                        isRequest ? 'ĐÃ YÊU CẦU' : 'YÊU CẦU GỠ CẤM',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onTap: () {
+                      if (!isRequest) {
+                        const MINREQSTR = 20;
+                        const EMPTY = 'empty';
+                        const SMALLERMIN = 'smaller';
+                        Future<String?> rs = showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            var requestInputController =
+                                TextEditingController();
+                            return AlertDialog(
+                              title: Text('LỜI NHẮN'),
+                              content: TextField(
+                                controller: requestInputController,
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    var value = requestInputController.text;
+                                    if (value == '') {
+                                      Navigator.pop(context, EMPTY);
+                                    } else if (value.length < MINREQSTR) {
+                                      Navigator.pop(context, SMALLERMIN);
+                                    } else
+                                      Navigator.pop(context, value);
+                                  },
+                                  child: Text(
+                                    'GỬI',
+                                    style: TextStyle(color: Colors.green),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, null),
+                                  child: Text(
+                                    'BỎ',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        rs.then((value) {
+                          switch (value) {
+                            case EMPTY:
+                              showInvalidAlert('KHÔNG ĐƯỢC BỎ TRỐNG LỜI NHẮN');
+                              break;
+                            case SMALLERMIN:
+                              showInvalidAlert(
+                                  'LỜI NHẮN TỐI THIỂU $MINREQSTR KÍ TỰ');
+                              break;
+                            case null:
+                              break;
+                            default:
+                              widget.args['user'].request();
+                              var rq = Report(widget.args['user'].username, '',
+                                  value, true);
+                              rq.addReport();
+                          }
+                        });
+                      }
+                    },
                   )
                 ],
               ),
@@ -357,5 +431,43 @@ class _WorldChatState extends State<WorldChat> {
             color: Colors.blue,
           );
         });
+  }
+
+  showInvalidAlert(message) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.only(top: 20),
+          content: Column(
+            children: [
+              Icon(
+                Icons.warning_amber,
+                color: Colors.red,
+                size: 50,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'LỜI NHẮN NHẬP KHÔNG HỢP LỆ',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              )
+            ],
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

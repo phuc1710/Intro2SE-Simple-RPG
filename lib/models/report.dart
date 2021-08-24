@@ -7,11 +7,15 @@ class Report {
   String toUsername = "";
   String chat = "";
   String id = "";
+  bool isRequest = false;
 
-  Report(fromUsername, toUsername, chat) {
+  Report(fromUsername, toUsername, chat, [isRequest]) {
     this.fromUsername = fromUsername;
     this.toUsername = toUsername;
     this.chat = chat;
+    if (isRequest != null) {
+      this.isRequest = isRequest;
+    }
   }
 
   Report.fromDB(data) {
@@ -19,6 +23,7 @@ class Report {
     this.toUsername = data['to_username'];
     this.chat = data['chat'];
     this.id = data['id'];
+    this.isRequest = data['is_request'];
   }
 
   toData() {
@@ -27,6 +32,7 @@ class Report {
       'to_username': this.toUsername,
       'chat': this.chat,
       'id': this.id,
+      'is_request': this.isRequest
     };
   }
 
