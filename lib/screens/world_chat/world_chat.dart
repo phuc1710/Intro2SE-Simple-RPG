@@ -353,17 +353,23 @@ class _WorldChatState extends State<WorldChat> {
                   ),
                   GestureDetector(
                     child: Container(
-                      decoration: BoxDecoration(color: Colors.green),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 20.0),
+                      margin: EdgeInsets.symmetric(vertical: 10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
                       child: Text(
-                        isRequest ? 'ĐÃ YÊU CẦU' : 'YÊU CẦU GỠ CẤM',
+                        widget.args['user'].isRequest
+                            ? 'ĐÃ YÊU CẦU'
+                            : 'YÊU CẦU GỠ CẤM',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                     onTap: () {
-                      if (!isRequest) {
-                        const MINREQSTR = 20;
+                      if (!widget.args['user'].isRequest) {
                         const EMPTY = 'empty';
-                        const SMALLERMIN = 'smaller';
                         Future<String?> rs = showDialog<String>(
                           context: context,
                           builder: (BuildContext context) {
@@ -380,21 +386,12 @@ class _WorldChatState extends State<WorldChat> {
                                     var value = requestInputController.text;
                                     if (value == '') {
                                       Navigator.pop(context, EMPTY);
-                                    } else if (value.length < MINREQSTR) {
-                                      Navigator.pop(context, SMALLERMIN);
                                     } else
                                       Navigator.pop(context, value);
                                   },
                                   child: Text(
                                     'GỬI',
                                     style: TextStyle(color: Colors.green),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, null),
-                                  child: Text(
-                                    'BỎ',
-                                    style: TextStyle(color: Colors.grey),
                                   ),
                                 ),
                               ],
@@ -405,10 +402,6 @@ class _WorldChatState extends State<WorldChat> {
                           switch (value) {
                             case EMPTY:
                               showInvalidAlert('KHÔNG ĐƯỢC BỎ TRỐNG LỜI NHẮN');
-                              break;
-                            case SMALLERMIN:
-                              showInvalidAlert(
-                                  'LỜI NHẮN TỐI THIỂU $MINREQSTR KÍ TỰ');
                               break;
                             case null:
                               break;

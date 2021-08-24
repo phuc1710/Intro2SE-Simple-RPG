@@ -216,119 +216,150 @@ class _ReportChatState extends State<ReportChat> {
               return Card(
                 child: ListTile(
                   leading: Icon(
-                    Icons.feedback,
-                    color: Colors.amber[700],
+                    listReport.isRequest ? Icons.article : Icons.feedback,
+                    color:
+                        listReport.isRequest ? Colors.green : Colors.amber[700],
                     size: 40.0,
                   ),
                   title: Text(
-                    listReport.toUsername,
+                    listReport.isRequest
+                        ? listReport.fromUsername
+                        : listReport.toUsername,
                     style: TextStyle(color: Colors.indigo),
                   ),
                   subtitle: Text(
                     listReport.chat,
                     style: TextStyle(color: Colors.grey[600]),
                   ),
-                  trailing: PopupMenuButton<String>(
-                    itemBuilder: (BuildContext context) => [
-                      PopupMenuItem<String>(
-                        value: 'normal-ban',
-                        child: Text(
-                          'CẤM',
-                          style: TextStyle(color: Colors.amber),
-                        ),
-                      ),
-                      PopupMenuItem<String>(
-                        value: 'custom-ban',
-                        child: Text(
-                          'CẤM TÙY CHỈNH',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
-                      PopupMenuItem<String>(
-                        value: 'delete',
-                        child: Text(
-                          'XÓA',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      )
-                    ],
-                    onSelected: (result) {
-                      setState(() {
-                        var invalidValue = -1;
-                        switch (result) {
-                          case 'normal-ban':
-                            User.banByUsername(listReport.toUsername);
-                            listReport.remove();
-                            break;
-                          case 'custom-ban':
-                            Future<int?> rs = showDialog<int>(
-                              context: context,
-                              builder: (BuildContext context) {
-                                var banInputController =
-                                    TextEditingController();
-                                return AlertDialog(
-                                  title: Text('ĐỊNH THỜI GIAN CẤM'),
-                                  content: TextField(
-                                    controller: banInputController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      hintText: 'Day',
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        var value;
-                                        try {
-                                          value = int.parse(
-                                              banInputController.text);
-                                          if (value <= 0)
-                                            Navigator.pop(
-                                                context, invalidValue);
-                                          else
-                                            Navigator.pop(context, value);
-                                        } catch (e) {
-                                          Navigator.pop(context, invalidValue);
-                                        }
-                                      },
-                                      child: Text(
-                                        'CẤM',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, null),
-                                      child: Text(
-                                        'BỎ',
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                            rs.then((value) {
-                              if (value == -1) {
-                                showInvalidAlert();
-                              } else if (value != null) {
-                                User.banByUsername(
-                                    listReport.toUsername, value);
-                                listReport.remove();
-                              }
-                            });
-                            break;
-                          case 'delete':
-                            listReport.remove();
-                            break;
-                        }
-                      });
-                    },
-                  ),
+                  trailing: listReport.isRequest
+                      ? requestMenu(listReport, context)
+                      : reportMenu(listReport, context),
                 ),
               );
             },
           );
+  }
+
+  PopupMenuButton<String> reportMenu(Report listReport, BuildContext context) {
+    return PopupMenuButton<String>(
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem<String>(
+          value: 'normal-ban',
+          child: Text(
+            'CẤM',
+            style: TextStyle(color: Colors.amber),
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'custom-ban',
+          child: Text(
+            'CẤM TÙY CHỈNH',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'delete',
+          child: Text(
+            'XÓA',
+            style: TextStyle(color: Colors.grey),
+          ),
+        )
+      ],
+      onSelected: (result) {
+        setState(() {
+          var invalidValue = -1;
+          switch (result) {
+            case 'normal-ban':
+              User.banByUsername(listReport.toUsername);
+              listReport.remove();
+              break;
+            case 'custom-ban':
+              Future<int?> rs = showDialog<int>(
+                context: context,
+                builder: (BuildContext context) {
+                  var banInputController = TextEditingController();
+                  return AlertDialog(
+                    title: Text('ĐỊNH THỜI GIAN CẤM'),
+                    content: TextField(
+                      controller: banInputController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: 'Day',
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          var value;
+                          try {
+                            value = int.parse(banInputController.text);
+                            if (value <= 0)
+                              Navigator.pop(context, invalidValue);
+                            else
+                              Navigator.pop(context, value);
+                          } catch (e) {
+                            Navigator.pop(context, invalidValue);
+                          }
+                        },
+                        child: Text(
+                          'CẤM',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+              rs.then((value) {
+                if (value == -1) {
+                  showInvalidAlert();
+                } else if (value != null) {
+                  User.banByUsername(listReport.toUsername, value);
+                  listReport.remove();
+                }
+              });
+              break;
+            case 'delete':
+              listReport.remove();
+              break;
+          }
+        });
+      },
+    );
+  }
+
+  PopupMenuButton<String> requestMenu(Report listReport, BuildContext context) {
+    return PopupMenuButton<String>(
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem<String>(
+          value: 'remove',
+          child: Text(
+            'GỠ',
+            style: TextStyle(color: Colors.green),
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'delete',
+          child: Text(
+            'XÓA',
+            style: TextStyle(color: Colors.grey),
+          ),
+        )
+      ],
+      onSelected: (result) {
+        setState(() {
+          switch (result) {
+            case 'remove':
+              User.unbanByUsername(listReport.fromUsername);
+              listReport.remove();
+              break;
+            case 'delete':
+              listReport.remove();
+              break;
+          }
+        });
+      },
+    );
   }
 
   showInvalidAlert() {

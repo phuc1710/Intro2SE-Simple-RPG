@@ -182,7 +182,7 @@ class User {
   }
 
   static banByUsername(username, [time]) {
-    return dbRef
+    dbRef
         .child('users')
         .orderByChild('username')
         .equalTo(username)
@@ -190,6 +190,9 @@ class User {
         .then((DataSnapshot snapshot) {
       var banUser = User();
       banUser.fromData(snapshot.value[snapshot.value.keys.elementAt(0)]);
+      if (time == null) {
+        time = banUser.getNormalBanTime();
+      }
       var curDate = NTP.now();
       curDate.then((value) {
         //CHANGE TO minutes TO TEST
@@ -201,6 +204,19 @@ class User {
           'ban_count': ++banUser.banCount
         });
       });
+    });
+  }
+
+  static unbanByUsername(username) {
+    dbRef
+        .child('users')
+        .orderByChild('username')
+        .equalTo(username)
+        .once()
+        .then((DataSnapshot snapshot) {
+      var banUser = User();
+      banUser.fromData(snapshot.value[snapshot.value.keys.elementAt(0)]);
+      banUser.unBan();
     });
   }
 
