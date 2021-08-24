@@ -61,7 +61,7 @@ class _MainPageState extends State<MainPage> {
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.forum),
-        label: 'CHAT',
+        label: 'TRÒ CHUYỆN',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.account_box),
@@ -71,13 +71,13 @@ class _MainPageState extends State<MainPage> {
     if (args['user'].isMod || args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
         icon: Icon(Icons.report),
-        label: 'BÁO CÁO',
+        label: 'KIỂM DUYỆT',
       ));
     }
     if (args['user'].isAdmin) {
       barItems.add(BottomNavigationBarItem(
         icon: Icon(Icons.admin_panel_settings),
-        label: 'QUẢN LÝ TK',
+        label: 'QUẢN LÝ',
       ));
     }
     return BottomNavigationBar(

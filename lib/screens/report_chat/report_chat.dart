@@ -207,7 +207,7 @@ class _ReportChatState extends State<ReportChat> {
   Widget getSync(List<dynamic> list) {
     return list.length == 0
         ? Center(
-            child: Text('KHÔNG CÓ BÁO CÁO NÀO'),
+            child: Text('KHÔNG CÓ BÁO CÁO HAY YÊU CẦU NÀO'),
           )
         : ListView.builder(
             itemCount: list.length,
@@ -246,21 +246,21 @@ class _ReportChatState extends State<ReportChat> {
         PopupMenuItem<String>(
           value: 'normal-ban',
           child: Text(
-            'CẤM',
+            'Cấm',
             style: TextStyle(color: Colors.amber),
           ),
         ),
         PopupMenuItem<String>(
           value: 'custom-ban',
           child: Text(
-            'CẤM TÙY CHỈNH',
+            'Cấm tùy chỉnh',
             style: TextStyle(color: Colors.red),
           ),
         ),
         PopupMenuItem<String>(
           value: 'delete',
           child: Text(
-            'XÓA',
+            'Xóa',
             style: TextStyle(color: Colors.grey),
           ),
         )
@@ -279,12 +279,12 @@ class _ReportChatState extends State<ReportChat> {
                 builder: (BuildContext context) {
                   var banInputController = TextEditingController();
                   return AlertDialog(
-                    title: Text('ĐỊNH THỜI GIAN CẤM'),
+                    title: Text('Định thời gian cấm'),
                     content: TextField(
                       controller: banInputController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: 'Day',
+                        hintText: 'day',
                       ),
                     ),
                     actions: <Widget>[
@@ -334,14 +334,14 @@ class _ReportChatState extends State<ReportChat> {
         PopupMenuItem<String>(
           value: 'remove',
           child: Text(
-            'GỠ',
+            'Gỡ',
             style: TextStyle(color: Colors.green),
           ),
         ),
         PopupMenuItem<String>(
           value: 'delete',
           child: Text(
-            'XÓA',
+            'Xóa',
             style: TextStyle(color: Colors.grey),
           ),
         )
@@ -389,7 +389,7 @@ class _ReportChatState extends State<ReportChat> {
           ),
           actions: [
             TextButton(
-              child: Text('OK'),
+              child: Text('ĐỒNG Ý'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

@@ -132,11 +132,17 @@ class _InventoryState extends State<Inventory> {
                           itemBuilder: (BuildContext context) => [
                             PopupMenuItem<String>(
                               value: 'equip',
-                              child: Text('Trang bị'),
+                              child: Text(
+                                'Trang bị',
+                                style: TextStyle(color: Colors.green),
+                              ),
                             ),
                             PopupMenuItem<String>(
                               value: 'drop',
-                              child: Text('Hủy vật phẩm'),
+                              child: Text(
+                                'Hủy vật phẩm',
+                                style: TextStyle(color: Colors.red),
+                              ),
                             )
                           ],
                           onSelected: (result) {

@@ -145,7 +145,7 @@ class _WorldChatState extends State<WorldChat> {
                       ),
                       FocusedMenuItem(
                         title: Text(
-                          isModorAdmin() ? "Cấm" : "Báo Cáo",
+                          isModorAdmin() ? "Cấm" : "Báo cáo",
                           style: TextStyle(color: Colors.redAccent),
                         ),
                         trailingIcon: Icon(
