@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:ntp/ntp.dart';
 
 var dbRef = FirebaseDatabase.instance.reference();
 
@@ -20,10 +21,14 @@ class Chat {
     record.set(toData());
   }
 
-  setChat(userName1, chat1, sendDate1) {
+  setChat(userName1, chat1) {
     this.userName = userName1;
     this.chat = chat1;
-    this.sendDate = sendDate1;
+    var curDate = NTP.now();
+    curDate.then((value) {
+      this.sendDate = value.toUtc().toString();
+      this.addChat();
+    });
   }
 
   fromData(data) {

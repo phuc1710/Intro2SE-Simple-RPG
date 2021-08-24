@@ -47,13 +47,16 @@ class _MapWidgetState extends State<MapWidget> {
         if (snapshot.hasData) {
           allMaps = snapshot.data;
           isInit = false;
-          var nonReverseList = [];
+          var list = [];
           for (var map in allMaps) {
             if (map.level <= widget.args['user'].level) {
-              nonReverseList.add(map);
+              list.add(map);
             }
           }
-          List list = new List.from(nonReverseList.reversed);
+          list.sort((mapA, mapB) => mapA.level > mapB.level
+              ? 1
+              : (mapA.level == mapB.level ? 0 : -1));
+          // List list = new List.from(nonReverseList.reversed);
           return ListView.builder(
             itemCount: list.length,
             itemBuilder: (context, index) {

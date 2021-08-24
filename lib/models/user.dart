@@ -184,9 +184,6 @@ class User {
         .then((DataSnapshot snapshot) {
       var banUser = User();
       banUser.fromData(snapshot.value[snapshot.value.keys.elementAt(0)]);
-      if (time == null) {
-        time = banUser.getNormalBanTime();
-      }
       var curDate = NTP.now();
       curDate.then((value) {
         //CHANGE TO minutes TO TEST

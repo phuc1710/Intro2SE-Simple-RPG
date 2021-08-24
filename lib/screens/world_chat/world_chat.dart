@@ -240,9 +240,7 @@ class _WorldChatState extends State<WorldChat> {
   sendMessage() {
     if (messageEditingController.text.isNotEmpty) {
       Chat chat = Chat();
-      chat.setChat(widget.args['user'].username, messageEditingController.text,
-          DateTime.now().toString());
-      chat.addChat();
+      chat.setChat(widget.args['user'].username, messageEditingController.text);
       messageEditingController.clear();
       FocusScope.of(context).unfocus();
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
