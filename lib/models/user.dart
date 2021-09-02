@@ -19,6 +19,7 @@ class User {
   String banExpired = '';
   String creationDate = DateTime.now().toString();
   String id = '';
+  String avatar = '';
   List listInventory = ["i00", "i06", "i07", "i08", "i09", "i10"];
   List listEquipped = ["i01", "i02", "i03", "i04", "i05"];
   int level = 1;
@@ -55,6 +56,7 @@ class User {
     this.banCount = data['ban_count'];
     this.banExpired = data['ban_expired'];
     this.isRequest = data['is_request'];
+    this.avatar = data['avatar'];
   }
 
   toData() {
@@ -78,7 +80,8 @@ class User {
       'gold': this.gold,
       'ban_count': this.banCount,
       'ban_expired': this.banExpired,
-      'is_request': this.isRequest
+      'is_request': this.isRequest,
+      'avatar': this.avatar
     };
   }
 
@@ -179,6 +182,10 @@ class User {
 
   request() {
     dbRef.child('users').child(this.id).update({'is_request': true});
+  }
+
+  uploadAvatar(avatarStr) {
+    dbRef.child('users').child(this.id).update({'avatar': avatarStr});
   }
 
   static banByUsername(username, [time]) {

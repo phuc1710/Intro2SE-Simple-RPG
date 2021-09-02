@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:simple_rpg/models/user.dart';
 import 'package:simple_rpg/screens/view_profile/view_list_profile.dart';
 
@@ -14,7 +19,7 @@ class ViewProfile extends StatefulWidget {
 }
 
 class _ViewProfileState extends State<ViewProfile> {
-  var user, profileUser, searchKey, allUserRef, isFromChat;
+  var user, profileUser, searchKey, allUserRef, isFromChat, avatar;
   @override
   void initState() {
     super.initState();
@@ -38,9 +43,91 @@ class _ViewProfileState extends State<ViewProfile> {
     }
   }
 
+  Future changeAvatar() async {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+    final maxAvatarSize = width > height ? width : height;
+    var picker = ImagePicker();
+    var newAvatar = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxHeight: maxAvatarSize,
+        maxWidth: maxAvatarSize);
+    setState(() {
+      var avatarPath = newAvatar?.path ?? '';
+      if (avatarPath != '') {
+        var avatarBytes = File(avatarPath).readAsBytesSync();
+        var avatarStr = base64Encode(avatarBytes);
+        profileUser.uploadAvatar(avatarStr);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> topWidgets = [];
+    if (profileUser.avatar == '')
+      avatar = AssetImage('assets/images/default_avatar.png');
+    else
+      avatar = MemoryImage(Base64Decoder().convert(profileUser.avatar));
+    List<Widget> topWidgets = [
+      FocusedMenuHolder(
+        menuWidth: MediaQuery.of(context).size.width * 0.50,
+        blurSize: 2.0,
+        menuItemExtent: 45,
+        menuBoxDecoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        duration: Duration(milliseconds: 0),
+        animateMenuItems: true,
+        blurBackgroundColor: Colors.black54,
+        openWithTap: true,
+        menuOffset: 10.0,
+        bottomOffsetHeight: 80.0,
+        menuItems: [
+          FocusedMenuItem(
+            title: Text("Xem ảnh đại diện"),
+            trailingIcon: Icon(
+              Icons.image,
+              color: Colors.blueAccent,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SafeArea(
+                      child: Scaffold(
+                    appBar: AppBar(),
+                    body: Center(
+                      child: Image(
+                        image: avatar,
+                      ),
+                    ),
+                  )),
+                ),
+              );
+            },
+          ),
+          if (user.username == profileUser.username)
+            FocusedMenuItem(
+              title: Text(
+                "Đổi ảnh đại diện",
+                // style: TextStyle(color: Colors.redAccent),
+              ),
+              trailingIcon: Icon(
+                Icons.add_photo_alternate,
+                color: Colors.green[700],
+              ),
+              onPressed: () {
+                changeAvatar();
+              },
+            ),
+        ],
+        onPressed: () {},
+        child: CircleAvatar(
+          backgroundImage: avatar,
+          backgroundColor: Colors.blue,
+        ),
+      )
+    ];
     if (!isFromChat) {
       topWidgets.add(TextButton(
         style: ButtonStyle(
@@ -100,13 +187,12 @@ class _ViewProfileState extends State<ViewProfile> {
       padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: isFromChat
-                ? MainAxisAlignment.start
-                : (user.username != profileUser.username
-                    ? MainAxisAlignment.spaceBetween
-                    : MainAxisAlignment.end),
-            children: topWidgets,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: topWidgets,
+            ),
           ),
           Card(
             child: ListTile(
