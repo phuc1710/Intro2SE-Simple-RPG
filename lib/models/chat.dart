@@ -8,13 +8,15 @@ class Chat {
   String chat = "";
   String sendDate = DateTime.now().toString();
   String userAvatar = '';
+  String userID = '';
 
   toData() {
     return {
       'username': this.userName,
       'chat': this.chat,
       'send_date': this.sendDate,
-      'user_avatar': this.userAvatar
+      'user_avatar': this.userAvatar,
+      'user_id': this.userID
     };
   }
 
@@ -23,10 +25,11 @@ class Chat {
     record.set(toData());
   }
 
-  setChat(userName, chat, userAvatar) {
-    this.userName = userName;
+  setChat(user, chat) {
+    this.userName = user.username;
     this.chat = chat;
-    this.userAvatar = userAvatar;
+    this.userAvatar = user.avatar;
+    this.userID = user.id;
     var curDate = NTP.now();
     curDate.then((value) {
       this.sendDate = value.toUtc().toString();
@@ -39,6 +42,7 @@ class Chat {
     this.chat = data['chat'];
     this.sendDate = data['send_date'];
     this.userAvatar = data['user_avatar'];
+    this.userID = data['user_id'];
   }
 
   static getAllChatRef() {

@@ -23,7 +23,7 @@ class WorldChat extends StatefulWidget {
 class _WorldChatState extends State<WorldChat> {
   TextEditingController messageEditingController = new TextEditingController();
   bool isInit = true;
-  var listWorldChat, allChatRef, userRef;
+  var listWorldChat, allChatRef, userRef, allUserRef;
   var _scrollController = ScrollController();
   final otherMessageColor = Color(0xFF858585);
   final myMessageColor = Colors.blueAccent;
@@ -38,6 +38,8 @@ class _WorldChatState extends State<WorldChat> {
     userRef?.onChildChanged.listen(_onAttrChange);
     allChatRef = Chat.getAllChatRef();
     allChatRef?.onChildAdded.listen(_onAllChatAdded);
+    allUserRef = User.getAllUserRef();
+    allUserRef?.onChildChanged.listen(_onAllUserChange);
   }
 
   _onAllChatAdded(event) {
@@ -71,6 +73,19 @@ class _WorldChatState extends State<WorldChat> {
     }
   }
 
+  _onAllUserChange(event) {
+    setState(() {
+      var changeUser = User();
+      changeUser.fromData(event.snapshot.value);
+      for (var chat in listWorldChat) {
+        if (chat.userName == changeUser.username &&
+            chat.userAvatar != 'empty') {
+          chat.userAvatar = changeUser.avatar;
+        }
+      }
+    });
+  }
+
   Widget asyncChatMessages() {
     return FutureBuilder<List>(
         future: listWorldChat,
@@ -87,7 +102,7 @@ class _WorldChatState extends State<WorldChat> {
               var dateB = DateTime.parse(b.sendDate);
               return dateA.compareTo(dateB);
             });
-            return syncChatMessages(listChat);
+            return syncChatMessages(listChat, true);
           }
           return SpinKitRing(
             color: Colors.blue,
@@ -95,14 +110,13 @@ class _WorldChatState extends State<WorldChat> {
         });
   }
 
-  Widget syncChatMessages(list) {
+  Widget syncChatMessages(list, [isInit]) {
     var listChat = list;
     var start = listChat.length - maxMessage;
     if (start < 0) start = 0;
     listChat = listChat.sublist(start);
     listWorldChat = listChat;
-    var rng = new Random();
-    var avatarSep = rng.nextInt(2) + 3;
+    var avatarSep = 3;
     var cnt = 0;
     for (var i = 0; i < listChat.length; ++i) {
       if (cnt % avatarSep == 0) {
@@ -127,16 +141,16 @@ class _WorldChatState extends State<WorldChat> {
             child: Row(
               mainAxisAlignment:
                   isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: [chatBox(listChat, pos, isSentByMe)],
+              children: [chatBox(listChat, pos, isSentByMe, isInit)],
             ),
           );
         });
   }
 
-  Row chatBox(listChat, pos, isSentByMe) {
+  Row chatBox(listChat, pos, isSentByMe, isInit) {
     return Row(
       children: [
-        if (!isSentByMe) avatarBox(listChat, pos),
+        if (!isSentByMe) avatarBox(listChat, pos, isInit),
         if (!isSentByMe)
           SizedBox(
             width: 5.0,
@@ -192,12 +206,12 @@ class _WorldChatState extends State<WorldChat> {
           SizedBox(
             width: 5.0,
           ),
-        if (isSentByMe) avatarBox(listChat, pos),
+        if (isSentByMe) avatarBox(listChat, pos, isInit),
       ],
     );
   }
 
-  GestureDetector avatarBox(listChat, pos) {
+  GestureDetector avatarBox(listChat, pos, isInit) {
     return GestureDetector(
       onTap: () {
         if (listChat[pos].userAvatar != 'empty') {
@@ -210,15 +224,36 @@ class _WorldChatState extends State<WorldChat> {
         }
       },
       child: listChat[pos].userAvatar != 'empty'
-          ? CircleAvatar(
-              backgroundImage: MemoryImage(
-                  Base64Decoder().convert(listChat[pos].userAvatar)),
-              backgroundColor: Colors.transparent,
-            )
+          ? (isInit != null
+              ? asyncAvatar(listChat, pos)
+              : CircleAvatar(
+                  backgroundImage: MemoryImage(
+                      Base64Decoder().convert(listChat[pos].userAvatar)),
+                  backgroundColor: Colors.transparent,
+                ))
           : CircleAvatar(
               backgroundColor: Colors.transparent,
             ),
     );
+  }
+
+  FutureBuilder asyncAvatar(listChat, pos) {
+    return FutureBuilder(
+        future: User.getAvatarByID(listChat[pos].userID),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            listChat[pos].userAvatar = snapshot.data.value;
+            return CircleAvatar(
+              backgroundImage:
+                  MemoryImage(Base64Decoder().convert(snapshot.data.value)),
+              backgroundColor: Colors.transparent,
+            );
+          }
+          return SpinKitRing(
+            color: Colors.blue,
+            size: 20,
+          );
+        });
   }
 
   Container messageBox(isSentByMe, listChat, pos) {
@@ -294,8 +329,7 @@ class _WorldChatState extends State<WorldChat> {
   sendMessage() {
     if (messageEditingController.text.isNotEmpty) {
       Chat chat = Chat();
-      chat.setChat(widget.args['user'].username, messageEditingController.text,
-          widget.args['user'].avatar);
+      chat.setChat(widget.args['user'], messageEditingController.text);
       messageEditingController.clear();
       FocusScope.of(context).unfocus();
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);

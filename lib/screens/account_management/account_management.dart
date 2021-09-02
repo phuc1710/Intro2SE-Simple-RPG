@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:simple_rpg/models/user.dart';
@@ -194,12 +196,16 @@ class _AccountManagementState extends State<AccountManagement> {
             itemCount: list.length,
             itemBuilder: (context, index) {
               User listUser = list[index];
+              var avatar;
+              if (listUser.avatar == '')
+                avatar = AssetImage('assets/images/default_avatar.png');
+              else
+                avatar = MemoryImage(Base64Decoder().convert(listUser.avatar));
               return Card(
                 child: ListTile(
-                  leading: Icon(
-                    Icons.account_circle,
-                    color: Colors.blue,
-                  ),
+                  leading: CircleAvatar(
+                      backgroundImage: avatar,
+                      backgroundColor: Colors.transparent),
                   title: Text(
                     listUser.username,
                     style: TextStyle(color: Colors.indigo),

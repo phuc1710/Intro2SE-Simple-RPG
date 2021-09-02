@@ -82,7 +82,7 @@ class _ViewProfileState extends State<ViewProfile> {
         bottomOffsetHeight: 80.0,
         menuItems: [
           FocusedMenuItem(
-            title: Text("Xem ảnh đại diện"),
+            title: Text("Xem ảnh"),
             trailingIcon: Icon(
               Icons.image,
               color: Colors.blueAccent,
@@ -107,7 +107,7 @@ class _ViewProfileState extends State<ViewProfile> {
           if (user.username == profileUser.username)
             FocusedMenuItem(
               title: Text(
-                "Đổi ảnh đại diện",
+                "Đổi ảnh",
                 // style: TextStyle(color: Colors.redAccent),
               ),
               trailingIcon: Icon(
