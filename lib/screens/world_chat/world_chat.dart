@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -78,8 +77,7 @@ class _WorldChatState extends State<WorldChat> {
       var changeUser = User();
       changeUser.fromData(event.snapshot.value);
       for (var chat in listWorldChat) {
-        if (chat.userName == changeUser.username &&
-            chat.userAvatar != 'empty') {
+        if (chat.userName == changeUser.username) {
           chat.userAvatar = changeUser.avatar;
         }
       }
@@ -120,14 +118,16 @@ class _WorldChatState extends State<WorldChat> {
     var cnt = 0;
     for (var i = 0; i < listChat.length; ++i) {
       if (cnt % avatarSep == 0) {
+        listChat[i].isVisAva = true;
         cnt++;
         continue;
       }
 
       if (listChat[i].userName == listChat[i - 1].userName) {
-        listChat[i].userAvatar = 'empty';
+        listChat[i].isVisAva = false;
         cnt++;
       } else {
+        listChat[i].isVisAva = true;
         cnt = 1;
       }
     }
@@ -212,9 +212,10 @@ class _WorldChatState extends State<WorldChat> {
   }
 
   GestureDetector avatarBox(listChat, pos, isInit) {
+    var asyncAvatarWidget = asyncAvatar(listChat, pos);
     return GestureDetector(
       onTap: () {
-        if (listChat[pos].userAvatar != 'empty') {
+        if (listChat[pos].isVisAva) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -223,18 +224,26 @@ class _WorldChatState extends State<WorldChat> {
           );
         }
       },
-      child: listChat[pos].userAvatar != 'empty'
-          ? (isInit != null
-              ? asyncAvatar(listChat, pos)
-              : CircleAvatar(
-                  backgroundImage: MemoryImage(
-                      Base64Decoder().convert(listChat[pos].userAvatar)),
-                  backgroundColor: Colors.transparent,
-                ))
-          : CircleAvatar(
-              backgroundColor: Colors.transparent,
-            ),
+      child: isInit != null
+          ? asyncAvatar(listChat, pos)
+          : syncAvatar(listChat, pos),
     );
+  }
+
+  CircleAvatar invisibleAvatar() {
+    return CircleAvatar(
+      backgroundColor: Colors.transparent,
+    );
+  }
+
+  CircleAvatar syncAvatar(listChat, pos) {
+    return listChat[pos].isVisAva
+        ? CircleAvatar(
+            backgroundImage:
+                MemoryImage(Base64Decoder().convert(listChat[pos].userAvatar)),
+            backgroundColor: Colors.transparent,
+          )
+        : invisibleAvatar();
   }
 
   FutureBuilder asyncAvatar(listChat, pos) {
@@ -244,11 +253,13 @@ class _WorldChatState extends State<WorldChat> {
           if (snapshot.hasData) {
             listChat[pos].userAvatar = snapshot.data.value;
             Chat.updateUserAvatar(listChat[pos].id, listChat[pos].userAvatar);
-            return CircleAvatar(
-              backgroundImage: MemoryImage(
-                  Base64Decoder().convert(listChat[pos].userAvatar)),
-              backgroundColor: Colors.transparent,
-            );
+            return listChat[pos].isVisAva
+                ? CircleAvatar(
+                    backgroundImage: MemoryImage(
+                        Base64Decoder().convert(listChat[pos].userAvatar)),
+                    backgroundColor: Colors.transparent,
+                  )
+                : invisibleAvatar();
           }
           return SpinKitRing(
             color: Colors.blue,
@@ -259,10 +270,9 @@ class _WorldChatState extends State<WorldChat> {
 
   Container messageBox(isSentByMe, listChat, pos) {
     var boxPos;
-    if (listChat[pos].userAvatar != 'empty') {
+    if (listChat[pos].isVisAva) {
       boxPos = -1;
-    } else if (pos == listChat.length - 1 ||
-        listChat[pos + 1].userAvatar != 'empty') {
+    } else if (pos == listChat.length - 1 || listChat[pos + 1].isVisAva) {
       boxPos = 1;
     } else {
       boxPos = 0;

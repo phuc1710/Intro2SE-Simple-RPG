@@ -10,6 +10,7 @@ class Chat {
   String userAvatar = '';
   String userID = '';
   String id = '';
+  bool isVisAva = false;
 
   toData() {
     return {
@@ -18,7 +19,8 @@ class Chat {
       'send_date': this.sendDate,
       'user_avatar': this.userAvatar,
       'user_id': this.userID,
-      'id': this.id
+      'id': this.id,
+      'is_vis_ava': this.isVisAva
     };
   }
 
@@ -47,6 +49,7 @@ class Chat {
     this.userAvatar = data['user_avatar'];
     this.userID = data['user_id'];
     this.id = data['id'];
+    this.isVisAva = data['is_vis_ava'];
   }
 
   static updateUserAvatar(chatID, avatar) {
