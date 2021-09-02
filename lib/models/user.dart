@@ -188,6 +188,10 @@ class User {
     dbRef.child('users').child(this.id).update({'avatar': avatarStr});
   }
 
+  static getAvatarByID(userID) {
+    return dbRef.child('users').child(userID).child('avatar').get();
+  }
+
   static banByUsername(username, [time]) {
     dbRef
         .child('users')

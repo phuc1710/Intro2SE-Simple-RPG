@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:ntp/ntp.dart';
 import 'package:simple_rpg/models/chat.dart';
@@ -98,114 +101,162 @@ class _WorldChatState extends State<WorldChat> {
     if (start < 0) start = 0;
     listChat = listChat.sublist(start);
     listWorldChat = listChat;
+    var rng = new Random();
+    var avatarSep = rng.nextInt(2) + 3;
+    var cnt = 0;
+    for (var i = 0; i < listChat.length; ++i) {
+      if (cnt % avatarSep == 0) {
+        cnt++;
+        continue;
+      }
+
+      if (listChat[i].userName == listChat[i - 1].userName) {
+        listChat[i].userAvatar = 'empty';
+        cnt++;
+      } else {
+        cnt = 1;
+      }
+    }
     return ListView.builder(
         controller: _scrollController,
         itemCount: listChat.length,
         itemBuilder: (BuildContext context, int pos) {
-          return Container(
-            padding: EdgeInsets.only(
-                top: 4,
-                bottom: 4,
-                left: sentByMe(listChat[pos].userName) ? 0 : 24,
-                right: sentByMe(listChat[pos].userName) ? 24 : 0),
-            alignment: sentByMe(listChat[pos].userName)
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
-            child: sentByMe(listChat[pos].userName)
-                ? chatBox(listChat, pos)
-                : FocusedMenuHolder(
-                    menuWidth: MediaQuery.of(context).size.width * 0.50,
-                    blurSize: 2.0,
-                    menuItemExtent: 45,
-                    menuBoxDecoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    duration: Duration(milliseconds: 0),
-                    animateMenuItems: true,
-                    blurBackgroundColor: Colors.black54,
-                    openWithTap:
-                        true, // Open Focused-Menu on Tap rather than Long Press
-                    menuOffset:
-                        10.0, // Offset value to show menuItem from the selected item
-                    bottomOffsetHeight:
-                        80.0, // Offset height to consider, for showing the menu item ( for example bottom navigation bar), so that the popup menu will be shown on top of selected item.
-                    menuItems: [
-                      FocusedMenuItem(
-                        title: Text("Xem thông tin"),
-                        trailingIcon: Icon(Icons.portrait),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  viewOtherProfile(listChat[pos].userName),
-                            ),
-                          );
-                        },
-                      ),
-                      FocusedMenuItem(
-                        title: Text(
-                          isModorAdmin() ? "Cấm" : "Báo cáo",
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
-                        trailingIcon: Icon(
-                          Icons.report_problem,
-                          color: Colors.redAccent,
-                        ),
-                        onPressed: () {
-                          if (isModorAdmin()) {
-                            User.banByUsername(listChat[pos].userName);
-                          } else {
-                            var rp = Report(widget.args['user'].username,
-                                listChat[pos].userName, listChat[pos].chat);
-                            rp.addReport();
-                          }
-                        },
-                      ),
-                    ],
-                    onPressed: () {},
-                    child: chatBox(listChat, pos),
-                  ),
+          var isSentByMe = sentByMe(listChat[pos].userName);
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
+            child: Row(
+              mainAxisAlignment:
+                  isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+              children: [chatBox(listChat, pos, isSentByMe)],
+            ),
           );
         });
   }
 
-  Container chatBox(listChat, int pos) {
+  Row chatBox(listChat, pos, isSentByMe) {
+    return Row(
+      children: [
+        if (!isSentByMe) avatarBox(listChat, pos),
+        if (!isSentByMe)
+          SizedBox(
+            width: 5.0,
+          ),
+        isSentByMe
+            ? messageBox(isSentByMe, listChat, pos)
+            : FocusedMenuHolder(
+                menuWidth: MediaQuery.of(context).size.width * 0.50,
+                blurSize: 2.0,
+                menuItemExtent: 45,
+                menuBoxDecoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                duration: Duration(milliseconds: 0),
+                animateMenuItems: true,
+                blurBackgroundColor: Colors.black54,
+                openWithTap: true,
+                menuOffset: 10.0,
+                bottomOffsetHeight: 80.0,
+                menuItems: [
+                  FocusedMenuItem(
+                    title: Text("Sao chép"),
+                    trailingIcon: Icon(Icons.content_copy),
+                    onPressed: () {
+                      Clipboard.setData(
+                          ClipboardData(text: listChat[pos].chat));
+                    },
+                  ),
+                  FocusedMenuItem(
+                    title: Text(
+                      isModorAdmin() ? "Cấm" : "Báo cáo",
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
+                    trailingIcon: Icon(
+                      Icons.report_problem,
+                      color: Colors.redAccent,
+                    ),
+                    onPressed: () {
+                      if (isModorAdmin()) {
+                        User.banByUsername(listChat[pos].userName);
+                      } else {
+                        var rp = Report(widget.args['user'].username,
+                            listChat[pos].userName, listChat[pos].chat);
+                        rp.addReport();
+                      }
+                    },
+                  ),
+                ],
+                onPressed: () {},
+                child: messageBox(isSentByMe, listChat, pos),
+              ),
+        if (isSentByMe)
+          SizedBox(
+            width: 5.0,
+          ),
+        if (isSentByMe) avatarBox(listChat, pos),
+      ],
+    );
+  }
+
+  GestureDetector avatarBox(listChat, pos) {
+    return GestureDetector(
+      onTap: () {
+        if (listChat[pos].userAvatar != 'empty') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => viewOtherProfile(listChat[pos].userName),
+            ),
+          );
+        }
+      },
+      child: listChat[pos].userAvatar != 'empty'
+          ? CircleAvatar(
+              backgroundImage: MemoryImage(
+                  Base64Decoder().convert(listChat[pos].userAvatar)),
+              backgroundColor: Colors.transparent,
+            )
+          : CircleAvatar(
+              backgroundColor: Colors.transparent,
+            ),
+    );
+  }
+
+  Container messageBox(isSentByMe, listChat, pos) {
+    var boxPos;
+    if (listChat[pos].userAvatar != 'empty') {
+      boxPos = -1;
+    } else if (pos == listChat.length - 1 ||
+        listChat[pos + 1].userAvatar != 'empty') {
+      boxPos = 1;
+    } else {
+      boxPos = 0;
+    }
     return Container(
-      margin: sentByMe(listChat[pos].userName)
-          ? EdgeInsets.only(left: 30)
-          : EdgeInsets.only(right: 30),
+      margin:
+          isSentByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
       padding: EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
       decoration: BoxDecoration(
-        borderRadius: sentByMe(listChat[pos].userName)
+        borderRadius: isSentByMe
             ? BorderRadius.only(
                 topLeft: Radius.circular(23),
-                topRight: Radius.circular(23),
-                bottomLeft: Radius.circular(23))
+                topRight:
+                    boxPos == -1 ? Radius.circular(23) : Radius.circular(5),
+                bottomLeft: Radius.circular(23),
+                bottomRight:
+                    boxPos == 1 ? Radius.circular(23) : Radius.circular(5),
+              )
             : BorderRadius.only(
-                topLeft: Radius.circular(23),
+                topLeft:
+                    boxPos == -1 ? Radius.circular(23) : Radius.circular(5),
                 topRight: Radius.circular(23),
+                bottomLeft:
+                    boxPos == 1 ? Radius.circular(23) : Radius.circular(5),
                 bottomRight: Radius.circular(23)),
-        color: sentByMe(listChat[pos].userName)
-            ? myMessageColor
-            : otherMessageColor,
+        color: isSentByMe ? myMessageColor : otherMessageColor,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(listChat[pos].userName,
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                  fontSize: 13.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  letterSpacing: -0.5)),
-          SizedBox(height: 7.0),
-          Text(listChat[pos].chat,
-              textAlign: TextAlign.start,
-              style: TextStyle(fontSize: 15.0, color: Colors.white)),
-        ],
-      ),
+      child: Text(listChat[pos].chat,
+          textAlign: TextAlign.start,
+          style: TextStyle(fontSize: 15.0, color: Colors.white)),
     );
   }
 
@@ -243,7 +294,8 @@ class _WorldChatState extends State<WorldChat> {
   sendMessage() {
     if (messageEditingController.text.isNotEmpty) {
       Chat chat = Chat();
-      chat.setChat(widget.args['user'].username, messageEditingController.text);
+      chat.setChat(widget.args['user'].username, messageEditingController.text,
+          widget.args['user'].avatar);
       messageEditingController.clear();
       FocusScope.of(context).unfocus();
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
@@ -274,8 +326,18 @@ class _WorldChatState extends State<WorldChat> {
             children: <Widget>[
               Expanded(
                   child: isInit
-                      ? asyncChatMessages()
-                      : syncChatMessages(listWorldChat)),
+                      ? GestureDetector(
+                          child: asyncChatMessages(),
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                          },
+                        )
+                      : GestureDetector(
+                          child: syncChatMessages(listWorldChat),
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                          },
+                        )),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                 color: otherMessageColor,

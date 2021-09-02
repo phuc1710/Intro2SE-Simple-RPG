@@ -44,9 +44,7 @@ class _ViewProfileState extends State<ViewProfile> {
   }
 
   Future changeAvatar() async {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    final maxAvatarSize = width > height ? width : height;
+    var maxAvatarSize = MediaQuery.of(context).size.height;
     var picker = ImagePicker();
     var newAvatar = await picker.pickImage(
         source: ImageSource.gallery,
@@ -124,7 +122,7 @@ class _ViewProfileState extends State<ViewProfile> {
         onPressed: () {},
         child: CircleAvatar(
           backgroundImage: avatar,
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.transparent,
         ),
       )
     ];
