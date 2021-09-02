@@ -243,9 +243,10 @@ class _WorldChatState extends State<WorldChat> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             listChat[pos].userAvatar = snapshot.data.value;
+            Chat.updateUserAvatar(listChat[pos].id, listChat[pos].userAvatar);
             return CircleAvatar(
-              backgroundImage:
-                  MemoryImage(Base64Decoder().convert(snapshot.data.value)),
+              backgroundImage: MemoryImage(
+                  Base64Decoder().convert(listChat[pos].userAvatar)),
               backgroundColor: Colors.transparent,
             );
           }

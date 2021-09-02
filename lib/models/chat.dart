@@ -9,6 +9,7 @@ class Chat {
   String sendDate = DateTime.now().toString();
   String userAvatar = '';
   String userID = '';
+  String id = '';
 
   toData() {
     return {
@@ -16,12 +17,14 @@ class Chat {
       'chat': this.chat,
       'send_date': this.sendDate,
       'user_avatar': this.userAvatar,
-      'user_id': this.userID
+      'user_id': this.userID,
+      'id': this.id
     };
   }
 
   addChat() {
     var record = dbRef.child('world_chats').push();
+    this.id = record.key;
     record.set(toData());
   }
 
@@ -43,6 +46,11 @@ class Chat {
     this.sendDate = data['send_date'];
     this.userAvatar = data['user_avatar'];
     this.userID = data['user_id'];
+    this.id = data['id'];
+  }
+
+  static updateUserAvatar(chatID, avatar) {
+    dbRef.child('world_chats').child(chatID).update({'user_avatar': avatar});
   }
 
   static getAllChatRef() {
