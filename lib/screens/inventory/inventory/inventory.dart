@@ -38,9 +38,11 @@ class _InventoryState extends State<Inventory> {
   }
 
   _onInvItemAdded(event) {
-    setState(() {
-      widget.args['user'].addItem2ListInv(event.snapshot.value);
-    });
+    if (this.mounted) {
+      setState(() {
+        widget.args['user'].addItem2ListInv(event.snapshot.value);
+      });
+    }
   }
 
   @override
@@ -91,13 +93,22 @@ class _InventoryState extends State<Inventory> {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     elevation: 5,
-                    color: cardColor[itemInventory.type],
+                    // color: cardColor[itemInventory.type],
                     child: ListTile(
-                        leading: Image(
-                          image: AssetImage(icons[itemInventory.type]),
-                          width: 40.0,
-                          height: 40.0,
+                        leading: CircleAvatar(
+                          child: Image.asset(
+                            icons[itemInventory.type],
+                            width: 30,
+                            height: 30,
+                          ),
+                          backgroundColor: cardColor[itemInventory.type],
+                          radius: 25,
                         ),
+                        // Image(
+                        //   image: AssetImage(icons[itemInventory.type]),
+                        //   width: 40.0,
+                        //   height: 40.0,
+                        // ),
                         title: Text(
                           '${itemInventory.name}',
                           style: TextStyle(color: Colors.black),
@@ -108,6 +119,7 @@ class _InventoryState extends State<Inventory> {
                                 ? Icon(
                                     Icons.favorite,
                                     size: 15,
+                                    color: Colors.red,
                                   )
                                 : Text(''),
                             Text(
@@ -119,6 +131,7 @@ class _InventoryState extends State<Inventory> {
                                 ? Icon(
                                     Icons.local_fire_department,
                                     size: 15,
+                                    color: Colors.green,
                                   )
                                 : Text(''),
                             Text(

@@ -63,13 +63,22 @@ class _EquippedState extends State<Equipped> {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     elevation: 5,
-                    color: cardColor[itemEquipped.type],
+                    // color: cardColor[itemEquipped.type],
                     child: ListTile(
-                        leading: Image(
-                          image: AssetImage(icons[itemEquipped.type]),
-                          width: 40.0,
-                          height: 40.0,
+                        leading: CircleAvatar(
+                          child: Image.asset(
+                            icons[itemEquipped.type],
+                            width: 30,
+                            height: 30,
+                          ),
+                          backgroundColor: cardColor[itemEquipped.type],
+                          radius: 25,
                         ),
+                        // Image(
+                        //   image: AssetImage(icons[itemEquipped.type]),
+                        //   width: 40.0,
+                        //   height: 40.0,
+                        // ),
                         title: Text(
                           '${itemEquipped.name}',
                           style: TextStyle(color: Colors.black),
@@ -80,6 +89,7 @@ class _EquippedState extends State<Equipped> {
                                 ? Icon(
                                     Icons.favorite,
                                     size: 15,
+                                    color: Colors.red,
                                   )
                                 : Text(''),
                             Text(
@@ -91,6 +101,7 @@ class _EquippedState extends State<Equipped> {
                                 ? Icon(
                                     Icons.local_fire_department,
                                     size: 15,
+                                    color: Colors.green,
                                   )
                                 : Text(''),
                             Text(

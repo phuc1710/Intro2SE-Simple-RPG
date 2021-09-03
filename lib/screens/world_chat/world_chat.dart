@@ -73,15 +73,17 @@ class _WorldChatState extends State<WorldChat> {
   }
 
   _onAllUserChange(event) {
-    setState(() {
-      var changeUser = User();
-      changeUser.fromData(event.snapshot.value);
-      for (var chat in listWorldChat) {
-        if (chat.userName == changeUser.username) {
-          chat.userAvatar = changeUser.avatar;
+    if (this.mounted) {
+      setState(() {
+        var changeUser = User();
+        changeUser.fromData(event.snapshot.value);
+        for (var chat in listWorldChat) {
+          if (chat.userName == changeUser.username) {
+            chat.userAvatar = changeUser.avatar;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   Widget asyncChatMessages() {

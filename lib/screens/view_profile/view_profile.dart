@@ -195,7 +195,7 @@ class _ViewProfileState extends State<ViewProfile> {
           Card(
             child: ListTile(
               leading: Icon(Icons.badge, color: Colors.indigo),
-              title: Text('Tên người dùng: ${profileUser.username}',
+              title: Text('Tên: ${profileUser.username}',
                   style: TextStyle(color: Colors.indigo)),
             ),
           ),
