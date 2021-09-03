@@ -166,7 +166,7 @@ class _ViewListProfileState extends State<ViewListProfile> {
               User listUser = list[index];
               var avatar;
               if (listUser.avatar == '')
-                avatar = AssetImage('assets/images/default_avatar.png');
+                avatar = User.getDefaultAvatarBuilder();
               else
                 avatar = MemoryImage(Base64Decoder().convert(listUser.avatar));
               return Card(

@@ -214,7 +214,6 @@ class _WorldChatState extends State<WorldChat> {
   }
 
   GestureDetector avatarBox(listChat, pos, isInit) {
-    var asyncAvatarWidget = asyncAvatar(listChat, pos);
     return GestureDetector(
       onTap: () {
         if (listChat[pos].isVisAva) {
@@ -241,8 +240,9 @@ class _WorldChatState extends State<WorldChat> {
   CircleAvatar syncAvatar(listChat, pos) {
     return listChat[pos].isVisAva
         ? CircleAvatar(
-            backgroundImage:
-                MemoryImage(Base64Decoder().convert(listChat[pos].userAvatar)),
+            backgroundImage: listChat[pos].userAvatar != ''
+                ? MemoryImage(Base64Decoder().convert(listChat[pos].userAvatar))
+                : User.getDefaultAvatarBuilder(),
             backgroundColor: Colors.transparent,
           )
         : invisibleAvatar();
@@ -257,16 +257,15 @@ class _WorldChatState extends State<WorldChat> {
             Chat.updateUserAvatar(listChat[pos].id, listChat[pos].userAvatar);
             return listChat[pos].isVisAva
                 ? CircleAvatar(
-                    backgroundImage: MemoryImage(
-                        Base64Decoder().convert(listChat[pos].userAvatar)),
+                    backgroundImage: listChat[pos].userAvatar != ''
+                        ? MemoryImage(
+                            Base64Decoder().convert(listChat[pos].userAvatar))
+                        : User.getDefaultAvatarBuilder(),
                     backgroundColor: Colors.transparent,
                   )
                 : invisibleAvatar();
           }
-          return SpinKitRing(
-            color: Colors.blue,
-            size: 20,
-          );
+          return invisibleAvatar();
         });
   }
 
@@ -365,8 +364,15 @@ class _WorldChatState extends State<WorldChat> {
     return widget.args['user'].isBan;
   }
 
+  scrollToBottomChat() {
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => scrollToBottomChat());
     return isBan()
         ? banScreen()
         : Column(

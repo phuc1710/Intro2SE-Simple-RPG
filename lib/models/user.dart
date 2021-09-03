@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:ntp/ntp.dart';
 
@@ -198,6 +199,10 @@ class User {
         });
       });
     });
+  }
+
+  static getDefaultAvatarBuilder() {
+    return AssetImage('assets/images/default_avatar.png');
   }
 
   static unbanByUsername(username) {

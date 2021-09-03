@@ -63,7 +63,7 @@ class _ViewProfileState extends State<ViewProfile> {
   @override
   Widget build(BuildContext context) {
     if (profileUser.avatar == '')
-      avatar = AssetImage('assets/images/default_avatar.png');
+      avatar = User.getDefaultAvatarBuilder();
     else
       avatar = MemoryImage(Base64Decoder().convert(profileUser.avatar));
     List<Widget> topWidgets = [
