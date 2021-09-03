@@ -49,9 +49,13 @@ class _CombatState extends State<Combat> {
 
   _getWinText(exp, gold) {
     var vipExpText = '';
-    if (Random().nextDouble() <= 0.01) {
+    if ((user.isVIP == false) &
+        (Random().nextDouble() <= (user.ensurance / 100))) {
       vipExpText = ', 1 điểm VIP';
       isGetVipExp = true;
+      user.ensurance = 0;
+    } else {
+      user.ensurance += 1;
     }
     return 'Bạn đã thắng. Bạn nhận được ${exp.toString()} kinh nghiệm, ${gold.toString()} tiền' +
         vipExpText +
@@ -190,6 +194,7 @@ class _CombatState extends State<Combat> {
                               combatStatus = 0;
                             } else if (currentEnemyHP == 0) {
                               combatStatus = 2;
+                              user.save();
                             }
                           });
                         }),

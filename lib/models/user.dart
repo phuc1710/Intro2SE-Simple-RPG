@@ -1,6 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:math';
-
 import 'package:ntp/ntp.dart';
 
 var dbRef = FirebaseDatabase.instance.reference();
@@ -28,7 +27,7 @@ class User {
 
   int vipExp = 0;
   //a number to put in the random func to make sure the user get vipEXP after a certain number of time
-  // max is 10 (times) return to 0 when reach 10
+  // max is 100 (times) return to 0 when reach 100
   int ensurance = 0;
 
   int atk = 150;
@@ -112,45 +111,28 @@ class User {
 
   incStatAfterCombat(int incExp, int incGold, bool isGetVipExp) {
     exp += incExp;
+    if ((exp >=
+            (((pow(this.level, logBase(this.level, 3))) * (100 - this.level))
+                .round())) &
+        (this.level < 100)) {
+      exp -= (((pow(this.level, logBase(this.level, 3))) * (100 - this.level))
+          .round());
+      this.level += 1;
+    }
     gold += incGold;
     vipExp += isGetVipExp ? 1 : 0;
+    if (this.vipExp == 100) {
+      this.isVIP = true;
+    }
     save();
   }
+
+  double logBase(num x, num base) => log(x) / log(base);
 
   promoteVIP() {
     // this.isVIP = !this.isVIP;
     this.isVIP = true;
     dbRef.child('users').child(this.id).update({'is_VIP': this.isVIP});
-  }
-
-  // input exp of enemy (normal exp)
-  updateVIPExp(int newEXP) {
-    if (newEXP != 0) {
-      if (this.isVIP == false) {
-        // random to whether update or not
-        Random random = new Random();
-        int randomNumber = random.nextInt(MAX_ENSURANCE - this.ensurance);
-
-        // VipExp drop success. 0 can be replaced if like as a condition
-        if (randomNumber == 0) {
-          this.ensurance = 0;
-          int vExp;
-          vExp = this.vipExp;
-          vExp += 1; //increase 1 exp each successful drop.
-          this.vipExp = vExp;
-
-          if (this.vipExp >= TOBE_VIP) {
-            promoteVIP();
-          }
-        }
-        // VipExp drop fail.
-        else {
-          int ens = this.ensurance;
-          ens += 1;
-          this.ensurance = ens;
-        }
-      }
-    }
   }
 
   save() {
