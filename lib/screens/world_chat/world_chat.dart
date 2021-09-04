@@ -102,6 +102,7 @@ class _WorldChatState extends State<WorldChat> {
               var dateB = DateTime.parse(b.sendDate);
               return dateA.compareTo(dateB);
             });
+            print(listChat.length);
             return syncChatMessages(listChat, true);
           }
           return SpinKitRing(
@@ -294,7 +295,8 @@ class _WorldChatState extends State<WorldChat> {
     } else {
       boxPos = 1;
     }
-    if ((pos == 0 && listChat[pos].userName != listChat[pos + 1].userName) ||
+    if ((listChat.length == 1) ||
+        (pos == 0 && listChat[pos].userName != listChat[pos + 1].userName) ||
         (pos != 0 &&
             listChat[pos].userName != listChat[pos - 1].userName &&
             listChat[pos].userName != listChat[pos + 1].userName) ||
