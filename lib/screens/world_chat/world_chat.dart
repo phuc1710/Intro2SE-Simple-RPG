@@ -124,9 +124,10 @@ class _WorldChatState extends State<WorldChat> {
           i == listChat.length - 1 ||
           listChat[i].userName != listChat[i + 1].userName) {
         listChat[i].isVisAva = true;
-        if (i < listChat.length - 1 &&
-            listChat[i].userName != listChat[i + 1].userName) {
-          cnt = 0;
+        if ((i == listChat.length - 1 ||
+                listChat[i].userName != listChat[i + 1].userName) &&
+            cnt % avatarSep != (avatarSep - 1)) {
+          cnt = -1;
         }
       } else {
         listChat[i].isVisAva = false;
@@ -295,14 +296,17 @@ class _WorldChatState extends State<WorldChat> {
     } else {
       boxPos = 1;
     }
-    if ((listChat.length == 1) ||
-        (pos == 0 && listChat[pos].userName != listChat[pos + 1].userName) ||
-        (pos != 0 &&
-            listChat[pos].userName != listChat[pos - 1].userName &&
-            listChat[pos].userName != listChat[pos + 1].userName) ||
-        (pos == listChat.length - 1 &&
-            (listChat[pos].userName != listChat[pos - 1].userName ||
-                listChat[pos - 1].isVisAva))) onlyMessage = true;
+    if (listChat.length == 1)
+      onlyMessage = true;
+    else if (pos == 0) {
+      if (listChat[0].userName != listChat[1].userName) onlyMessage = true;
+    } else if (pos == listChat.length - 1) {
+      if (listChat[pos - 1].isVisAva) onlyMessage = true;
+    } else if ((listChat[pos - 1].isVisAva
+        //|| listChat[pos - 1].userName != listChat[pos].userName
+        ) &&
+        listChat[pos + 1].userName != listChat[pos].userName)
+      onlyMessage = true;
     return Container(
       margin:
           isSentByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
