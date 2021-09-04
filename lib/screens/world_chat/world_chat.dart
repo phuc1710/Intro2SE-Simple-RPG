@@ -271,6 +271,7 @@ class _WorldChatState extends State<WorldChat> {
 
   Container messageBox(isSentByMe, listChat, pos) {
     var boxPos;
+    bool onlyMessage = false;
     if (listChat[pos].isVisAva) {
       boxPos = -1;
     } else if (pos == listChat.length - 1 || listChat[pos + 1].isVisAva) {
@@ -278,6 +279,9 @@ class _WorldChatState extends State<WorldChat> {
     } else {
       boxPos = 0;
     }
+    if ((pos == listChat.length - 1 && listChat[pos].isVisAva) ||
+        (listChat[pos].isVisAva && listChat[pos + 1].isVisAva))
+      onlyMessage = true;
     return Container(
       margin:
           isSentByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
@@ -286,18 +290,22 @@ class _WorldChatState extends State<WorldChat> {
         borderRadius: isSentByMe
             ? BorderRadius.only(
                 topLeft: Radius.circular(23),
-                topRight:
-                    boxPos == -1 ? Radius.circular(23) : Radius.circular(5),
+                topRight: boxPos == -1 || onlyMessage
+                    ? Radius.circular(23)
+                    : Radius.circular(5),
                 bottomLeft: Radius.circular(23),
-                bottomRight:
-                    boxPos == 1 ? Radius.circular(23) : Radius.circular(5),
+                bottomRight: boxPos == 1 || onlyMessage
+                    ? Radius.circular(23)
+                    : Radius.circular(5),
               )
             : BorderRadius.only(
-                topLeft:
-                    boxPos == -1 ? Radius.circular(23) : Radius.circular(5),
+                topLeft: boxPos == -1 || onlyMessage
+                    ? Radius.circular(23)
+                    : Radius.circular(5),
                 topRight: Radius.circular(23),
-                bottomLeft:
-                    boxPos == 1 ? Radius.circular(23) : Radius.circular(5),
+                bottomLeft: boxPos == 1 || onlyMessage
+                    ? Radius.circular(23)
+                    : Radius.circular(5),
                 bottomRight: Radius.circular(23)),
         color: isSentByMe ? myMessageColor : otherMessageColor,
       ),
