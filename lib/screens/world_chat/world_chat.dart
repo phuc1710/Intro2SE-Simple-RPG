@@ -143,13 +143,13 @@ class _WorldChatState extends State<WorldChat> {
             child: Row(
               mainAxisAlignment:
                   isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: [chatBox(listChat, pos, isSentByMe, isInit)],
+              children: [chatBox(context, listChat, pos, isSentByMe, isInit)],
             ),
           );
         });
   }
 
-  Row chatBox(listChat, pos, isSentByMe, isInit) {
+  Row chatBox(context, listChat, pos, isSentByMe, isInit) {
     return Row(
       children: [
         if (!isSentByMe) avatarBox(listChat, pos, isInit),
@@ -179,6 +179,10 @@ class _WorldChatState extends State<WorldChat> {
                     onPressed: () {
                       Clipboard.setData(
                           ClipboardData(text: listChat[pos].chat));
+                      final coppiedSnackBar =
+                          SnackBar(content: Text('Đã sao chép tin nhắn'));
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(coppiedSnackBar);
                     },
                   ),
                   FocusedMenuItem(
@@ -193,10 +197,18 @@ class _WorldChatState extends State<WorldChat> {
                     onPressed: () {
                       if (isModorAdmin()) {
                         User.banByUsername(listChat[pos].userName);
+                        final bannedSnackBar =
+                            SnackBar(content: Text('Đã cấm'));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(bannedSnackBar);
                       } else {
                         var rp = Report(widget.args['user'].username,
                             listChat[pos].userName, listChat[pos].chat);
                         rp.addReport();
+                        final reportSnackBar =
+                            SnackBar(content: Text('Đã báo cáo'));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(reportSnackBar);
                       }
                     },
                   ),
@@ -463,13 +475,13 @@ class _WorldChatState extends State<WorldChat> {
                 children: [
                   Icon(Icons.report, color: Colors.red[400], size: 100),
                   Text(
-                    'BANNED',
+                    'ĐÃ BỊ CHẶN',
                     style: TextStyle(
                       fontSize: 30,
                     ),
                   ),
                   Text(
-                    "Expire at: $localExpiredDateStr",
+                    "Hiệu lực đến: $localExpiredDateStr",
                     style: TextStyle(
                       fontSize: 20,
                     ),
