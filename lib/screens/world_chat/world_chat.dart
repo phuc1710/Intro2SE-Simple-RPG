@@ -119,19 +119,18 @@ class _WorldChatState extends State<WorldChat> {
     var avatarSep = 3;
     var cnt = 0;
     for (var i = 0; i < listChat.length; ++i) {
-      if (cnt % avatarSep == 0) {
+      if (cnt % avatarSep == (avatarSep - 1) ||
+          i == listChat.length - 1 ||
+          listChat[i].userName != listChat[i + 1].userName) {
         listChat[i].isVisAva = true;
-        cnt++;
-        continue;
-      }
-
-      if (listChat[i].userName == listChat[i - 1].userName) {
-        listChat[i].isVisAva = false;
-        cnt++;
+        if (i < listChat.length - 1 &&
+            listChat[i].userName != listChat[i + 1].userName) {
+          cnt = 0;
+        }
       } else {
-        listChat[i].isVisAva = true;
-        cnt = 1;
+        listChat[i].isVisAva = false;
       }
+      cnt++;
     }
     return ListView.builder(
         controller: _scrollController,
@@ -272,16 +271,24 @@ class _WorldChatState extends State<WorldChat> {
   Container messageBox(isSentByMe, listChat, pos) {
     var boxPos;
     bool onlyMessage = false;
-    if (listChat[pos].isVisAva) {
+    if (pos == 0 || (!listChat[pos].isVisAva && listChat[pos - 1].isVisAva)) {
       boxPos = -1;
-    } else if (pos == listChat.length - 1 || listChat[pos + 1].isVisAva) {
-      boxPos = 1;
-    } else {
+    } else if (pos != 0 &&
+        pos != listChat.length - 1 &&
+        listChat[pos - 1].userName == listChat[pos].userName &&
+        listChat[pos + 1].userName == listChat[pos].userName &&
+        !listChat[pos].isVisAva) {
       boxPos = 0;
+    } else {
+      boxPos = 1;
     }
-    if ((pos == listChat.length - 1 && listChat[pos].isVisAva) ||
-        (listChat[pos].isVisAva && listChat[pos + 1].isVisAva))
-      onlyMessage = true;
+    if ((pos == 0 && listChat[pos].userName != listChat[pos + 1].userName) ||
+        (pos != 0 &&
+            listChat[pos].userName != listChat[pos - 1].userName &&
+            listChat[pos].userName != listChat[pos + 1].userName) ||
+        (pos == listChat.length - 1 &&
+            (listChat[pos].userName != listChat[pos - 1].userName ||
+                listChat[pos - 1].isVisAva))) onlyMessage = true;
     return Container(
       margin:
           isSentByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
