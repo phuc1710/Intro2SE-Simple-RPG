@@ -301,7 +301,7 @@ class _ReportChatState extends State<ReportChat> {
                       controller: banInputController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: 'day',
+                        hintText: 'Số ngày',
                       ),
                     ),
                     actions: <Widget>[
