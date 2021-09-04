@@ -141,10 +141,10 @@ class _WorldChatState extends State<WorldChat> {
           var isSentByMe = sentByMe(listChat[pos].userName);
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
-            child: Row(
-              mainAxisAlignment:
-                  isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: [chatBox(context, listChat, pos, isSentByMe, isInit)],
+            child: Container(
+              child: chatBox(context, listChat, pos, isSentByMe, isInit),
+              alignment:
+                  isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
             ),
           );
         });
@@ -152,71 +152,75 @@ class _WorldChatState extends State<WorldChat> {
 
   Row chatBox(context, listChat, pos, isSentByMe, isInit) {
     return Row(
+      mainAxisAlignment:
+          isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         if (!isSentByMe) avatarBox(listChat, pos, isInit),
         if (!isSentByMe)
           SizedBox(
             width: 5.0,
           ),
-        isSentByMe
-            ? messageBox(isSentByMe, listChat, pos)
-            : FocusedMenuHolder(
-                menuWidth: MediaQuery.of(context).size.width * 0.50,
-                blurSize: 2.0,
-                menuItemExtent: 45,
-                menuBoxDecoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                duration: Duration(milliseconds: 0),
-                animateMenuItems: true,
-                blurBackgroundColor: Colors.black54,
-                openWithTap: true,
-                menuOffset: 10.0,
-                bottomOffsetHeight: 80.0,
-                menuItems: [
-                  FocusedMenuItem(
-                    title: Text("Sao chép"),
-                    trailingIcon: Icon(Icons.content_copy),
-                    onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: listChat[pos].chat));
-                      final coppiedSnackBar =
-                          SnackBar(content: Text('Đã sao chép tin nhắn'));
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(coppiedSnackBar);
-                    },
-                  ),
-                  FocusedMenuItem(
-                    title: Text(
-                      isModorAdmin() ? "Cấm" : "Báo cáo",
-                      style: TextStyle(color: Colors.redAccent),
-                    ),
-                    trailingIcon: Icon(
-                      Icons.report_problem,
-                      color: Colors.redAccent,
-                    ),
-                    onPressed: () {
-                      if (isModorAdmin()) {
-                        User.banByUsername(listChat[pos].userName);
-                        final bannedSnackBar =
-                            SnackBar(content: Text('Đã cấm'));
+        Flexible(
+          child: isSentByMe
+              ? messageBox(isSentByMe, listChat, pos)
+              : FocusedMenuHolder(
+                  menuWidth: MediaQuery.of(context).size.width * 0.50,
+                  blurSize: 2.0,
+                  menuItemExtent: 45,
+                  menuBoxDecoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  duration: Duration(milliseconds: 0),
+                  animateMenuItems: true,
+                  blurBackgroundColor: Colors.black54,
+                  openWithTap: true,
+                  menuOffset: 10.0,
+                  bottomOffsetHeight: 80.0,
+                  menuItems: [
+                    FocusedMenuItem(
+                      title: Text("Sao chép"),
+                      trailingIcon: Icon(Icons.content_copy),
+                      onPressed: () {
+                        Clipboard.setData(
+                            ClipboardData(text: listChat[pos].chat));
+                        final coppiedSnackBar =
+                            SnackBar(content: Text('Đã sao chép tin nhắn'));
                         ScaffoldMessenger.of(context)
-                            .showSnackBar(bannedSnackBar);
-                      } else {
-                        var rp = Report(widget.args['user'].username,
-                            listChat[pos].userName, listChat[pos].chat);
-                        rp.addReport();
-                        final reportSnackBar =
-                            SnackBar(content: Text('Đã báo cáo'));
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(reportSnackBar);
-                      }
-                    },
-                  ),
-                ],
-                onPressed: () {},
-                child: messageBox(isSentByMe, listChat, pos),
-              ),
+                            .showSnackBar(coppiedSnackBar);
+                      },
+                    ),
+                    FocusedMenuItem(
+                      title: Text(
+                        isModorAdmin() ? "Cấm" : "Báo cáo",
+                        style: TextStyle(color: Colors.redAccent),
+                      ),
+                      trailingIcon: Icon(
+                        Icons.report_problem,
+                        color: Colors.redAccent,
+                      ),
+                      onPressed: () {
+                        if (isModorAdmin()) {
+                          User.banByUsername(listChat[pos].userName);
+                          final bannedSnackBar =
+                              SnackBar(content: Text('Đã cấm'));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(bannedSnackBar);
+                        } else {
+                          var rp = Report(widget.args['user'].username,
+                              listChat[pos].userName, listChat[pos].chat);
+                          rp.addReport();
+                          final reportSnackBar =
+                              SnackBar(content: Text('Đã báo cáo'));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(reportSnackBar);
+                        }
+                      },
+                    ),
+                  ],
+                  onPressed: () {},
+                  child: messageBox(isSentByMe, listChat, pos),
+                ),
+        ),
         if (isSentByMe)
           SizedBox(
             width: 5.0,
