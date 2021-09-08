@@ -171,10 +171,6 @@ class User {
     dbRef.child('users').child(this.id).update({'avatar': avatarStr});
   }
 
-  static getAvatarByID(userID) {
-    return dbRef.child('users').child(userID).child('avatar').get();
-  }
-
   static banByUsername(username, [time]) {
     dbRef
         .child('users')
@@ -255,6 +251,16 @@ class User {
 
   static clearUsers() {
     dbRef.child('users').remove();
+  }
+
+  static Future<Map> getAvatarMap() async {
+    var usersRef = await dbRef.child('users').get();
+    return Map.fromIterable(
+        usersRef?.value.entries.map((entry) {
+          return [entry.value['username'], entry.value['avatar']];
+        }).toList(),
+        key: (e) => e[0],
+        value: (e) => e[1]);
   }
 
   static Future<List> getUsers() async {

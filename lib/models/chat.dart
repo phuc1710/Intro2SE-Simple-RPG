@@ -7,9 +7,7 @@ class Chat {
   String userName = "";
   String chat = "";
   String sendDate = DateTime.now().toString();
-  String userAvatar = '';
-  String userID = '';
-  String id = '';
+  // String id = '';
   bool isVisAva = false;
 
   toData() {
@@ -17,24 +15,20 @@ class Chat {
       'username': this.userName,
       'chat': this.chat,
       'send_date': this.sendDate,
-      'user_avatar': this.userAvatar,
-      'user_id': this.userID,
-      'id': this.id,
+      // 'id': this.id,
       'is_vis_ava': this.isVisAva
     };
   }
 
   addChat() {
     var record = dbRef.child('world_chats').push();
-    this.id = record.key;
+    // this.id = record.key;
     record.set(toData());
   }
 
   setChat(user, chat) {
     this.userName = user.username;
     this.chat = chat;
-    this.userAvatar = user.avatar;
-    this.userID = user.id;
     var curDate = NTP.now();
     curDate.then((value) {
       this.sendDate = value.toUtc().toString();
@@ -46,14 +40,8 @@ class Chat {
     this.userName = data['username'];
     this.chat = data['chat'];
     this.sendDate = data['send_date'];
-    this.userAvatar = data['user_avatar'];
-    this.userID = data['user_id'];
-    this.id = data['id'];
+    // this.id = data['id'];
     this.isVisAva = data['is_vis_ava'];
-  }
-
-  static updateUserAvatar(chatID, avatar) {
-    dbRef.child('world_chats').child(chatID).update({'user_avatar': avatar});
   }
 
   static getAllChatRef() {

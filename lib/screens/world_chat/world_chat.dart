@@ -26,13 +26,12 @@ class _WorldChatState extends State<WorldChat> {
   var _scrollController = ScrollController();
   final otherMessageColor = Color(0xFF858585);
   final myMessageColor = Colors.blueAccent;
-  final maxMessage = 30;
   var chatInputHint = 'Gửi tin nhắn...';
   var isRequest = false;
+  var avatarMap = Map();
   @override
   void initState() {
     super.initState();
-    listWorldChat = Chat.getListWorldChat();
     userRef = widget.args['user'].getUserRef();
     userRef?.onChildChanged.listen(_onAttrChange);
     allChatRef = Chat.getAllChatRef();
@@ -75,35 +74,30 @@ class _WorldChatState extends State<WorldChat> {
   _onAllUserChange(event) {
     if (this.mounted) {
       setState(() {
-        var changeUser = User();
-        changeUser.fromData(event.snapshot.value);
-        for (var chat in listWorldChat) {
-          if (chat.userName == changeUser.username) {
-            chat.userAvatar = changeUser.avatar;
-          }
-        }
+        avatarMap[event.snapshot.value['username']] =
+            event.snapshot.value['avatar'];
       });
     }
   }
 
   Widget asyncChatMessages() {
-    return FutureBuilder<List>(
-        future: listWorldChat,
-        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+    Iterable<Future> chatAndUser = [
+      Chat.getListWorldChat(),
+      User.getAvatarMap()
+    ];
+    return FutureBuilder(
+        future: Future.wait(chatAndUser),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             isInit = false;
-            var listAllChat = snapshot.data;
-            var listChat = [];
-            for (var a in listAllChat!) {
-              listChat.add(a);
-            }
-            listChat.sort((a, b) {
+            listWorldChat = snapshot.data[0];
+            avatarMap = snapshot.data[1];
+            listWorldChat.sort((a, b) {
               var dateA = DateTime.parse(a.sendDate);
               var dateB = DateTime.parse(b.sendDate);
               return dateA.compareTo(dateB);
             });
-            print(listChat.length);
-            return syncChatMessages(listChat, true);
+            return syncChatMessages();
           }
           return SpinKitRing(
             color: Colors.blue,
@@ -111,38 +105,33 @@ class _WorldChatState extends State<WorldChat> {
         });
   }
 
-  Widget syncChatMessages(list, [isInit]) {
-    var listChat = list;
-    var start = listChat.length - maxMessage;
-    if (start < 0) start = 0;
-    listChat = listChat.sublist(start);
-    listWorldChat = listChat;
+  Widget syncChatMessages() {
     var avatarSep = 3;
     var cnt = 0;
-    for (var i = 0; i < listChat.length; ++i) {
+    for (var i = 0; i < listWorldChat.length; ++i) {
       if (cnt % avatarSep == (avatarSep - 1) ||
-          i == listChat.length - 1 ||
-          listChat[i].userName != listChat[i + 1].userName) {
-        listChat[i].isVisAva = true;
-        if ((i == listChat.length - 1 ||
-                listChat[i].userName != listChat[i + 1].userName) &&
+          i == listWorldChat.length - 1 ||
+          listWorldChat[i].userName != listWorldChat[i + 1].userName) {
+        listWorldChat[i].isVisAva = true;
+        if ((i == listWorldChat.length - 1 ||
+                listWorldChat[i].userName != listWorldChat[i + 1].userName) &&
             cnt % avatarSep != (avatarSep - 1)) {
           cnt = -1;
         }
       } else {
-        listChat[i].isVisAva = false;
+        listWorldChat[i].isVisAva = false;
       }
       cnt++;
     }
     return ListView.builder(
         controller: _scrollController,
-        itemCount: listChat.length,
+        itemCount: listWorldChat.length,
         itemBuilder: (BuildContext context, int pos) {
-          var isSentByMe = sentByMe(listChat[pos].userName);
+          var isSentByMe = sentByMe(listWorldChat[pos].userName);
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
             child: Container(
-              child: chatBox(context, listChat, pos, isSentByMe, isInit),
+              child: chatBox(context, listWorldChat, pos, isSentByMe),
               alignment:
                   isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
             ),
@@ -150,12 +139,12 @@ class _WorldChatState extends State<WorldChat> {
         });
   }
 
-  Row chatBox(context, listChat, pos, isSentByMe, isInit) {
+  Row chatBox(context, listChat, pos, isSentByMe) {
     return Row(
       mainAxisAlignment:
           isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
-        if (!isSentByMe) avatarBox(listChat, pos, isInit),
+        if (!isSentByMe) avatarBox(listChat, pos),
         if (!isSentByMe)
           SizedBox(
             width: 5.0,
@@ -180,8 +169,10 @@ class _WorldChatState extends State<WorldChat> {
                 trailingIcon: Icon(Icons.content_copy),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: listChat[pos].chat));
-                  final coppiedSnackBar =
-                      SnackBar(content: Text('Đã sao chép tin nhắn'));
+                  final coppiedSnackBar = SnackBar(
+                    content: Text('Đã sao chép tin nhắn'),
+                    duration: Duration(seconds: 1),
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(coppiedSnackBar);
                 },
               ),
@@ -198,7 +189,10 @@ class _WorldChatState extends State<WorldChat> {
                   onPressed: () {
                     if (isModorAdmin()) {
                       User.banByUsername(listChat[pos].userName);
-                      final bannedSnackBar = SnackBar(content: Text('Đã cấm'));
+                      final bannedSnackBar = SnackBar(
+                        content: Text('Đã cấm'),
+                        duration: Duration(seconds: 1),
+                      );
                       ScaffoldMessenger.of(context)
                           .showSnackBar(bannedSnackBar);
                     } else {
@@ -221,12 +215,12 @@ class _WorldChatState extends State<WorldChat> {
           SizedBox(
             width: 5.0,
           ),
-        if (isSentByMe) avatarBox(listChat, pos, isInit),
+        if (isSentByMe) avatarBox(listChat, pos),
       ],
     );
   }
 
-  GestureDetector avatarBox(listChat, pos, isInit) {
+  GestureDetector avatarBox(listChat, pos) {
     return GestureDetector(
       onTap: () {
         if (listChat[pos].isVisAva) {
@@ -238,9 +232,7 @@ class _WorldChatState extends State<WorldChat> {
           );
         }
       },
-      child: isInit != null
-          ? asyncAvatar(listChat, pos)
-          : syncAvatar(listChat, pos),
+      child: syncAvatar(listChat, pos),
     );
   }
 
@@ -253,33 +245,13 @@ class _WorldChatState extends State<WorldChat> {
   CircleAvatar syncAvatar(listChat, pos) {
     return listChat[pos].isVisAva
         ? CircleAvatar(
-            backgroundImage: listChat[pos].userAvatar != ''
-                ? MemoryImage(Base64Decoder().convert(listChat[pos].userAvatar))
+            backgroundImage: avatarMap[listChat[pos].userName] != ''
+                ? MemoryImage(
+                    Base64Decoder().convert(avatarMap[listChat[pos].userName]))
                 : User.getDefaultAvatarBuilder(),
             backgroundColor: Colors.transparent,
           )
         : invisibleAvatar();
-  }
-
-  FutureBuilder asyncAvatar(listChat, pos) {
-    return FutureBuilder(
-        future: User.getAvatarByID(listChat[pos].userID),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            listChat[pos].userAvatar = snapshot.data.value;
-            Chat.updateUserAvatar(listChat[pos].id, listChat[pos].userAvatar);
-            return listChat[pos].isVisAva
-                ? CircleAvatar(
-                    backgroundImage: listChat[pos].userAvatar != ''
-                        ? MemoryImage(
-                            Base64Decoder().convert(listChat[pos].userAvatar))
-                        : User.getDefaultAvatarBuilder(),
-                    backgroundColor: Colors.transparent,
-                  )
-                : invisibleAvatar();
-          }
-          return invisibleAvatar();
-        });
   }
 
   Container messageBox(isSentByMe, listChat, pos) {
@@ -411,19 +383,12 @@ class _WorldChatState extends State<WorldChat> {
         : Column(
             children: <Widget>[
               Expanded(
-                  child: isInit
-                      ? GestureDetector(
-                          child: asyncChatMessages(),
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-                          },
-                        )
-                      : GestureDetector(
-                          child: syncChatMessages(listWorldChat),
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-                          },
-                        )),
+                  child: GestureDetector(
+                child: isInit ? asyncChatMessages() : syncChatMessages(),
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
+              )),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                 color: otherMessageColor,
