@@ -210,7 +210,7 @@ class _ViewProfileState extends State<ViewProfile> {
             child: ListTile(
               leading: Icon(Icons.api, color: Colors.blue),
               title: Text(
-                  'Kinh nghiệm: ${profileUser.exp}/${((pow(profileUser.level, logBase(profileUser.level, 3))) * (100 - profileUser.level)).round()} (${(profileUser.exp / (pow(profileUser.level, logBase(profileUser.level, 3)) * (100 - profileUser.level) * 100)).round()}%)',
+                  'Kinh nghiệm: ${profileUser.exp}/${((pow(profileUser.level, logBase(profileUser.level, 3))) * (100 - profileUser.level)).round()} (${(profileUser.exp / (pow(profileUser.level, logBase(profileUser.level, 3)) * (100 - profileUser.level)) * 100).floor()}%)',
                   style: TextStyle(color: Colors.blue)),
             ),
           ),
