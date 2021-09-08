@@ -115,7 +115,7 @@ class User {
     if ((exp >=
             (((pow(this.level, logBase(this.level, 3))) * (100 - this.level))
                 .round())) &
-        (this.level < 100)) {
+        (this.level < 99)) {
       exp -= (((pow(this.level, logBase(this.level, 3))) * (100 - this.level))
           .round());
       this.level += 1;

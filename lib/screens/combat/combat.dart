@@ -24,6 +24,7 @@ class _CombatState extends State<Combat> {
       buttonColors,
       exp,
       gold,
+      mapLevel,
       isGetVipExp;
   double logBase(num x, num base) => log(x) / log(base);
   @override
@@ -35,7 +36,7 @@ class _CombatState extends State<Combat> {
     currentUserHP = user.hp;
     combatStatus = 1;
     isGetVipExp = false;
-    var mapLevel = widget.mapLevel;
+    mapLevel = widget.mapLevel;
     exp = ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
     gold = ((pow(mapLevel, logBase(mapLevel, 6))) * (100 - mapLevel)).round();
     anouncements = [
@@ -49,13 +50,14 @@ class _CombatState extends State<Combat> {
 
   _getWinText(exp, gold) {
     var vipExpText = '';
-    if ((user.isVIP == false) &
+    if ((user.isVIP == false) &&
         (Random().nextDouble() <= (user.ensurance / 100))) {
       vipExpText = ', 1 điểm VIP';
       isGetVipExp = true;
       user.ensurance = 0;
-    } else {
-      user.ensurance += 1;
+    } else if (user.isVIP == false) {
+      var temp = user.level - mapLevel <= 10 ? 1 : 0;
+      user.ensurance += temp;
     }
     return 'Bạn đã thắng. Bạn nhận được ${exp.toString()} kinh nghiệm, ${gold.toString()} tiền' +
         vipExpText +
