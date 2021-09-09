@@ -156,19 +156,20 @@ class _LootState extends State<Loot> {
                           },
                           child: Text('Bỏ qua'),
                         ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.cyan[700])),
-                          onPressed: () {
-                            for (var id in dropItemIDList) {
-                              user.addItem2ListInv(id);
-                              user.save();
-                            }
-                            Navigator.pop(context);
-                          },
-                          child: Text('Lấy tất cả'),
-                        ),
+                        if (dropItemList.length != 0)
+                          ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.cyan[700])),
+                            onPressed: () {
+                              for (var id in dropItemIDList) {
+                                user.addItem2ListInv(id);
+                                user.save();
+                              }
+                              Navigator.pop(context);
+                            },
+                            child: Text('Lấy tất cả'),
+                          ),
                       ],
                     )
                   ],

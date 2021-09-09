@@ -126,6 +126,22 @@ class _ViewProfileState extends State<ViewProfile> {
         ),
       )
     ];
+    if (!isFromChat && user.username == profileUser.username) {
+      topWidgets.add(TextButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.blue),
+          splashFactory: NoSplash.splashFactory,
+        ),
+        child: Icon(
+          Icons.logout,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          //SIGN OUT
+          Navigator.pop(context);
+        },
+      ));
+    }
     if (!isFromChat) {
       topWidgets.add(TextButton(
         style: ButtonStyle(
