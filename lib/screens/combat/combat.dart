@@ -72,7 +72,7 @@ class _CombatState extends State<Combat> {
           title: Text('Combat'),
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

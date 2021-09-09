@@ -39,86 +39,89 @@ class _EquippedState extends State<Equipped> {
               if (a == b.id) userItemListEquipped.add(b);
             }
           }
-          return ListView.builder(
-              shrinkWrap: true,
-              itemCount: userItemListEquipped.length,
-              itemBuilder: (BuildContext context, int position) {
-                var itemEquipped = userItemListEquipped[position];
-                var icons = [
-                  'assets/images/vu_khi.png',
-                  'assets/images/non.png',
-                  'assets/images/ao.png',
-                  'assets/images/quan.png',
-                  'assets/images/giay.png',
-                ];
-                var cardColor = [
-                  Colors.red[300],
-                  Colors.yellow[300],
-                  Colors.green[300],
-                  Colors.blue[300],
-                  Colors.orange[300],
-                ];
-                return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    elevation: 5,
-                    // color: cardColor[itemEquipped.type],
-                    child: ListTile(
-                        leading: CircleAvatar(
-                          child: Image.asset(
-                            icons[itemEquipped.type],
-                            width: 30,
-                            height: 30,
+          return Center(
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: userItemListEquipped.length,
+                itemBuilder: (BuildContext context, int position) {
+                  var itemEquipped = userItemListEquipped[position];
+                  var icons = [
+                    'assets/images/vu_khi.png',
+                    'assets/images/non.png',
+                    'assets/images/ao.png',
+                    'assets/images/quan.png',
+                    'assets/images/giay.png',
+                  ];
+                  var cardColor = [
+                    Colors.red[300],
+                    Colors.yellow[300],
+                    Colors.green[300],
+                    Colors.blue[300],
+                    Colors.orange[300],
+                  ];
+                  return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      elevation: 5,
+                      // color: cardColor[itemEquipped.type],
+                      child: ListTile(
+                          leading: CircleAvatar(
+                            child: Image.asset(
+                              icons[itemEquipped.type],
+                              width: 30,
+                              height: 30,
+                            ),
+                            backgroundColor: cardColor[itemEquipped.type],
+                            radius: 25,
                           ),
-                          backgroundColor: cardColor[itemEquipped.type],
-                          radius: 25,
-                        ),
-                        // Image(
-                        //   image: AssetImage(icons[itemEquipped.type]),
-                        //   width: 40.0,
-                        //   height: 40.0,
-                        // ),
-                        title: Text(
-                          '${itemEquipped.name}',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        subtitle: Row(
-                          children: [
-                            itemEquipped.hp != 0
-                                ? Icon(
-                                    Icons.favorite,
-                                    size: 15,
-                                    color: Colors.red,
-                                  )
-                                : Text(''),
-                            Text(
-                              (itemEquipped.hp == 0
-                                  ? ''
-                                  : ' HP +${itemEquipped.hp} '),
-                            ),
-                            itemEquipped.atk != 0
-                                ? Icon(
-                                    Icons.local_fire_department,
-                                    size: 15,
-                                    color: Colors.green,
-                                  )
-                                : Text(''),
-                            Text(
-                              (itemEquipped.atk == 0
-                                  ? ''
-                                  : ' ATK +${itemEquipped.atk}'),
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => getIn4Item(itemEquipped)),
-                          );
-                        }));
-              });
+                          // Image(
+                          //   image: AssetImage(icons[itemEquipped.type]),
+                          //   width: 40.0,
+                          //   height: 40.0,
+                          // ),
+                          title: Text(
+                            '${itemEquipped.name}',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          subtitle: Row(
+                            children: [
+                              itemEquipped.hp != 0
+                                  ? Icon(
+                                      Icons.favorite,
+                                      size: 15,
+                                      color: Colors.red,
+                                    )
+                                  : Text(''),
+                              Text(
+                                (itemEquipped.hp == 0
+                                    ? ''
+                                    : ' HP +${itemEquipped.hp} '),
+                              ),
+                              itemEquipped.atk != 0
+                                  ? Icon(
+                                      Icons.local_fire_department,
+                                      size: 15,
+                                      color: Colors.green,
+                                    )
+                                  : Text(''),
+                              Text(
+                                (itemEquipped.atk == 0
+                                    ? ''
+                                    : ' ATK +${itemEquipped.atk}'),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      getIn4Item(itemEquipped)),
+                            );
+                          }));
+                }),
+          );
         }
         return SpinKitRing(
           color: Colors.blue,
